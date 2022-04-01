@@ -7,14 +7,33 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(lme4)
+library(lmerTest)
+library(gridExtra)
+library(corrplot)
+library(GGally)
+library(kableExtra)
 ```
 
 ```{r}
 load("36806-0001-Data.rda")
-ChicagoForeignCouncil<-as.data.frame(da36806.0001)
+ChicagoForeignCouncilRaw<-as.data.frame(da36806.0001)
 #This will just allow use to reform this data in a more helpful way, so that we don't need to worry about it.
 
 #Now We will need to clean the data. We will start off by removing the variables that are not useful to us. 
+
+
+ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw %>%
+  select(CASEID, XPHISPAN, ORLANDO, USR, MSC, CBSAMET, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275)
+
+ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw2[complete.cases(ChicagoForeignCouncilRaw2),]
+
+#Insert Here what data might be appropriate: 
+# CASEID, XPHISPAN, ORLANDO, USR, MSC, CBSAMET, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275
+
+# I MIGHT CONSIDER Q278 and the associated questions important for figuring this shit out. 
 
 ```
 
