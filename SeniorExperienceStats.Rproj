@@ -1,0 +1,39 @@
+---
+title: "Senior Experience Markdown File M1"
+author: "Parker Kaukl"
+date: '2022-03-31'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+load("36806-0001-Data.rda")
+ChicagoForeignCouncil<-as.data.frame(da36806.0001)
+#This will just allow use to reform this data in a more helpful way, so that we don't need to worry about it.
+
+#Now We will need to clean the data. We will start off by removing the variables that are not useful to us. 
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
