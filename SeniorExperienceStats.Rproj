@@ -1,11 +1,8 @@
----
-title: "Senior Experience Markdown File M1"
-author: "Parker Kaukl"
-date: '2022-03-31'
-output: html_document
----
+#Title
 
-```{r setup, include=FALSE}
+#2 Other
+
+```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
