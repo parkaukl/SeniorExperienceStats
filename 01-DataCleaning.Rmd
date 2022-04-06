@@ -39,6 +39,12 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
          State=substring(PPSTATEN,5),
          Region4=substring(PPREG4,4),
          Region9=substring(PPREG9,4),
-         StatementNumber=substring(DOV_Q8_14,2,2)) %>%
+         StatementNumber=substring(DOV_Q8_14,2,2),
+         InterventionSet1=substring(Q8_14,2,2)) %>%
+    mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1)) %>%
   select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-DOV_Q8_14)
+
+# I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
+
+#IF I choose to move forward, Q2, Q3, Q5_4, Q5_6, Q5_10, Q5_24, Q7_3, Q7_4A
 ```
