@@ -21,13 +21,24 @@ ChicagoForeignCouncilRaw<-as.data.frame(da36806.0001)
 
 
 ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw %>%
-  select(CASEID, XPHISPAN, ORLANDO, USR, MSC, CBSAMET, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275)
+  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275)
 
 ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw2[complete.cases(ChicagoForeignCouncilRaw2),]
+
+#OTHER INTERESTING VARIABLES: ORLANDO, USR, MSC, CBSAMET
 
 #Insert Here what data might be appropriate: 
 # CASEID, XPHISPAN, ORLANDO, USR, MSC, CBSAMET, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275
 
 # I MIGHT CONSIDER Q278 and the associated questions important for figuring this shit out. 
-
+summary(ChicagoForeignCouncilRaw2)
+ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
+  mutate(HISPANIC=ifelse(XPHISPAN=="(1) No, I am not",0,1),
+         MALE=ifelse(PPGENDER=="(1) Male",1,0),
+         IsHouseholdHead=ifelse(PPHHHEAD=="(0) NO",0,1),
+         State=substring(PPSTATEN,5),
+         Region4=substring(PPREG4,4),
+         Region9=substring(PPREG9,4),
+         StatementNumber=substring(DOV_Q8_14,2,2)) %>%
+  select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-DOV_Q8_14)
 ```
