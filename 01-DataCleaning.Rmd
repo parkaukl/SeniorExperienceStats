@@ -85,6 +85,14 @@ summary(M4)
 #M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
 #summary(M5)
 
+M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
+summary(M6)
+
+M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+summary(M7)
+
+M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+summary(M7)
 
 #Up to this point, I've found that Education Level, broken into Strata, and 
 ```
