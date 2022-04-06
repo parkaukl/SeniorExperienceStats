@@ -21,7 +21,7 @@ ChicagoForeignCouncilRaw<-as.data.frame(da36806.0001)
 
 
 ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw %>%
-  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275)
+  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275)
 
 ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw2[complete.cases(ChicagoForeignCouncilRaw2),]
 
@@ -42,9 +42,50 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
          StatementNumber=substring(DOV_Q8_14,2,2),
          InterventionSet1=substring(Q8_14,2,2)) %>%
     mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1)) %>%
-  select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-DOV_Q8_14)
+  select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9)
+
+summary(factor(ChicagoForeignCouncilClean$StatementNumber))
+
+summary(factor(ChicagoForeignCouncilClean$PPINCIMP))
 
 # I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
 
+# I should also consider how I might want to adjust the variable that shows household income. There is a chance that it is over-strata-d. This would be a problem. 
+
 #IF I choose to move forward, Q2, Q3, Q5_4, Q5_6, Q5_10, Q5_24, Q7_3, Q7_4A
 ```
+
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=StatementNumber,fill=InterventionSet1))+geom_bar(position=position_fill())
+#This is a graph meant to see if the order that the statement is shown in might be important to determining the preferences or the stated ideals that an individual has
+```
+By observing this data, we can see that there is no apparent distinction that exists between opinions of war, and whether or not this determine the factors that might lead to war.
+
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=Region4,fill=InterventionSet1))+geom_bar(position=position_fill())
+#This plot will attempt to analyze whether there is a preference for war by region, such as region 4, or region 9, or state perhaps even. We can see that there does appear to be some slight preference, particularly in the south and in the Midwest. 
+ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=InterventionSet1))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+
+```
+
+
+```{r}
+#Introductory Models
+#M0<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~1+(1|State),family=binomial(link="logit"))
+#summary(M0)
+#M1<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+(1|State),family=binomial(link="logit"))
+#summary(M1)
+#M2<-glmer(data = ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+PPAGE+(1|State),family=binomial(link="logit"))
+#summary(M2)
+#M3<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
+#summary(M3)
+#After working with all of these variables, one remarkably thing that I have seen is that it appears like relatively limited amount of this is determined by things such as education or gender. 
+M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
+summary(M4)
+#M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
+#summary(M5)
+
+
+#Up to this point, I've found that Education Level, broken into Strata, and 
+```
+
