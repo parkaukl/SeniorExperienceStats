@@ -111,8 +111,8 @@ ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=InterventionSet1))+geom_bar
 #M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M7)
 
-M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
-summary(M8)
+#M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#summary(M8)
 
 #M9<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(AgeBracket)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M9)
@@ -132,12 +132,47 @@ summary(M8)
 #M14<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)*Region4+(1|State),family=binomial(link="logit"))
 #summary(M14)
 
-M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
-summary(M15)
+#M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#summary(M15)
 
 M16<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 summary(M16)
 
+
+#M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+#summary(M17)
+
 #Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is 
+```
+I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
+
+```{r}
+FullCoefficientsList<-coef(M16)$State
+FullCoefficientsList
+StateRandomEffects<-FullCoefficientsList[,0:1]
+#This Will allow us to understand what variable is the most important for this
+```
+
+```{r}
+#One important thing to notice is the intercepts don't change. Therefore, we should be able to define each of these variables. Unfortunately, there are a lot of Different Variables
+
+CMale<-M16@beta[2]
+CHSGrad<-M16@beta[3]
+CSomeCollege<-M16@beta[4]
+CAssociates<-M16@beta[5]
+CBachelor<-M16@beta[6]
+CGraduate<-M16@beta[7]
+C25_34<-M16@beta[8]
+C35_44<-M16@beta[9]
+C45_64<-M16@beta[10]
+C65Plus<-M16@beta[11]
+
+
+
+#The Code MODEL@beta[i] can find the i'th intercept of our Model. 
+
+#for (i in 1:nrow(FullCoefficientsList)) {
+    
+#}
 ```
 
