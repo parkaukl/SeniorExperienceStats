@@ -42,17 +42,34 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
          StatementNumber=substring(DOV_Q8_14,2,2),
          InterventionSet1=substring(Q8_14,2,2)) %>%
     mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1)) %>%
-  select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9)
+    mutate(AgeBracket=ifelse(PPAGE<=24,"18-24",
+                       ifelse(PPAGE<=34,"25-34",
+                       ifelse(PPAGE<=44,"35-44",
+                       ifelse(PPAGE<=64,"45-64","65+"))))) %>%
+    mutate(EducationNumber=as.integer(substring(PPEDUC,2,3))) %>%
+    mutate(EducationBracket=ifelse(EducationNumber<5,"1.Less Than Ninth Grade",
+                             ifelse(EducationNumber<=8,"2.High School, No Diploma",
+                             ifelse(EducationNumber==9,"3.High School Graduate",
+                             ifelse(EducationNumber==10,"4.Some College, No Degree",
+                             ifelse(EducationNumber==11,"5. Associate's Degree",
+                             ifelse(EducationNumber==12, "6.Bachelor's Degree","7.Graduate Degree")))))),
+           EducationBracket2=ifelse(EducationNumber<=8, "1. No High School Diploma",
+                             ifelse(EducationNumber==9,"2. High School Graduate",
+                              ifelse(EducationNumber==10,"3.Some College, No Degree",
+                             ifelse(EducationNumber==11,"4. Associate's Degree",
+                             ifelse(EducationNumber==12, "5.Bachelor's Degree","6.Graduate Degree")))))) %>%
+  
+  select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
 
 summary(factor(ChicagoForeignCouncilClean$StatementNumber))
 
 summary(factor(ChicagoForeignCouncilClean$PPINCIMP))
 
+summary(factor(ChicagoForeignCouncilClean$PPEDUC))
+
 # I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
 
 # I should also consider how I might want to adjust the variable that shows household income. There is a chance that it is over-strata-d. This would be a problem. 
-
-#IF I choose to move forward, Q2, Q3, Q5_4, Q5_6, Q5_10, Q5_24, Q7_3, Q7_4A
 ```
 
 ```{r}
@@ -80,20 +97,47 @@ ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=InterventionSet1))+geom_bar
 #M3<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
 #summary(M3)
 #After working with all of these variables, one remarkably thing that I have seen is that it appears like relatively limited amount of this is determined by things such as education or gender. 
-M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
-summary(M4)
+#M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
+#summary(M4)
 #M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
 #summary(M5)
 
-M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
-summary(M6)
+#M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
+#summary(M6)
 
-M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
-summary(M7)
+#M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+#summary(M7)
 
-M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
-summary(M7)
+#M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+#summary(M7)
 
-#Up to this point, I've found that Education Level, broken into Strata, and 
+M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+summary(M8)
+
+#M9<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(AgeBracket)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+#summary(M9)
+
+#M10<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(AgeBracket)+factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
+#summary(M10)
+
+#M11<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#summary(M11)
+
+#M12<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~Region9*MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#summary(M12)
+
+#M13<-glm(data=ChicagoForeignCouncilClean,ProWarBinary~State,family=binomial(link="logit"))
+#summary(M13)
+
+#M14<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)*Region4+(1|State),family=binomial(link="logit"))
+#summary(M14)
+
+M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+summary(M15)
+
+M16<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+summary(M16)
+
+#Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is 
 ```
 

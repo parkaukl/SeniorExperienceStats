@@ -5,15 +5,43 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-library("TidyCensus")
+library(tidycensus)
+library(tidyverse)
+library(stargazer)
+library(dplyr)
+library(RColorBrewer)
+library(rgdal)
+library(grid)
+library(gridExtra)
+library(htmlTable)
+
+#In this section, we will start to observe what the important variables are in the ACS
+
+```
+```{r}
+variables <- load_variables(2016, "acs5", cache = TRUE)
+distinctvariables<-variables %>%
+  distinct(concept)
+
+# Based on the overview of this, there are some variables that might be important
+
+# SEX BY AGE BY EDUCATIONAL ATTAINMENT FOR THE POPULATION 18 YEARS AND OVER
+
+## Sex Broken up to Male, Female (2)
+## AGE Broken up to 18-24, 25-34, 35-44, 45-64, 65+, (5)
+## Educational Attainment Broken up to Less than 9th, 9th to 12th (no diploma), finish hs, Some college, associates, Bachelor, Graduate (7)
+
+# EDUCATIONAL ATTAINMENT BY EMPLOYMENT STATUS FOR THE POPULATION 25 TO 64 YEARS
+
+
+# SEX BY EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER (BLACK OR AFRICAN AMERICAN ALONE). There are other variables for other
+
+# Age, Household Income and Ethnicity (AGE OF HOUSEHOLDER BY HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2016 INFLATION-ADJUSTED DOLLARS)))
+
+# AGE (Under 25, 25-44, 45-64, 65+   4 cases)
+# Income (Less 10K, 10-15, 15-20, 20-25, 25-30, 30-35, etc)
+
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
