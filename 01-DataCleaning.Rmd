@@ -151,6 +151,10 @@ FullCoefficientsList<-coef(M16)$State
 FullCoefficientsList
 StateRandomEffects<-FullCoefficientsList[,0:1]
 #This Will allow us to understand what variable is the most important for this
+
+# Background says that Men tend to be more pro-war, 
+# Background says that higher levels of education tend to 
+# 
 ```
 
 ```{r}
