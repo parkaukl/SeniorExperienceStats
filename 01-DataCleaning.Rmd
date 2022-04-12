@@ -178,5 +178,16 @@ C65Plus<-M16@beta[11]
 #for (i in 1:nrow(FullCoefficientsList)) {
     
 #}
+
+
+```
+
+```{r}
+library(rstanarm)
+
+fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+```
+```{r}
+summary(fit)
 ```
 
