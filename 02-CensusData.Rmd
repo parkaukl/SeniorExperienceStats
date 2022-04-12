@@ -88,3 +88,7 @@ ACSPART3STRATA<- get_acs(
 # In ACSPART2AGE, we have collected all of the people who are of voting age in the United States. This is collected by a disjoint sample space of the age by sex variable, where we exclude people under 18, because they cannot vote
 ```
 
+```{r}
+
+```
+
