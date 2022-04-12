@@ -49,18 +49,42 @@ distinctvariables<-variables %>%
 ```
 
 ```{r}
-TotalRent <- get_acs(
+
+
+ACSGIS <- get_acs(
   geography = "county",
-  variables = c("B01003_001", "B25003_003"),
+  variables = c("B01001_007"),
+  geometry = TRUE,
+  keep_geo_vars = TRUE
+) %>%
+  select(GEOID,
+    stFIPS = STATEFP,
+    coFIPS = COUNTYFP,
+    coNAME = NAME.x,
+    median_rent = estimate,
+    geometry
+  )
+
+
+ACSPART2AGE <- get_acs(
+  geography = "county",
+  variables = c("B01001_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
   geometry = FALSE
 ) %>%
   select(-moe) %>%
   spread(variable, estimate) %>%
-  mutate(
-    B01003_001 = as.numeric(B01003_001),
-    B25003_003 = as.numeric(B25003_003),
-    perc_rent = (B25003_003 / B01003_001) * 100
-  ) %>%
-  select(-c("B01003_001", "B25003_003", "NAME"))
+  mutate(TOTALVOTINGPOP=B01001_001-(sum(B01001_004,B01001_005,B01001_006,B01001_027,B01001_028,B01001_029,B01001_030))) %>%
+  select(GEOID,NAME,TOTALVOTINGPOP)
+
+ACSPART3STRATA<- get_acs(
+  geography = "county",
+  variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
+  geometry = FALSE
+) %>%
+  select(-moe) %>%
+  spread(variable, estimate)
+
+
+# In ACSPART2AGE, we have collected all of the people who are of voting age in the United States. This is collected by a disjoint sample space of the age by sex variable, where we exclude people under 18, because they cannot vote
 ```
 
