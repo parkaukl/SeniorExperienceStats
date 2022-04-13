@@ -61,7 +61,7 @@ ACSGIS <- get_acs(
     stFIPS = STATEFP,
     coFIPS = COUNTYFP,
     coNAME = NAME.x,
-    median_rent = estimate,
+    filler = estimate,
     geometry
   )
 
@@ -89,6 +89,9 @@ ACSPART3STRATA<- get_acs(
 ```
 
 ```{r}
-
+metadataGIS <- ACSGIS %>%
+  inner_join(ACSPART2AGE, by = "GEOID") %>%
+  inner_join(ACSPART3STRATA, by = "GEOID") %>%
+  select(-filler)
 ```
 

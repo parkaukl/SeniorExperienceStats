@@ -41,7 +41,8 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
          Region9=substring(PPREG9,4),
          StatementNumber=substring(DOV_Q8_14,2,2),
          InterventionSet1=substring(Q8_14,2,2)) %>%
-    mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1)) %>%
+    mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1),
+           ProWarFactor=as.factor(ProWarBinary)) %>%
     mutate(AgeBracket=ifelse(PPAGE<=24,"18-24",
                        ifelse(PPAGE<=34,"25-34",
                        ifelse(PPAGE<=44,"35-44",
@@ -60,6 +61,8 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
                              ifelse(EducationNumber==12, "5.Bachelor's Degree","6.Graduate Degree")))))) %>%
   
   select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
+
+#We have created two different education brackets. This will, in part, determine how many different variables might exist in order to determine the exact variable. 
 
 summary(factor(ChicagoForeignCouncilClean$StatementNumber))
 
@@ -84,7 +87,20 @@ ggplot(ChicagoForeignCouncilClean,aes(x=Region4,fill=InterventionSet1))+geom_bar
 ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=InterventionSet1))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
 
 ```
+```{r}
+#ggplot(ChicagoForeignCouncilClean,aes(x=StatementNumber,fill=InterventionSet1))+geom_bar(position=position_fill())
+ggplot(ChicagoForeignCouncilClean,aes(x=AgeBracket,fill=ProWarFactor))+geom_bar(position=position_fill())
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=EducationBracket2,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
 
+# We are able to see here that, as education goes up, we are able to continue to have more and more variables. 
+```
+
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPETHM,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+# Cite this as a point of the limitations with MRP. For instance, there are significant 
+```
 
 ```{r}
 #Introductory Models
@@ -142,7 +158,7 @@ summary(M16)
 #M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 #summary(M17)
 
-#Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is 
+#Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is able to break the population into sufficiently small stratas.
 ```
 I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
 
@@ -172,12 +188,7 @@ C45_64<-M16@beta[10]
 C65Plus<-M16@beta[11]
 
 
-
-#The Code MODEL@beta[i] can find the i'th intercept of our Model. 
-
-#for (i in 1:nrow(FullCoefficientsList)) {
-    
-#}
+#We have now broken our variables into roughly 60 Stratas. We have 2 variables to indicate gender identity, there are 6 Education Brackets, and there are 5 Age Brackets. 
 
 
 ```
@@ -190,4 +201,9 @@ fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(Educati
 ```{r}
 summary(fit)
 ```
+
+
+
+
+
 
