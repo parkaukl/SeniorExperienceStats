@@ -70,6 +70,10 @@ summary(factor(ChicagoForeignCouncilClean$PPINCIMP))
 
 summary(factor(ChicagoForeignCouncilClean$PPEDUC))
 
+summary(factor(ChicagoForeignCouncilClean$AgeBracket))
+
+summary(factor(ChicagoForeignCouncilClean$EducationBracket2))
+
 # I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
 
 # I should also consider how I might want to adjust the variable that shows household income. There is a chance that it is over-strata-d. This would be a problem. 
@@ -99,7 +103,42 @@ ggplot(ChicagoForeignCouncilClean,aes(x=EducationBracket2,fill=ProWarFactor))+ge
 
 ```{r}
 ggplot(ChicagoForeignCouncilClean,aes(x=PPETHM,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
-# Cite this as a point of the limitations with MRP. For instance, there are significant 
+# Cite this as a point of the limitations with MRP. For instance, there are significant problems in our data, and MRP. It forces us to better understand why exactly this is happening. We could, potentially, do some analysis about other variables. However, in general, this is a problem with MRP, and needing to use the ACS
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPHHSIZE,fill=ProWarFactor))+geom_bar(position=position_fill())
+# This indicates there might be some kind of relationship between HHSIZE and Pro vs. Anti War sentiment. However, it might also be caused by a low sample size for some of the smaller variables. 
+```
+```{r}
+summary(as.factor(ChicagoForeignCouncilClean$PPHHSIZE))
+#This can be verified here. There are only 55 households with six people. This is probably not a sufficient sample size. 
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPHOUSE,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+# Based on this variable, there is not a severe relationship between housing in general. However, people that live in mobile homes appear to be substantially more likely to be pro war. I feel like this might be partially explained by other variables
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPINCIMP,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+# Here, it appears that as individuals get more walthy, there is a little bit of lower pro war sentiment. 
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPMARIT,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+# Marital STatus does not appear to be a determining factor in pro v. anti war sentiment. In particular, we might be concerned about the variable Living with Partner. However, this variable has a rather low count for the total number of occurances. Therefore, I am not very concerned about it. 
+```
+
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPNET,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+#People without internet tend to be more likely to be prowar. However, 
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPMSACAT,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+#People both in and outside of cities appear to have equal perceptions on the success of military intervention. 
+```
+```{r}
+ggplot(ChicagoForeignCouncilClean,aes(x=PPRENT,fill=ProWarFactor))+geom_bar(position=position_fill())
+
+#+theme(axis.text.x=element_text(angle=90))
+#Housing Situation appears to have very little influence on the perception of War
 ```
 
 ```{r}
