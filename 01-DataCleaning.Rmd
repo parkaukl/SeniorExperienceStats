@@ -14,25 +14,47 @@ library(kableExtra)
 
 ```{r}
 load("36806-0001-Data.rda")
-ChicagoForeignCouncilRaw<-as.data.frame(da36806.0001)
+load("37970-0001-Data.rda")
+ChicagoForeignCouncilRaw2016<-as.data.frame(da36806.0001) %>%
+  mutate(Year=2016) %>%
+  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
+
+ChicagoForeignCouncilRaw2017<-as.data.frame(da37970.0001) %>%
+  mutate(Year=2017) %>%
+  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
+
+#PPNET
+#Q385
+# We had previously considered using PPEDUCAT, but this variable ended up not being helpful, and we felt that we could split this variable into a more interesting split of variables that aligned with the ACS
+
 #This will just allow use to reform this data in a more helpful way, so that we don't need to worry about it. This is the 2016 Edition of this file
 
 #Now We will need to clean the data. We will start off by removing the variables that are not useful to us. 
 
 # I have observed the 2015 file of this data, in the Chicago Foreign Council. It phrases questions differently then the question that we have previously observed. Instead of looking at the same phrasing related to military intervention, it instead poses it as "Are you Pro or Anti Drone Strikes". This is a valuable question, no doubt, but it leaves our discussion open to survey bias. We cannot compare whether someone answers "How Effective do you think each of the following approaches are to achieving the foreign policy goals of the United States-Very Effective, somewhat,not very not at all" and "Drone Strikes against suspected terrorists in other countries". These evoke two different responses, and thus we cannot consider them equivalent. 
 
+#However, the 2017 File does have these same measurements. Therefore, we should consider using this as our important variable. 
 
-ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw %>%
-  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275)
 
-ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw2[complete.cases(ChicagoForeignCouncilRaw2),]
 
-#OTHER INTERESTING VARIABLES: ORLANDO, USR, MSC, CBSAMET
+
+ChicagoForeignCouncilRaw<-rbind(ChicagoForeignCouncilRaw2016,ChicagoForeignCouncilRaw2017)
+
+
+
+ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw[complete.cases(ChicagoForeignCouncilRaw),]
+
+#OTHER INTERESTING VARIABLES: ORLANDO, USR, MSC, CBSAMET. However, most of these are in the chicago Foreign Council 2016 File, but not the other
 
 #Insert Here what data might be appropriate: 
 # CASEID, XPHISPAN, ORLANDO, USR, MSC, CBSAMET, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275
 
-# I MIGHT CONSIDER Q278 and the associated questions important for figuring this shit out. 
+#We now need to look into the codebook to observe whether our response variables are coded similarly. 
+
+#AGE appears to be coded in the same ways, as does Education, PPETHM,PPGENDER, XPHISPAN, Marital Status, Metropolitan Status, REgion, 
+
+##PPINCIMP has more stratas in 2017, including more different classes for households that have more than 175 thousand in income. 
+ 
 summary(ChicagoForeignCouncilRaw2)
 ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
   mutate(HISPANIC=ifelse(XPHISPAN=="(1) No, I am not",0,1),
@@ -133,8 +155,8 @@ ggplot(ChicagoForeignCouncilClean,aes(x=PPMARIT,fill=ProWarFactor))+geom_bar(pos
 ```
 
 ```{r}
-ggplot(ChicagoForeignCouncilClean,aes(x=PPNET,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
-#People without internet tend to be more likely to be prowar. However, 
+#ggplot(ChicagoForeignCouncilClean,aes(x=PPNET,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
+#People without internet tend to be more likely to be prowar. However, we had to remove this variable once we introduced a second dataset from the Chicago 2017 Foreign Council. 
 ```
 ```{r}
 ggplot(ChicagoForeignCouncilClean,aes(x=PPMSACAT,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))
@@ -149,51 +171,64 @@ ggplot(ChicagoForeignCouncilClean,aes(x=PPRENT,fill=ProWarFactor))+geom_bar(posi
 
 ```{r}
 #Introductory Models
-#M0<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~1+(1|State),family=binomial(link="logit"))
+
+
+
+M0<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~1+(1|State),family=binomial(link="logit"))
+
 #summary(M0)
-#M1<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+(1|State),family=binomial(link="logit"))
+M1<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+(1|State),family=binomial(link="logit"))
+
 #summary(M1)
-#M2<-glmer(data = ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+PPAGE+(1|State),family=binomial(link="logit"))
+M2<-glmer(data = ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+
 #summary(M2)
-#M3<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
+#M2 is worse than M1 according to our M1
+
+M3<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
 #summary(M3)
+#M3 is better than any of our previous models. 
+
 #After working with all of these variables, one remarkably thing that I have seen is that it appears like relatively limited amount of this is determined by things such as education or gender. 
-#M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
+M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
 #summary(M4)
-#M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
+
+#M4 is better than our prior models, up to this point, according to BIC
+
+M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
 #summary(M5)
 
-#M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
+M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
 #summary(M6)
 
-#M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M7)
 
-#M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+M7a<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M7)
 
-#M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M8)
 
-#M9<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(AgeBracket)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+M9<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(AgeBracket)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M9)
 
-#M10<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(AgeBracket)+factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
+M10<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(AgeBracket)+factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
 #summary(M10)
 
-#M11<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+M11<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M11)
 
-#M12<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~Region9*MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+M12<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~Region9*MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M12)
 
-#M13<-glm(data=ChicagoForeignCouncilClean,ProWarBinary~State,family=binomial(link="logit"))
+M13<-glm(data=ChicagoForeignCouncilClean,ProWarBinary~State,family=binomial(link="logit"))
 #summary(M13)
 
-#M14<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)*Region4+(1|State),family=binomial(link="logit"))
+M14<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)*Region4+(1|State),family=binomial(link="logit"))
 #summary(M14)
 
-#M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M15)
 
 M16<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
@@ -202,18 +237,47 @@ summary(M16)
 #State does perform better that Region in these tests. However, the number of responses per state is very low. Therefore, there may be more benefit in using something like region9. This will be, in hindsight, what I choose to use moving forward
 
 
-#M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 #summary(M17)
 
-#Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is able to break the population into sufficiently small stratas.
+M18<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)*factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 
-M18<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
-summary(M18)
+#Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is able to break the population into sufficiently small stratas.
 ```
+
+```{r}
+BIC(M0)
+BIC(M1)
+BIC(M2)
+BIC(M3)
+BIC(M4)
+BIC(M5)
+BIC(M6)
+BIC(M7)
+BIC(M7a)
+BIC(M8)
+BIC(M9)
+BIC(M10)
+BIC(M11)
+BIC(M12)
+BIC(M13)
+BIC(M14)
+BIC(M15)
+BIC(M16)
+BIC(M17)
+BIC(M18)
+```
+
+
+```{r}
+summary(M16)
+```
+
+
 I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
 
 ```{r}
-FullCoefficientsList<-coef(M16)$State
+FullCoefficientsList<-coef(M17)$State
 FullCoefficientsList
 StateRandomEffects<-FullCoefficientsList[,0:1]
 #This Will allow us to understand what variable is the most important for this
