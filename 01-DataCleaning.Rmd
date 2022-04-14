@@ -15,9 +15,11 @@ library(kableExtra)
 ```{r}
 load("36806-0001-Data.rda")
 ChicagoForeignCouncilRaw<-as.data.frame(da36806.0001)
-#This will just allow use to reform this data in a more helpful way, so that we don't need to worry about it.
+#This will just allow use to reform this data in a more helpful way, so that we don't need to worry about it. This is the 2016 Edition of this file
 
 #Now We will need to clean the data. We will start off by removing the variables that are not useful to us. 
+
+# I have observed the 2015 file of this data, in the Chicago Foreign Council. It phrases questions differently then the question that we have previously observed. Instead of looking at the same phrasing related to military intervention, it instead poses it as "Are you Pro or Anti Drone Strikes". This is a valuable question, no doubt, but it leaves our discussion open to survey bias. We cannot compare whether someone answers "How Effective do you think each of the following approaches are to achieving the foreign policy goals of the United States-Very Effective, somewhat,not very not at all" and "Drone Strikes against suspected terrorists in other countries". These evoke two different responses, and thus we cannot consider them equivalent. 
 
 
 ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw %>%
@@ -73,6 +75,10 @@ summary(factor(ChicagoForeignCouncilClean$PPEDUC))
 summary(factor(ChicagoForeignCouncilClean$AgeBracket))
 
 summary(factor(ChicagoForeignCouncilClean$EducationBracket2))
+
+summary(factor(ChicagoForeignCouncilClean$State))
+
+summary(factor(ChicagoForeignCouncilClean$Region9))
 
 # I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
 
@@ -193,11 +199,16 @@ ggplot(ChicagoForeignCouncilClean,aes(x=PPRENT,fill=ProWarFactor))+geom_bar(posi
 M16<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 summary(M16)
 
+#State does perform better that Region in these tests. However, the number of responses per state is very low. Therefore, there may be more benefit in using something like region9. This will be, in hindsight, what I choose to use moving forward
+
 
 #M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 #summary(M17)
 
 #Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is able to break the population into sufficiently small stratas.
+
+M18<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+summary(M18)
 ```
 I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
 
