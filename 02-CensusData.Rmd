@@ -50,7 +50,7 @@ distinctvariables<-variables %>%
 
 ```{r}
 
-STATECOUNTYGIS <- get_acs(
+STATEACSGIS <- get_acs(
   geography = "state",
   variables = c("B01001_007"),
   geometry = TRUE,
@@ -63,15 +63,17 @@ STATECOUNTYGIS <- get_acs(
   )
 
 
-STATEACSPART2AGECOUNTY <- get_acs(
+STATEACSPART2AGE <- get_acs(
   geography = "state",
-  variables = c("B01001_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
+  variables = c("B01003_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
   geometry = FALSE
 ) %>%
   select(-moe) %>%
   spread(variable, estimate) %>%
-  mutate(TOTALVOTINGPOP=B01001_001-(sum(B01001_004,B01001_005,B01001_006,B01001_027,B01001_028,B01001_029,B01001_030))) %>%
+  mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029-B01001_030) %>%   #Here, we are taking the whole population less the parts of the population that are under 18 years old. We want to get an understanding of the size of the voting population of this area
   select(GEOID,NAME,TOTALVOTINGPOP)
+
+#B01003_001 This is a count of the total population. Therefore, it might be important to include. 
 
 STATEACSPART3STRATA<- get_acs(
   geography = "state",
@@ -99,13 +101,12 @@ ACSCOUNTYGIS <- get_acs(
 
 ACSPART2AGECOUNTY <- get_acs(
   geography = "county",
-  variables = c("B01001_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
+  variables = c("B01003_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
   geometry = FALSE
 ) %>%
   select(-moe) %>%
   spread(variable, estimate) %>%
-  mutate(TOTALVOTINGPOP=B01001_001-(sum(B01001_004,B01001_005,B01001_006,B01001_027,B01001_028,B01001_029,B01001_030))) %>%
-  select(GEOID,NAME,TOTALVOTINGPOP)
+  mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029-B01001_030) %>% select(GEOID,NAME,TOTALVOTINGPOP)
 
 ACSPART3STRATACOUNTY<- get_acs(
   geography = "county",
@@ -114,15 +115,18 @@ ACSPART3STRATACOUNTY<- get_acs(
 ) %>%
   select(-moe) %>%
   spread(variable, estimate)
-
-
-# In ACSPART2AGE, we have collected all of the people who are of voting age in the United States. This is collected by a disjoint sample space of the age by sex variable, where we exclude people under 18, because they cannot vote
 ```
 
+In ACSPART2AGE, we have collected all of the people who are of voting age in the United States. This is collected by a disjoint sample space of the age by sex variable, where we exclude people under 18, because they cannot vote
+
+These have been coming up a little bit strange. Therefore, I want to see the State level measurements of these instead. 
+
+
+
 ```{r}
-metadataGIS <- ACSGIS %>%
-  inner_join(ACSPART2AGE, by = "GEOID") %>%
-  inner_join(ACSPART3STRATA, by = "GEOID") %>%
+metadataCountyGIS <- STATEACSGIS %>%
+  inner_join(STATEACSPART2AGE, by = "GEOID") %>%
+  inner_join(STATEACSPART3STRATA, by = "GEOID") %>%
   select(-filler)
 ```
 

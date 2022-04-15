@@ -82,9 +82,12 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
                              ifelse(EducationNumber==9,"2. High School Graduate",
                               ifelse(EducationNumber==10,"3.Some College, No Degree",
                              ifelse(EducationNumber==11,"4. Associate's Degree",
-                             ifelse(EducationNumber==12, "5.Bachelor's Degree","6.Graduate Degree")))))) %>%
-  
-  select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
+                             ifelse(EducationNumber==12, "5.Bachelor's Degree","6.Graduate Degree"))))),
+            EducationBracket3=ifelse(EducationNumber<=8, "1. No High School Diploma",
+                             ifelse(EducationNumber==9,"2. High School Graduate",
+                              ifelse(EducationNumber==10|11,"3.Some College",
+                             ifelse(EducationNumber==12, "4.Bachelor's Degree","5.Graduate Degree"))))) %>%
+   select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
 
 #We have created two different education brackets. This will, in part, determine how many different variables might exist in order to determine the exact variable. 
 
@@ -243,34 +246,49 @@ M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBr
 M18<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)*factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 
 #Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is able to break the population into sufficiently small stratas.
+
+M19<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+
+M20<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+
+M21<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+PPMARIT+(1|State),family=binomial(link="logit"))
+
+M22<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(EducationBracket2)+factor(PPETHM)+(1|State),family=binomial(link="logit"))
+
 ```
 
 ```{r}
-BIC(M0)
-BIC(M1)
-BIC(M2)
-BIC(M3)
-BIC(M4)
-BIC(M5)
-BIC(M6)
-BIC(M7)
-BIC(M7a)
-BIC(M8)
-BIC(M9)
-BIC(M10)
-BIC(M11)
-BIC(M12)
-BIC(M13)
-BIC(M14)
-BIC(M15)
-BIC(M16)
-BIC(M17)
-BIC(M18)
+AIC(M0)
+AIC(M1)
+AIC(M2)
+AIC(M3)
+AIC(M4)
+AIC(M5)
+AIC(M6)
+AIC(M7)
+AIC(M7a)
+AIC(M8)
+AIC(M9)
+AIC(M10)
+AIC(M11)
+AIC(M12)
+AIC(M13)
+AIC(M14)
+AIC(M15)
+AIC(M16)
+AIC(M17)
+AIC(M18)
+AIC(M19)
+AIC(M20)
+AIC(M21) # M21 is barely better than the prior model that had the lowest AIC (M16). Therefore, we might not consider it as preferrable, especially because of the difficulties that may occur with adjusting this variable by adding marriage status
+AIC(M22) #This model is worse as well
+
 ```
 
 
 ```{r}
 summary(M16)
+#We can see that M16 minimizes 
 ```
 
 
