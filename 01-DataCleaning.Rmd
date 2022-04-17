@@ -91,23 +91,27 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
 
 #We have created two different education brackets. This will, in part, determine how many different variables might exist in order to determine the exact variable. 
 
-summary(factor(ChicagoForeignCouncilClean$StatementNumber))
+#Here, we have created some code, just to get an understanding of some different counts. I don't really consider a lot of the intermediate variables important anymore. Therefore, it might be good for my R-Console to remove some of them as the tail of my project. 
 
-summary(factor(ChicagoForeignCouncilClean$PPINCIMP))
+#summary(factor(ChicagoForeignCouncilClean$StatementNumber))
 
-summary(factor(ChicagoForeignCouncilClean$PPEDUC))
+#summary(factor(ChicagoForeignCouncilClean$PPINCIMP))
 
-summary(factor(ChicagoForeignCouncilClean$AgeBracket))
+#summary(factor(ChicagoForeignCouncilClean$PPEDUC))
 
-summary(factor(ChicagoForeignCouncilClean$EducationBracket2))
+#summary(factor(ChicagoForeignCouncilClean$AgeBracket))
 
-summary(factor(ChicagoForeignCouncilClean$State))
+#summary(factor(ChicagoForeignCouncilClean$EducationBracket2))
 
-summary(factor(ChicagoForeignCouncilClean$Region9))
+#summary(factor(ChicagoForeignCouncilClean$State))
+
+#summary(factor(ChicagoForeignCouncilClean$Region9))
 
 # I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
 
 # I should also consider how I might want to adjust the variable that shows household income. There is a chance that it is over-strata-d. This would be a problem. 
+
+remove(ChicagoForeignCouncilRaw,ChicagoForeignCouncilRaw2,ChicagoForeignCouncilRaw2016,ChicagoForeignCouncilRaw2017,da36806.0001,da37970.0001)
 ```
 
 ```{r}

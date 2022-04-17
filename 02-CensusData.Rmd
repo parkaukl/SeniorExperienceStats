@@ -45,37 +45,41 @@ distinctvariables<-variables %>%
 # AGE (Under 25, 25-44, 45-64, 65+   4 cases)
 # Income (Less 10K, 10-15, 15-20, 20-25, 25-30, 30-35, etc)
 
+#Now that we have these variables accounted for, we may remove them. 
+
+remove(variables,distinctvariables)
 
 ```
 
 ```{r}
 
-STATEACSGIS <- get_acs(
-  geography = "state",
-  variables = c("B01001_007"),
-  geometry = TRUE,
-  keep_geo_vars = TRUE
-) %>%
-  select(GEOID,
-    stFIPS = STATEFP,
-    filler = estimate,
-    geometry
-  )
+#STATEACSGIS <- get_acs(
+#  geography = "state",
+#  variables = c("B01001_007"),
+#  geometry = TRUE,
+#  keep_geo_vars = TRUE
+#) %>%
+#  select(GEOID,
+#    stFIPS = STATEFP,
+#    filler = estimate,
+#    geometry
+#  )
+#This is the remaineder of some code chunk I once thought was necessary. I know realize it is not. 
 
-
-STATEACSPART2AGE <- get_acs(
+STATEACSTOTALVOTEPOP <- get_acs(
   geography = "state",
   variables = c("B01003_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
-  geometry = FALSE
+  geometry = TRUE,
+  keep_geo_vars=TRUE
 ) %>%
   select(-moe) %>%
   spread(variable, estimate) %>%
   mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029-B01001_030) %>%   #Here, we are taking the whole population less the parts of the population that are under 18 years old. We want to get an understanding of the size of the voting population of this area
-  select(GEOID,NAME,TOTALVOTINGPOP)
+  select(-B01003_001,-B01001_003,-B01001_004,-B01001_005,-B01001_006,-B01001_027,-B01001_028,-B01001_029,-B01001_030)
 
 #B01003_001 This is a count of the total population. Therefore, it might be important to include. 
 
-STATEACSPART3STRATA<- get_acs(
+STATEACSSTRATAS<- get_acs(
   geography = "state",
   variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
   geometry = FALSE
@@ -84,31 +88,33 @@ STATEACSPART3STRATA<- get_acs(
   spread(variable, estimate)
 
 
-ACSCOUNTYGIS <- get_acs(
-  geography = "county",
-  variables = c("B01001_007"),
-  geometry = TRUE,
-  keep_geo_vars = TRUE
-) %>%
-  select(GEOID,
-    stFIPS = STATEFP,
-    coFIPS = COUNTYFP,
-    coNAME = NAME.x,
-    filler = estimate,
-    geometry
-  )
+#ACSCOUNTYGIS <- get_acs(
+#  geography = "county",
+#  variables = c("B01001_007"),
+#  geometry = TRUE,
+#  keep_geo_vars = TRUE
+#) %>%
+#  select(GEOID,
+#    stFIPS = STATEFP,
+#    coFIPS = COUNTYFP,
+#    coNAME = NAME.x,
+#    filler = estimate,
+#    geometry
+#)
 
 
-ACSPART2AGECOUNTY <- get_acs(
+COUNTYACSTOTALVOTEPOP <- get_acs(
   geography = "county",
   variables = c("B01003_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
-  geometry = FALSE
+  geometry = TRUE,
+  keep_geo_vars=TRUE
 ) %>%
   select(-moe) %>%
   spread(variable, estimate) %>%
-  mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029-B01001_030) %>% select(GEOID,NAME,TOTALVOTINGPOP)
+  mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029-B01001_030) %>%   #Here, we are taking the whole population less the parts of the population that are under 18 years old. We want to get an understanding of the size of the voting population of this area
+  select(-B01003_001,-B01001_003,-B01001_004,-B01001_005,-B01001_006,-B01001_027,-B01001_028,-B01001_029,-B01001_030)
 
-ACSPART3STRATACOUNTY<- get_acs(
+COUNTYACSSTRATA<- get_acs(
   geography = "county",
   variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
   geometry = FALSE
@@ -124,9 +130,14 @@ These have been coming up a little bit strange. Therefore, I want to see the Sta
 
 
 ```{r}
-metadataCountyGIS <- STATEACSGIS %>%
-  inner_join(STATEACSPART2AGE, by = "GEOID") %>%
-  inner_join(STATEACSPART3STRATA, by = "GEOID") %>%
-  select(-filler)
+metadataStateGIS <- STATEACSTOTALVOTEPOP %>%
+  inner_join(STATEACSSTRATAS, by="GEOID") %>%
+  select(-NAME.x,-NAME.y)
+
+metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%
+  inner_join(COUNTYACSSTRATA, by="GEOID") %>%
+  select(-NAME.x,-NAME.y)
+
+STATECODE<-metadataStateGIS %>% select(STATEFP,NAME,STUSPS)
 ```
 
