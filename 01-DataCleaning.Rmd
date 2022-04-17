@@ -85,7 +85,7 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
                              ifelse(EducationNumber==12, "5.Bachelor's Degree","6.Graduate Degree"))))),
             EducationBracket3=ifelse(EducationNumber<=8, "1. No High School Diploma",
                              ifelse(EducationNumber==9,"2. High School Graduate",
-                              ifelse(EducationNumber==10|11,"3.Some College",
+                              ifelse(EducationNumber<12,"3.Some College",
                              ifelse(EducationNumber==12, "4.Bachelor's Degree","5.Graduate Degree"))))) %>%
    select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
 
@@ -112,6 +112,8 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
 # I should also consider how I might want to adjust the variable that shows household income. There is a chance that it is over-strata-d. This would be a problem. 
 
 remove(ChicagoForeignCouncilRaw,ChicagoForeignCouncilRaw2,ChicagoForeignCouncilRaw2016,ChicagoForeignCouncilRaw2017,da36806.0001,da37970.0001)
+
+summary(ChicagoForeignCouncilClean$EducationBracket3)
 ```
 
 ```{r}
@@ -259,6 +261,13 @@ M21<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBr
 
 M22<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(EducationBracket2)+factor(PPETHM)+(1|State),family=binomial(link="logit"))
 
+M23<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9)+(1|Year),family=binomial(link="logit"))
+
+M24<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~(1|MALE)+(1|EducationBracket3)+(1|AgeBracket)+(1|Region9)+(1|Year),family=binomial(link="logit"))
+
+
+M25<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~(1|MALE)+(1|EducationBracket3)+(1|AgeBracket)+(1|State)+(1|Year),family=binomial(link="logit"))
+
 ```
 
 ```{r}
@@ -281,47 +290,56 @@ AIC(M14)
 AIC(M15)
 AIC(M16)
 AIC(M17)
-AIC(M18)
-AIC(M19)
+#AIC(M18)
+#AIC(M19)
 AIC(M20)
 AIC(M21) # M21 is barely better than the prior model that had the lowest AIC (M16). Therefore, we might not consider it as preferrable, especially because of the difficulties that may occur with adjusting this variable by adding marriage status
 AIC(M22) #This model is worse as well
+
+
 
 ```
 
 
 ```{r}
-summary(M16)
-#We can see that M16 minimizes 
+#summary(M16)
+#We can see that M16 minimizes the results of AIC, it appears. However, I do have some concerns about whether it would be better to use this to predict or poststratify for the state. Therefore, I believe that using a random effect for Region 9 might be preferred. In addition, the AIC only increases by one betweem Model 16 and Model 17. However, upon doing some more analysis, Model 19 appears to have a similar AIC, and a better BIC
+#summary(M17)
+summary(M19)
+summary(M23)
+summary(M24)
+summary(M25)
+
+display(M25)
 ```
 
 
 I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
 
 ```{r}
-FullCoefficientsList<-coef(M17)$State
+FullCoefficientsList<-coef(M19)$Region9
 FullCoefficientsList
 StateRandomEffects<-FullCoefficientsList[,0:1]
 #This Will allow us to understand what variable is the most important for this
 
 # Background says that Men tend to be more pro-war, 
-# Background says that higher levels of education tend to 
-# 
+# Background says that higher levels of education tend to be more anti war
+
 ```
 
 ```{r}
 #One important thing to notice is the intercepts don't change. Therefore, we should be able to define each of these variables. Unfortunately, there are a lot of Different Variables
 
-CMale<-M16@beta[2]
-CHSGrad<-M16@beta[3]
-CSomeCollege<-M16@beta[4]
-CAssociates<-M16@beta[5]
-CBachelor<-M16@beta[6]
-CGraduate<-M16@beta[7]
-C25_34<-M16@beta[8]
-C35_44<-M16@beta[9]
-C45_64<-M16@beta[10]
-C65Plus<-M16@beta[11]
+#CMale<-M16@beta[2]
+#CHSGrad<-M16@beta[3]
+#CSomeCollege<-M16@beta[4]
+#CAssociates<-M16@beta[5]
+#CBachelor<-M16@beta[6]
+#CGraduate<-M16@beta[7]
+#C25_34<-M16@beta[8]
+#C35_44<-M16@beta[9]
+#C45_64<-M16@beta[10]
+#C65Plus<-M16@beta[11]
 
 
 #We have now broken our variables into roughly 60 Stratas. We have 2 variables to indicate gender identity, there are 6 Education Brackets, and there are 5 Age Brackets. 
@@ -332,10 +350,22 @@ C65Plus<-M16@beta[11]
 ```{r}
 library(rstanarm)
 
-fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 ```
 ```{r}
 summary(fit)
+```
+
+```{r}
+ranef(M25)$MALE
+
+ranef(M25)$EducationBracket3
+
+ranef(M25)$AgeBracket
+
+ranef(M25)$State
+
+ranef(M25)$Year
 ```
 
 

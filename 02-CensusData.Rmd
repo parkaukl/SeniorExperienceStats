@@ -47,8 +47,6 @@ distinctvariables<-variables %>%
 
 #Now that we have these variables accounted for, we may remove them. 
 
-remove(variables,distinctvariables)
-
 ```
 
 ```{r}
@@ -132,12 +130,25 @@ These have been coming up a little bit strange. Therefore, I want to see the Sta
 ```{r}
 metadataStateGIS <- STATEACSTOTALVOTEPOP %>%
   inner_join(STATEACSSTRATAS, by="GEOID") %>%
+  filter(STUSPS!="PR") %>%
   select(-NAME.x,-NAME.y)
 
-metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%
-  inner_join(COUNTYACSSTRATA, by="GEOID") %>%
-  select(-NAME.x,-NAME.y)
+#metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%
+#  inner_join(COUNTYACSSTRATA, by="GEOID") %>%
+#  select(-NAME.x,-NAME.y)
+#This would be useful if we wanted to do county measurements. However, I do not believe that is best moving forward. 
 
 STATECODE<-metadataStateGIS %>% select(STATEFP,NAME,STUSPS)
+
+# Based on our initial measurement, it may be better to use Statewise estimates on preferenes for War. This is especially because our intiial measurement of counties appears to have a smaller initial value. 
+
+#In order to organize variables, it might be valuable to list them here as brackets
+# Male, 18-24, less than HS:  004+005
+# Male, 18-24, HS Grad: 006
+# Male, 18-24, Some College: 007, 008
+# Male, 18-24, Bachelor Deg: 009
+# Male, 18-24, Grad: 010
+# Male, 
+
 ```
 
