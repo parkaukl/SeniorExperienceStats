@@ -148,7 +148,7 @@ STATECODE<-metadataStateGIS %>% select(STATEFP,NAME,STUSPS)
 # Male, 18-24, Some College: 007, 008
 # Male, 18-24, Bachelor Deg: 009
 # Male, 18-24, Grad: 010
-# Male, 
+# Male, 25-34,
 
 ```
 
