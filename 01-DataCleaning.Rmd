@@ -10,6 +10,7 @@ library(gridExtra)
 library(corrplot)
 library(GGally)
 library(kableExtra)
+library(arm)
 ```
 
 ```{r}
@@ -404,11 +405,14 @@ poststratify<-coefficients %>%
          MaGrad25_34=invlogit(Intercept+MALE+Graduate+A25.34),
          MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
          MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
-         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) %>%
-    select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
+         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) #%>%
+ 
+#   select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
 
 
 print(poststratify)
+
+poststratify<-poststratify[,11:60]
 ```
 
 

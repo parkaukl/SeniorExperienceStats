@@ -85,7 +85,10 @@ STATEACSSTRATAS<- get_acs(
   select(-moe) %>%
   spread(variable, estimate)
 
+```
 
+```{r}
+#This is all county stuff. Its probably not going to be important
 #ACSCOUNTYGIS <- get_acs(
 #  geography = "county",
 #  variables = c("B01001_007"),
@@ -148,7 +151,7 @@ STATECODE<-metadataStateGIS %>% select(STATEFP,NAME,STUSPS)
 # Male, 18-24, Some College: 007, 008
 # Male, 18-24, Bachelor Deg: 009
 # Male, 18-24, Grad: 010
-# Male, 25-34,
+# Male, 
 
 ```
 
