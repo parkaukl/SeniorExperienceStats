@@ -18,11 +18,11 @@ load("36806-0001-Data.rda")
 load("37970-0001-Data.rda")
 ChicagoForeignCouncilRaw2016<-as.data.frame(da36806.0001) %>%
   mutate(Year=2016) %>%
-  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
+  dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
 
 ChicagoForeignCouncilRaw2017<-as.data.frame(da37970.0001) %>%
   mutate(Year=2017) %>%
-  select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
+  dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
 
 #PPNET
 #Q385
@@ -88,7 +88,7 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
                              ifelse(EducationNumber==9,"2. High School Graduate",
                               ifelse(EducationNumber<12,"3.Some College",
                              ifelse(EducationNumber==12, "4.Bachelor's Degree","5.Graduate Degree"))))) %>%
-   select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
+   dplyr::select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
 
 #We have created two different education brackets. This will, in part, determine how many different variables might exist in order to determine the exact variable. 
 
@@ -182,7 +182,7 @@ ggplot(ChicagoForeignCouncilClean,aes(x=PPRENT,fill=ProWarFactor))+geom_bar(posi
 ```{r}
 #Introductory Models
 
-
+#Based on our prior data samples, it appears like there are, primarily, 3 important variables in addition to geography: Age, Ethnicity, and Education level. Therefore, we will want to move forward using those variables, potentially. 
 
 M0<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~1+(1|State),family=binomial(link="logit"))
 
@@ -324,6 +324,8 @@ StateRandomEffects<-FullCoefficientsList[,0:1]
 # Background says that Men tend to be more pro-war, 
 # Background says that higher levels of education tend to be more anti war
 
+#This set was a prior attempt to create an MRP
+
 ```
 
 
@@ -331,12 +333,14 @@ StateRandomEffects<-FullCoefficientsList[,0:1]
 library(rstanarm)
 
 fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+#Prior attempt to make an MRP
 ```
 ```{r}
 summary(fit)
 ```
 
 ```{r}
+#Prior MRP Attempt
 ranef(M25)$MALE
 
 ranef(M25)$EducationBracket3
@@ -356,7 +360,8 @@ names(coefficients)<-c("Intercept","MALE","HSGrad","SomeCollege","Bachelor","Gra
 
 print(coefficients)
 poststratify<-coefficients %>%
-  mutate(FeNoHS18_24=invlogit(Intercept),
+  mutate(STUSPS=row.names(coefficients),
+         FeNoHS18_24=invlogit(Intercept),
          FeNoHS25_34=invlogit(Intercept+A25.34),
          FeNoHS35_44=invlogit(Intercept+A35.44),
          FeNoHS45_64=invlogit(Intercept+A45.64),
@@ -366,11 +371,11 @@ poststratify<-coefficients %>%
          FeHSGrad35_44=invlogit(Intercept+HSGrad+A35.44),
          FeHSGrad45_64=invlogit(Intercept+HSGrad+A45.64),
          FeHSGrad65=invlogit(Intercept+HSGrad+A65Plus),
-         FeHSSome18_24=invlogit(Intercept+SomeCollege),
-         FeHSSome25_34=invlogit(Intercept+SomeCollege+A25.34),
-         FeHSSome35_44=invlogit(Intercept+SomeCollege+A35.44),
-         FeHSSome45_64=invlogit(Intercept+SomeCollege+A45.64),
-         FeHSSome65=invlogit(Intercept+SomeCollege+A65Plus),
+         FeSome18_24=invlogit(Intercept+SomeCollege),
+         FeSome25_34=invlogit(Intercept+SomeCollege+A25.34),
+         FeSome35_44=invlogit(Intercept+SomeCollege+A35.44),
+         FeSome45_64=invlogit(Intercept+SomeCollege+A45.64),
+         FeSome65=invlogit(Intercept+SomeCollege+A65Plus),
          FeBach18_24=invlogit(Intercept+Bachelor),
          FeBach25_34=invlogit(Intercept+Bachelor+A25.34),
          FeBach35_44=invlogit(Intercept+Bachelor+A35.44),
@@ -405,14 +410,14 @@ poststratify<-coefficients %>%
          MaGrad25_34=invlogit(Intercept+MALE+Graduate+A25.34),
          MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
          MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
-         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) #%>%
- 
-#   select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
+         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus),
+         DataType="Prediction") %>%
+         dplyr::select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
 
 
 print(poststratify)
 
-poststratify<-poststratify[,11:60]
+
 ```
 
 

@@ -1,23 +1,15 @@
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+This is simply a new R file that I am using. We will see if this might come into play later. It may be where I create the final step of my project. 
+
+We have now reached a point where we can move forward. I feel like Model 25 has been the best model that we have found recently. This will mean that we can move forward. We have also created State by State model estimates. That is all pretty cool
+
+```{r}
+KeyVariables<-colnames(poststratify)
+
+ProportionsState2<-as.data.frame(ProportionsState) %>% dplyr::select(KeyVariables)
+
+MRPData1<-inner_join(ProportionsState2,poststratify,by="
+                     STUSPS",suffix(".Perc",".Est"))
+
+
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

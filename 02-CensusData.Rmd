@@ -1,8 +1,3 @@
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
 library(tidycensus)
@@ -64,31 +59,38 @@ distinctvariables<-variables %>%
 #  )
 #This is the remaineder of some code chunk I once thought was necessary. I know realize it is not. 
 
-STATEACSTOTALVOTEPOP <- get_acs(
-  geography = "state",
-  variables = c("B01003_001", "B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
-  geometry = TRUE,
-  keep_geo_vars=TRUE
-) %>%
-  select(-moe) %>%
-  spread(variable, estimate) %>%
-  mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029-B01001_030) %>%   #Here, we are taking the whole population less the parts of the population that are under 18 years old. We want to get an understanding of the size of the voting population of this area
-  select(-B01003_001,-B01001_003,-B01001_004,-B01001_005,-B01001_006,-B01001_027,-B01001_028,-B01001_029,-B01001_030)
+#STATEACSTOTALVOTEPOP <- get_acs(
+#  geography = "state",
+#  variables = c("B01003_001", #"B01001_003","B01001_004","B01001_005","B01001_006","B01001_027","B01001_028","B01001_029","B01001_030"),
+#  geometry = TRUE,
+#  keep_geo_vars=TRUE
+#) %>%
+#  dplyr::select(-moe) %>%
+#  spread(variable, estimate) %>%
+#  mutate(TOTALVOTINGPOP=B01003_001-B01001_003-B01001_004-B01001_005-B01001_006-B01001_027-B01001_028-B01001_029#-B01001_030) %>%   #Here, we are taking the whole population less the parts of the population that are under 18 #years old. We want to get an understanding of the size of the voting population of this area
+#  dplyr::select(-B01003_001,-B01001_003,-B01001_004,-B01001_005,-B01001_006,-B01001_027,-B01001_028,-B01001_029#,-B01001_030)
 
 #B01003_001 This is a count of the total population. Therefore, it might be important to include. 
+```
+The cells from 47 to 74 are not useful for our purposes
+
+```{r}
+
 
 STATEACSSTRATAS<- get_acs(
   geography = "state",
   variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
-  geometry = FALSE
+  geometry = TRUE,
+  keep_geo_vars=TRUE
 ) %>%
-  select(-moe) %>%
-  spread(variable, estimate)
+  dplyr::select(-moe) %>%
+  spread(variable, estimate) %>%  #TVP is the Total Voting Population. We are summing over all of the education variales, because this will allow us to prevent any difference in calculations between census calculations
+  mutate(TVP=B15001_004+B15001_005+B15001_006+B15001_007+B15001_008+B15001_009+B15001_010+B15001_012+B15001_013+B15001_014+B15001_015+B15001_016+B15001_017+B15001_018+B15001_020+B15001_021+B15001_022+B15001_023+B15001_024+B15001_025+B15001_026+B15001_028+B15001_029+B15001_030+B15001_031+B15001_032+B15001_033+B15001_034+B15001_036+B15001_037+B15001_038+B15001_039+B15001_040+B15001_041+B15001_042+B15001_045+B15001_046+B15001_047+B15001_048+B15001_049+B15001_050+B15001_051+B15001_053+B15001_054+B15001_055+B15001_056+B15001_057+B15001_058+B15001_059+B15001_061+B15001_062+B15001_063+B15001_064+B15001_065+B15001_066+B15001_067+B15001_069+B15001_070+B15001_071+B15001_072+B15001_073+B15001_074+B15001_075+B15001_077+B15001_078+B15001_079+B15001_080+B15001_081+B15001_082+B15001_083)
 
 ```
 
 ```{r}
-#This is all county stuff. Its probably not going to be important
+#This is all county stuff. Its probably not going to be important. This is because background research on MRP suggests that it would require a larger sample size in order to get an accurate estimate of pro vs. anti war sentiment. 
 #ACSCOUNTYGIS <- get_acs(
 #  geography = "county",
 #  variables = c("B01001_007"),
@@ -118,7 +120,7 @@ COUNTYACSTOTALVOTEPOP <- get_acs(
 COUNTYACSSTRATA<- get_acs(
   geography = "county",
   variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
-  geometry = FALSE
+  geometry = TRUE
 ) %>%
   select(-moe) %>%
   spread(variable, estimate)
@@ -127,31 +129,132 @@ COUNTYACSSTRATA<- get_acs(
 In ACSPART2AGE, we have collected all of the people who are of voting age in the United States. This is collected by a disjoint sample space of the age by sex variable, where we exclude people under 18, because they cannot vote
 
 These have been coming up a little bit strange. Therefore, I want to see the State level measurements of these instead. 
-
+This county level stuff is not exceptionally important
 
 
 ```{r}
-metadataStateGIS <- STATEACSTOTALVOTEPOP %>%
-  inner_join(STATEACSSTRATAS, by="GEOID") %>%
+metadataStateGIS <- STATEACSSTRATAS %>%
   filter(STUSPS!="PR") %>%
-  select(-NAME.x,-NAME.y)
+  dplyr::select(-NAME.x)
 
 #metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%
 #  inner_join(COUNTYACSSTRATA, by="GEOID") %>%
 #  select(-NAME.x,-NAME.y)
 #This would be useful if we wanted to do county measurements. However, I do not believe that is best moving forward. 
 
-STATECODE<-metadataStateGIS %>% select(STATEFP,NAME,STUSPS)
+STATECODE<-metadataStateGIS %>% dplyr::select(STATEFP,NAME.y,STUSPS,geometry)
+
+#B15001 is the prefix
+
+ProportionsState<-metadataStateGIS %>%
+  mutate(
+    FeNoHS18_24=(B15001_045+B15001_046)/TVP,
+    FeNoHS25_34=(B15001_053+B15001_054)/TVP,
+    FeNoHS35_44=(B15001_061+B15001_062)/TVP,
+    FeNoHS45_64=(B15001_069+B15001_070)/TVP,
+    FeNoHS65=(B15001_077+B15001_078)/TVP,
+    FeHSGrad18_24=B15001_047/TVP,
+    FeHSGrad25_34=B15001_055/TVP,
+    FeHSGrad35_44=B15001_063/TVP,
+    FeHSGrad45_64=B15001_071/TVP,
+    FeHSGrad65=B15001_079/TVP,
+    FeSome18_24=(B15001_048+B15001_049)/TVP,
+    FeSome25_34=(B15001_056+B15001_057)/TVP,
+    FeSome35_44=(B15001_064+B15001_065)/TVP,
+    FeSome45_64=(B15001_072+B15001_073)/TVP,
+    FeSome65=(B15001_080+B15001_081)/TVP,
+    FeBach18_24=B15001_050/TVP,
+    FeBach25_34=B15001_058/TVP,
+    FeBach35_44=B15001_066/TVP,
+    FeBach45_64=B15001_074/TVP,
+    FeBach65=B15001_082/TVP,
+    FeGrad18_24=B15001_051/TVP,
+    FeGrad25_34=B15001_059/TVP,
+    FeGrad35_44=B15001_067/TVP,
+    FeGrad45_64=B15001_075/TVP,
+    FeGrad65=B15001_083/TVP,
+    MaNoHS18_24=(B15001_004+B15001_005)/TVP,
+    MaNoHS25_34=(B15001_012+B15001_013)/TVP,
+    MaNoHS35_44=(B15001_020+B15001_021)/TVP,
+    MaNoHS45_64=(B15001_028+B15001_029)/TVP,
+    MaNoHS65=(B15001_036+B15001_037)/TVP,
+    MaHSGrad18_24=B15001_006/TVP,
+    MaHSGrad25_34=B15001_014/TVP,
+    MaHSGrad35_44=B15001_022/TVP,
+    MaHSGrad45_64=B15001_030/TVP,
+    MaHSGrad65=B15001_038/TVP,
+    MaSome18_24=(B15001_007+B15001_008)/TVP,
+    MaSome25_34=(B15001_015+B15001_016)/TVP,
+    MaSome35_44=(B15001_023+B15001_024)/TVP,
+    MaSome45_64=(B15001_031+B15001_032)/TVP,
+    MaSome65=(B15001_039+B15001_040)/TVP,
+    MaBach18_24=B15001_009/TVP,
+    MaBach25_34=B15001_017/TVP,
+    MaBach35_44=B15001_025/TVP,
+    MaBach45_64=B15001_033/TVP,
+    MaBach65=B15001_041/TVP,
+    MaGrad18_24=B15001_010/TVP,
+    MaGrad25_34=B15001_018/TVP,
+    MaGrad35_44=B15001_026/TVP,
+    MaGrad45_64=B15001_034/TVP,
+    MaGrad65=B15001_042/TVP,
+    DataType="Weights"
+  )
 
 # Based on our initial measurement, it may be better to use Statewise estimates on preferenes for War. This is especially because our intiial measurement of counties appears to have a smaller initial value. 
 
 #In order to organize variables, it might be valuable to list them here as brackets
+# Female, 18-24, less than HS:  045+046
+# Female, 18-24, HS Grad: 047
+# Female, 18-24, Some College: 048, 049
+# Female, 18-24, Bachelor Deg: 050
+# Female, 18-24, Grad: 051
+# Female, 25-34, less than HS:  053+054
+# Female, 25-34, HS Grad: 055
+# Female, 25-34, Some College: 056, 057
+# Female, 25-34, Bachelor Deg: 058
+# Female, 25-34, Grad: 059
+# Female, 35-44, less than HS:  061+062
+# Female, 35-44, HS Grad: 063
+# Female, 35-44, Some College: 064, 065
+# Female, 35-44, Bachelor Deg: 066
+# Female, 35-44, Grad: 067
+# Female, 45-64, less than HS:  069+070
+# Female, 45-64, HS Grad: 071
+# Female, 45-64, Some College: 072, 073
+# Female, 45-64, Bachelor Deg: 074
+# Female, 45-64, Grad: 075
+# Female, 65+, less than HS:  077+078
+# Female, 65+, HS Grad: 079
+# Female, 65+, Some College: 080, 081
+# Female, 65+, Bachelor Deg: 082
+# Female, 65+, Grad: 083
 # Male, 18-24, less than HS:  004+005
 # Male, 18-24, HS Grad: 006
 # Male, 18-24, Some College: 007, 008
 # Male, 18-24, Bachelor Deg: 009
 # Male, 18-24, Grad: 010
-# Male, 
+# Male, 25-34, less than HS:  012+013
+# Male, 25-34, HS Grad: 014
+# Male, 25-34, Some College: 015, 016
+# Male, 25-34, Bachelor Deg: 017
+# Male, 25-34, Grad: 018
+# Male, 35-44, less than HS:  020+021
+# Male, 35-44, HS Grad: 022
+# Male, 35-44, Some College: 023, 024
+# Male, 35-44, Bachelor Deg: 025
+# Male, 35-44, Grad: 026
+# Male, 45-64, less than HS:  028+029
+# Male, 45-64, HS Grad: 030
+# Male, 45-64, Some College: 031, 032
+# Male, 45-64, Bachelor Deg: 033
+# Male, 45-64, Grad: 034
+# Male, 65+, less than HS:  036+037
+# Male, 65+, HS Grad: 038
+# Male, 65+, Some College: 039,040
+# Male, 65+, Bachelor Deg: 041
+# Male, 65+, Grad: 042
 
+#Based on these variables, we can now estimate the total variables. 
 ```
 
