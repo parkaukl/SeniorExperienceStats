@@ -3,18 +3,23 @@ This is simply a new R file that I am using. We will see if this might come into
 We have now reached a point where we can move forward. I feel like Model 25 has been the best model that we have found recently. This will mean that we can move forward. We have also created State by State model estimates. That is all pretty cool
 
 ```{r}
-KeyVariables<-colnames(poststratify)
+KeyVariables<-colnames(estimates)
 
-ProportionsState2<-as.data.frame(ProportionsState) %>% dplyr::select(KeyVariables) %>%
+CellPerc2<-as.data.frame(CellPerc) %>% dplyr::select(KeyVariables) %>%
   arrange(STUSPS)
 
-poststratify <- poststratify %>% arrange(STUSPS)
+estimates2 <- estimates %>% arrange(STUSPS)
 
-Weights<-ProportionsState2[,2:51]
-ProbabilityPro<-poststratify[,2:51]
+Weights<-CellPerc2[,2:51]
+ProbabilityPro<-estimates2[,2:51]
+row.names(ProbabilityPro)<-CellPerc2$STUSPS
 
 
-States<-ProportionsState2[,1]
+
+EstimatedProbability<-rep(NA,51)
+
+df<-data.frame(RawEstimates,EstimatedProbability)
+
 
 
                      
@@ -23,4 +28,25 @@ States<-ProportionsState2[,1]
 
 #MAP, vs. #Heat MAP
 ```
+
+```{r}
+for (i in 1:51) {
+  df[i,4]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
+}
+```
+
+```{r}
+df<-df %>%
+  mutate(SSR=(EstimatedProbability-PercentSupportSampled)^2)
+
+df2<-df[2:51,]
+```
+
+```{r}
+ggplot(data=df2,aes(x=Number.Sampled,y=SSR))+geom_point()
+
+# What we see here is what we expect: As sample gets larger, we get a better estimate of the population level of support. 
+```
+
+
 

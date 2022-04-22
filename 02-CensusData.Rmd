@@ -75,13 +75,11 @@ distinctvariables<-variables %>%
 The cells from 47 to 74 are not useful for our purposes
 
 ```{r}
-
-
 STATEACSSTRATAS<- get_acs(
   geography = "state",
   variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
   geometry = TRUE,
-  keep_geo_vars=TRUE
+  keep_geo_vars = TRUE
 ) %>%
   dplyr::select(-moe) %>%
   spread(variable, estimate) %>%  #TVP is the Total Voting Population. We are summing over all of the education variales, because this will allow us to prevent any difference in calculations between census calculations
@@ -146,7 +144,7 @@ STATECODE<-metadataStateGIS %>% dplyr::select(STATEFP,NAME.y,STUSPS,geometry)
 
 #B15001 is the prefix
 
-ProportionsState<-metadataStateGIS %>%
+CellPerc<-metadataStateGIS %>%
   mutate(
     FeNoHS18_24=(B15001_045+B15001_046)/TVP,
     FeNoHS25_34=(B15001_053+B15001_054)/TVP,
@@ -197,8 +195,7 @@ ProportionsState<-metadataStateGIS %>%
     MaGrad25_34=B15001_018/TVP,
     MaGrad35_44=B15001_026/TVP,
     MaGrad45_64=B15001_034/TVP,
-    MaGrad65=B15001_042/TVP,
-    DataType="Weights"
+    MaGrad65=B15001_042/TVP
   )
 
 # Based on our initial measurement, it may be better to use Statewise estimates on preferenes for War. This is especially because our intiial measurement of counties appears to have a smaller initial value. 

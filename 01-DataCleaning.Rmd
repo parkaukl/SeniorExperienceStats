@@ -368,7 +368,7 @@ names(coefficients)<-c("Intercept","MALE","HSGrad","SomeCollege","Bachelor","Gra
 
 
 print(coefficients)
-poststratify<-coefficients %>%
+estimates<-coefficients %>%
   mutate(STUSPS=row.names(coefficients),
          FeNoHS18_24=invlogit(Intercept),
          FeNoHS25_34=invlogit(Intercept+A25.34),
@@ -419,17 +419,21 @@ poststratify<-coefficients %>%
          MaGrad25_34=invlogit(Intercept+MALE+Graduate+A25.34),
          MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
          MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
-         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus),
-         DataType="Prediction",
-         geometry=NA) %>%     # We include a geometry variable in order to create a bind later
+         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) %>%     # We include a geometry variable in order to create a bind later
          dplyr::select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
 
 
-print(poststratify)
+print(estimates)
 
 
 ```
 
+```{r}
+RawEstimates<-ChicagoForeignCouncilClean %>%
+  group_by(State) %>%
+  summarize(PercentSupportSampled=(mean(ProWarBinary)*100),`Number Sampled`=n()) %>%
+  arrange(State) #We convert the percentage to be multiplied by 100. 
+```
 
 
 
