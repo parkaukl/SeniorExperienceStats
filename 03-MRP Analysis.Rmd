@@ -5,11 +5,22 @@ We have now reached a point where we can move forward. I feel like Model 25 has 
 ```{r}
 KeyVariables<-colnames(poststratify)
 
-ProportionsState2<-as.data.frame(ProportionsState) %>% dplyr::select(KeyVariables)
+ProportionsState2<-as.data.frame(ProportionsState) %>% dplyr::select(KeyVariables) %>%
+  arrange(STUSPS)
 
-MRPData1<-inner_join(ProportionsState2,poststratify,by="
-                     STUSPS",suffix(".Perc",".Est"))
+poststratify <- poststratify %>% arrange(STUSPS)
+
+Weights<-ProportionsState2[,2:51]
+ProbabilityPro<-poststratify[,2:51]
 
 
+States<-ProportionsState2[,1]
+
+
+                     
+
+#Use a for loop in order to get these solutions
+
+#MAP, vs. #Heat MAP
 ```
 

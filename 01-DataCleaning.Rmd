@@ -269,6 +269,12 @@ M24<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~(1|MALE)+(1|EducationBr
 
 M25<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),family=binomial(link="logit"))
 
+M25a<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State)+(1|Year),family=binomial(link="logit"))
+
+M25b<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State)+(1|Year)+(1|PPETHM),family=binomial(link="logit"))
+
+#Here, we are considering adding additional random effects. These may be included in order to prevent extra changes. 
+
 ```
 
 ```{r}
@@ -310,6 +316,9 @@ summary(M19)
 summary(M23)
 summary(M24)
 summary(M25)
+summary(M25a)
+summary(M25b)
+
 ```
 
 
@@ -333,14 +342,14 @@ StateRandomEffects<-FullCoefficientsList[,0:1]
 library(rstanarm)
 
 fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
-#Prior attempt to make an MRP
+#Prior attempt to make an MRP. This is likely not important. Therefore, I may consider trying to find a way to deactivate this code. 
 ```
 ```{r}
 summary(fit)
 ```
 
 ```{r}
-#Prior MRP Attempt
+#Prior MRP Attempt. This is not useful. This will likely be cut in any future condensed version of this project. 
 ranef(M25)$MALE
 
 ranef(M25)$EducationBracket3
@@ -411,7 +420,8 @@ poststratify<-coefficients %>%
          MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
          MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
          MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus),
-         DataType="Prediction") %>%
+         DataType="Prediction",
+         geometry=NA) %>%     # We include a geometry variable in order to create a bind later
          dplyr::select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
 
 
