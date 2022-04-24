@@ -13,6 +13,7 @@ library(htmlTable)
 #In this section, we will start to observe what the important variables are in the ACS
 
 ```
+
 ```{r}
 variables <- load_variables(2016, "acs5", cache = TRUE)
 distinctvariables<-variables %>%

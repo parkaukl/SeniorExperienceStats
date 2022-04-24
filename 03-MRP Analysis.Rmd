@@ -21,7 +21,11 @@ EstimatedProbability<-rep(NA,51)
 df<-data.frame(RawEstimates,EstimatedProbability)
 
 
+metadataStateGIS<-data.frame(metadataStateGIS,EstimatedProbability)
 
+metadataStateGIS <-metadataStateGIS %>% arrange(STUSPS)
+
+df <- df %>% arrange(State)
                      
 
 #Use a for loop in order to get these solutions
@@ -36,6 +40,13 @@ for (i in 1:51) {
 ```
 
 ```{r}
+for (i in 1:51) {
+  metadataStateGIS[i,82]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
+}
+```
+
+
+```{r}
 df<-df %>%
   mutate(SSR=(EstimatedProbability-PercentSupportSampled)^2)
 
@@ -47,6 +58,12 @@ ggplot(data=df2,aes(x=Number.Sampled,y=SSR))+geom_point()
 
 # What we see here is what we expect: As sample gets larger, we get a better estimate of the population level of support. 
 ```
+
+
+```{r}
+
+```
+
 
 
 
