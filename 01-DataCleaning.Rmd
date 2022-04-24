@@ -14,8 +14,8 @@ library(arm)
 ```
 
 ```{r}
-load("36806-0001-Data.rda")
-load("37970-0001-Data.rda")
+load("36806-0001-Data.rda") #This is 2016
+load("37970-0001-Data.rda") # This is 2017
 ChicagoForeignCouncilRaw2016<-as.data.frame(da36806.0001) %>%
   mutate(Year=2016) %>%
   dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
@@ -36,6 +36,7 @@ ChicagoForeignCouncilRaw2017<-as.data.frame(da37970.0001) %>%
 
 #However, the 2017 File does have these same measurements. Therefore, we should consider using this as our important variable. 
 
+# There are some additional interesting variables that we can observe. Q 7_4a is really fascinating, about whether we should strive to create a strong military presense around the globe
 
 
 

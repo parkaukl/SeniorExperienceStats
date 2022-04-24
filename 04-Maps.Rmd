@@ -1,4 +1,24 @@
 
+```{r, include = FALSE, warning= FALSE, message=FALSE}
+# Loading libraries
+
+library(tidycensus)
+library(leaflet)
+library(rmapshaper)
+library(tidyverse)
+library(stargazer)
+library(dplyr)
+library(RColorBrewer)
+library(rgdal)
+library(grid)
+library(gridExtra)
+library(htmlTable)
+options(tigris_use_cache = TRUE)
+
+# turn off scientific notation
+options(scipen = 999)
+```
+
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -6,11 +26,21 @@
 
 pal <- colorFactor("RdBu", metadataStateGIS$EstimatedProbability, reverse=TRUE)
 
-leaflet(metadataGIS, options = leafletOptions(crsClass = "L.CRS.EPSG3857"), width="100%") %>%
+leaflet(metadataStateGIS, options = leafletOptions(crsClass = "L.CRS.EPSG3857"), width="100%") %>%
   addPolygons(weight = 0.5, color = "gray", opacity = 0.7,
     fillColor = ~pal(EstimatedProbability), fillOpacity = 1, smoothFactor = 0.5,
     label = popupLabels,
     labelOptions = labelOptions(direction = "auto")) %>%
-    addPolygons(data = stateGIS,fill = FALSE,color="black",weight = 1) %>%
-    addLegend(pal = pal,values = ~metadataGIS$pctGOPcategories, opacity = 1, title = "% Trump",position = "bottomright")
+    addPolygons(data = metadataStateGIS,fill = FALSE,color="black",weight = 1) %>%
+    addLegend(pal = pal,values = ~metadataStateGIS$EstimatedProbability, opacity = 1, title = "% Trump",position = "bottomright")
 ``` 
+
+```{r}
+library(usmap)
+
+metadataStateGIS<-metadataStateGIS %>%
+  mutate(fips=GEOID)
+
+plot_usmap(data = metadataStateGIS, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
+```
+
