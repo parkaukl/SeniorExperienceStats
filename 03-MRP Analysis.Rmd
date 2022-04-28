@@ -41,7 +41,7 @@ for (i in 1:51) {
 
 ```{r}
 for (i in 1:51) {
-  metadataStateGIS[i,82]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
+  metadataStateGIS[i,75]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
 }
 ```
 
