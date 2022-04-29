@@ -42,5 +42,8 @@ metadataStateGIS<-metadataStateGIS %>%
   mutate(fips=GEOID)
 
 plot_usmap(data = metadataStateGIS, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
+
+# Write interpretations of these results
+# Switch the color scheme
 ```
 

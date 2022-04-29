@@ -51,12 +51,20 @@ df<-df %>%
   mutate(SSR=(EstimatedProbability-PercentSupportSampled)^2)
 
 df2<-df[2:51,]
+
+# First 
 ```
 
 ```{r}
-ggplot(data=df2,aes(x=Number.Sampled,y=SSR))+geom_point()
+# Define SSR
+
+ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text(nudge_y=.4)
+
+# Change wording to Sample Size
 
 # What we see here is what we expect: As sample gets larger, we get a better estimate of the population level of support. 
+
+# Look more into create observations
 ```
 
 

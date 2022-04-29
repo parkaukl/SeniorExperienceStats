@@ -116,6 +116,10 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
 remove(ChicagoForeignCouncilRaw,ChicagoForeignCouncilRaw2,ChicagoForeignCouncilRaw2016,ChicagoForeignCouncilRaw2017,da36806.0001,da37970.0001)
 
 summary(ChicagoForeignCouncilClean$EducationBracket3)
+
+summary(factor(ChicagoForeignCouncilClean$State))
+
+# Having more samples leads to higher percentage biases
 ```
 
 ```{r}
