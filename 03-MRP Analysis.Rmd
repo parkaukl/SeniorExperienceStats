@@ -21,9 +21,9 @@ EstimatedProbability<-rep(NA,51)
 df<-data.frame(RawEstimates,EstimatedProbability)
 
 
-metadataStateGIS<-data.frame(metadataStateGIS,EstimatedProbability)
+metadataStateGIS2<-data.frame(EstimatedProbability,metadataStateGIS)
 
-metadataStateGIS <-metadataStateGIS %>% arrange(STUSPS)
+metadataStateGIS2 <-metadataStateGIS2 %>% arrange(STUSPS)
 
 df <- df %>% arrange(State)
                      
@@ -40,8 +40,10 @@ for (i in 1:51) {
 ```
 
 ```{r}
+
+
 for (i in 1:51) {
-  metadataStateGIS[i,75]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
+  metadataStateGIS2[i,1]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
 }
 ```
 
@@ -68,9 +70,6 @@ ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text(
 ```
 
 
-```{r}
-
-```
 
 
 

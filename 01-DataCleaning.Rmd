@@ -3,6 +3,9 @@
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(tidycensus)
+library(stargazer)
+library(dplyr)
 library(knitr)
 library(lme4)
 library(lmerTest)
@@ -11,6 +14,7 @@ library(corrplot)
 library(GGally)
 library(kableExtra)
 library(arm)
+library(usmap)
 ```
 
 ```{r}

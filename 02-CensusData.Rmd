@@ -1,19 +1,4 @@
 
-```{r cars}
-library(tidycensus)
-library(tidyverse)
-library(stargazer)
-library(dplyr)
-library(RColorBrewer)
-library(rgdal)
-library(grid)
-library(gridExtra)
-library(htmlTable)
-
-#In this section, we will start to observe what the important variables are in the ACS
-
-```
-
 ```{r}
 variables <- load_variables(2016, "acs5", cache = TRUE)
 distinctvariables<-variables %>%
@@ -133,13 +118,13 @@ This county level stuff is not exceptionally important
 
 
 ```{r}
-fips_codes_clean<-as.data.frame(fips_codes) %>% dplyr::select(-county_code,-county) %>% unique() %>% rename(GEOID=state_code,NAME=state_name,STUSPS=state)
+fips_codes_clean<-as.data.frame(fips_codes) %>% dplyr::select(-county_code,-county) %>% unique() %>% rename(GEOID=state_code,NAME=state_name)
 
 STATEACSSTRATAS<-left_join(STATEACSSTRATAS,fips_codes_clean, by=c("GEOID"))
 
 metadataStateGIS <- STATEACSSTRATAS %>%
-  filter(STUSPS!="PR") %>%
-  dplyr::select(-NAME.x)
+  rename(STUSPS=STUSPS.x) %>%
+  filter(STUSPS!="PR")
 
 #metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%
 #  inner_join(COUNTYACSSTRATA, by="GEOID") %>%
