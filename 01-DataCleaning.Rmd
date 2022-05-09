@@ -3,9 +3,6 @@
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(tidycensus)
-library(stargazer)
-library(dplyr)
 library(knitr)
 library(lme4)
 library(lmerTest)
@@ -15,7 +12,9 @@ library(GGally)
 library(kableExtra)
 library(arm)
 library(usmap)
-library(rstanarm)
+library(dplyr)
+library(tidycensus)
+library(stargazer)
 ```
 
 ```{r}
@@ -94,7 +93,7 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
                              ifelse(EducationNumber==9,"2. High School Graduate",
                               ifelse(EducationNumber<12,"3.Some College",
                              ifelse(EducationNumber==12, "4.Bachelor's Degree","5.Graduate Degree"))))) %>%
-   dplyr::select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE,)
+   dplyr::select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE)
 
 #We have created two different education brackets. This will, in part, determine how many different variables might exist in order to determine the exact variable. 
 

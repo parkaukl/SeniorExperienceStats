@@ -123,7 +123,7 @@ fips_codes_clean<-as.data.frame(fips_codes) %>% dplyr::select(-county_code,-coun
 STATEACSSTRATAS<-left_join(STATEACSSTRATAS,fips_codes_clean, by=c("GEOID"))
 
 metadataStateGIS <- STATEACSSTRATAS %>%
-  rename(STUSPS=STUSPS.x) %>%
+  #rename(STUSPS=STUSPS.x) %>%
   filter(STUSPS!="PR")
 
 #metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%

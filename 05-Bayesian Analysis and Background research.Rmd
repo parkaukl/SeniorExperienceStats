@@ -1,15 +1,19 @@
 Based on the Book "Paying the Human costs of War, we are introduced to some interesting topics about how support for War may work. Therefore, we might decide to bring some priors into this discussion. For instance, There is the likelihood to be a "Timid Hawk". A Timid Hawk, according to the book, refers to individuals who tend to be pro conflict, or pro intervention, but tend to not want to pay the human costs of war. This fits into a fascinating paradigm that we can think of war as. 
 
 ```{r}
+library(rstanarm)
+```
+
+```{r}
+myprior<-normal(location=c())
+
 ProWar_Model_Prior<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),
               family=binomial(link="logit"),
               prior_intercept = normal(.5,2),
               prior = normal(0,2, autoscale = TRUE),
-              chains=4,iter=10000,seed=050822,
+              chains=4,iter=1000,seed=050822,
               prior_PD = TRUE)
               
-
-
 
 
 # We use the prior intercept, and estimate that it is based around 60%, based on prior research on pro vs. anti war sentiment. This would match with, approximately, a .6 
@@ -23,4 +27,58 @@ summary(ProWar_Model_Prior,effects="fixed",conf.int=TRUE)
 ```{r}
 ProWar_Model_Posterior<-update(ProWar_Model_Prior,prior_PD=FALSE)
 ```
+
+
+```{r}
+print(ProWar_Model_Posterior)
+summary(ProWar_Model_Posterior)
+
+#THIS BAYESIAN COMPONENT IS A FUCKING NIGHTMARE, with how all of this is set up. 
+
+
+```
+```{r}
+ChicagoForeignCouncilBayes<-ChicagoForeignCouncilClean %>%
+  dplyr::select(CASEID,ProWarBinary,MALE,EducationBracket3,AgeBracket,State) %>%
+  mutate()
+```
+
+
+```{r}
+# This is copied from MRP in rstanarm. This is important in order to do our MRP Function
+
+# A significant problem here is the differences in formatting. Because of this, I will either have to switch the Original Chicago Foreign Council File, or the new file
+
+
+Stratas<-colnames(estimates)[2:51]
+
+
+simulate_mrp_data<-function(n) {
+  J<-c(Stratas,States) # The first represents our "strata", the second our state
+  poststrat<-as.data.frame(array(NA,c(prod(J),length(J)+1)))
+  colnames(poststrat)<-c("Strata","State",'N')
+  count<-0
+  for(i1 in 1:J[1]) {
+    for (i2 in 1:J[2]){
+      count<-count+1
+      poststrat[count,1:2]<-c(i1,i2)
+      poststrat$N<-NA
+    }
+  }
+
+}
+
+simulate_mrp_data()
+```
+
+```{r}
+detach("package:rstanarm",unload=TRUE)
+```
+
+```{r}
+BayesCoefficients<-coef(ProWar_Model_Posterior)$State
+view(BayesCoefficients)
+```
+
+
 
