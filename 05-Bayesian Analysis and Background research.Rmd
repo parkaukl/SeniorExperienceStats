@@ -1,1 +1,26 @@
 Based on the Book "Paying the Human costs of War, we are introduced to some interesting topics about how support for War may work. Therefore, we might decide to bring some priors into this discussion. For instance, There is the likelihood to be a "Timid Hawk". A Timid Hawk, according to the book, refers to individuals who tend to be pro conflict, or pro intervention, but tend to not want to pay the human costs of war. This fits into a fascinating paradigm that we can think of war as. 
+
+```{r}
+ProWar_Model_Prior<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),
+              family=binomial(link="logit"),
+              prior_intercept = normal(.5,2),
+              prior = normal(0,2, autoscale = TRUE),
+              chains=4,iter=10000,seed=050822,
+              prior_PD = TRUE)
+              
+
+
+
+
+# We use the prior intercept, and estimate that it is based around 60%, based on prior research on pro vs. anti war sentiment. This would match with, approximately, a .6 
+```
+
+```{r}
+prior_summary(ProWar_Model_Prior)
+summary(ProWar_Model_Prior,effects="fixed",conf.int=TRUE)
+```
+
+```{r}
+ProWar_Model_Posterior<-update(ProWar_Model_Prior,prior_PD=FALSE)
+```
+

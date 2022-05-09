@@ -15,6 +15,7 @@ library(GGally)
 library(kableExtra)
 library(arm)
 library(usmap)
+library(rstanarm)
 ```
 
 ```{r}
