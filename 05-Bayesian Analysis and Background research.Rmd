@@ -5,7 +5,9 @@ library(rstanarm)
 ```
 
 ```{r}
-myprior<-normal(location=c())
+
+# this would be good for us to find our new definitions
+#myprior<-normal(location=c())
 
 ProWar_Model_Prior<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),
               family=binomial(link="logit"),
@@ -78,7 +80,88 @@ detach("package:rstanarm",unload=TRUE)
 ```{r}
 BayesCoefficients<-coef(ProWar_Model_Posterior)$State
 view(BayesCoefficients)
+names(BayesCoefficients)<-c("Intercept","MALE","HSGrad","SomeCollege","Bachelor","Graduate","A25.34","A35.44","A45.64","A65Plus")
+
+BayesEstimates<-BayesCoefficients %>%
+  mutate(STUSPS=row.names(coefficients),
+         FeNoHS18_24=invlogit(Intercept),
+         FeNoHS25_34=invlogit(Intercept+A25.34),
+         FeNoHS35_44=invlogit(Intercept+A35.44),
+         FeNoHS45_64=invlogit(Intercept+A45.64),
+         FeNoHS65=invlogit(Intercept+A65Plus),
+         FeHSGrad18_24=invlogit(Intercept+HSGrad),
+         FeHSGrad25_34=invlogit(Intercept+HSGrad+A25.34),
+         FeHSGrad35_44=invlogit(Intercept+HSGrad+A35.44),
+         FeHSGrad45_64=invlogit(Intercept+HSGrad+A45.64),
+         FeHSGrad65=invlogit(Intercept+HSGrad+A65Plus),
+         FeSome18_24=invlogit(Intercept+SomeCollege),
+         FeSome25_34=invlogit(Intercept+SomeCollege+A25.34),
+         FeSome35_44=invlogit(Intercept+SomeCollege+A35.44),
+         FeSome45_64=invlogit(Intercept+SomeCollege+A45.64),
+         FeSome65=invlogit(Intercept+SomeCollege+A65Plus),
+         FeBach18_24=invlogit(Intercept+Bachelor),
+         FeBach25_34=invlogit(Intercept+Bachelor+A25.34),
+         FeBach35_44=invlogit(Intercept+Bachelor+A35.44),
+         FeBach45_64=invlogit(Intercept+Bachelor+A45.64),
+         FeBach65=invlogit(Intercept+Bachelor+A65Plus),
+         FeGrad18_24=invlogit(Intercept+Graduate),
+         FeGrad25_34=invlogit(Intercept+Graduate+A25.34),
+         FeGrad35_44=invlogit(Intercept+Graduate+A35.44),
+         FeGrad45_64=invlogit(Intercept+Graduate+A45.64),
+         FeGrad65=invlogit(Intercept+Graduate+A65Plus),
+         MaNoHS18_24=invlogit(Intercept+MALE),
+         MaNoHS25_34=invlogit(Intercept+MALE+A25.34),
+         MaNoHS35_44=invlogit(Intercept+MALE+A35.44),
+         MaNoHS45_64=invlogit(Intercept+MALE+A45.64),
+         MaNoHS65=invlogit(Intercept+MALE+A65Plus),
+         MaHSGrad18_24=invlogit(Intercept+MALE+HSGrad),
+         MaHSGrad25_34=invlogit(Intercept+MALE+HSGrad+A25.34),
+         MaHSGrad35_44=invlogit(Intercept+MALE+HSGrad+A35.44),
+         MaHSGrad45_64=invlogit(Intercept+MALE+HSGrad+A45.64),
+         MaHSGrad65=invlogit(Intercept+MALE+HSGrad+A65Plus),
+         MaSome18_24=invlogit(Intercept+MALE+SomeCollege),
+         MaSome25_34=invlogit(Intercept+MALE+SomeCollege+A25.34),
+         MaSome35_44=invlogit(Intercept+MALE+SomeCollege+A35.44),
+         MaSome45_64=invlogit(Intercept+MALE+SomeCollege+A45.64),
+         MaSome65=invlogit(Intercept+MALE+SomeCollege+A65Plus),
+         MaBach18_24=invlogit(Intercept+MALE+Bachelor),
+         MaBach25_34=invlogit(Intercept+MALE+Bachelor+A25.34),
+         MaBach35_44=invlogit(Intercept+MALE+Bachelor+A35.44),
+         MaBach45_64=invlogit(Intercept+MALE+Bachelor+A45.64),
+         MaBach65=invlogit(Intercept+MALE+Bachelor+A65Plus), 
+         MaGrad18_24=invlogit(Intercept+MALE+Graduate),
+         MaGrad25_34=invlogit(Intercept+MALE+Graduate+A25.34),
+         MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
+         MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
+         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) %>%     # We include a geometry variable in order to create a bind later
+         dplyr::select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
+
+
+print(BayesEstimates)
+
+# This will result on us getting everything, as the estimated percentage for everything. 
 ```
 
+```{r}
+BAyesEstimates<- BAyesEstimates %>% arrange(STUSPS)
+CellPerc2<-CellPerc2 %>% arrange(STUSPS)
 
+BayesProbabilityPro<-BAyesEstimates[,2:51]
+
+metadataStateGIS3<-metadataStateGIS2 %>% mutate(BayesEstimatedProbability=NA) %>% dplyr::select(BayesEstimatedProbability, c(colnames(metadataStateGIS2)))
+
+metadataStateGIS3 <-metadataStateGIS3 %>% arrange(STUSPS)
+
+for (i in 1:51) {
+  metadataStateGIS3[i,1]<-(sum(Weights[i,]*BayesProbabilityPro[i,])*100)
+}
+
+```
+
+```{r}
+metadataStateGIS3<-metadataStateGIS3 %>%
+  mutate(fips=GEOID)
+
+plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
+```
 
