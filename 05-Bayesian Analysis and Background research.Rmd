@@ -143,10 +143,10 @@ print(BayesEstimates)
 ```
 
 ```{r}
-BAyesEstimates<- BAyesEstimates %>% arrange(STUSPS)
+BayesEstimates<- BayesEstimates %>% arrange(STUSPS)
 CellPerc2<-CellPerc2 %>% arrange(STUSPS)
 
-BayesProbabilityPro<-BAyesEstimates[,2:51]
+BayesProbabilityPro<-BayesEstimates[,2:51]
 
 metadataStateGIS3<-metadataStateGIS2 %>% mutate(BayesEstimatedProbability=NA) %>% dplyr::select(BayesEstimatedProbability, c(colnames(metadataStateGIS2)))
 
