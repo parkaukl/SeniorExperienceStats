@@ -15,6 +15,7 @@ library(usmap)
 library(dplyr)
 library(tidycensus)
 library(stargazer)
+library(coda)
 ```
 
 ```{r}

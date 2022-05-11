@@ -13,13 +13,33 @@ ProWar_Model_Prior<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE
               family=binomial(link="logit"),
               prior_intercept = normal(.5,2),
               prior = normal(0,2, autoscale = TRUE),
-              chains=4,iter=1000,seed=050822,
+              chains=4,iter=5000,seed=050822,
               prior_PD = TRUE)
               
+# for a weakly informative, we might want to use a different variance. Use a larger variance for a weakly informative model. 
 
+# lower the number of chains, and increase the number of iterations. 
+
+# read a little bit of the Bayesian Data Analysis book. Read Chapter 11, section 11.4
+
+# Say a little bit about how you have tried to assess convergence
+
+# check the convergence out a little bit
+
+# Specify the number of iterations and chains, in order to ensure that it is working properly. 
+
+#Check out the Gelman Rubin and the Geweke
+
+#Make sure that the chains converge and that they are mixing well. 
+
+# Before next meeting: Look at Gelman Rubin and Geweke, see which works better on the Analysis we are doing. , Continue to work on Priors, I should wind up with a series of different trace plots. 
 
 # We use the prior intercept, and estimate that it is based around 60%, based on prior research on pro vs. anti war sentiment. This would match with, approximately, a .6 
 ```
+```{r}
+ProWar_Model_Prior
+```
+
 
 ```{r}
 prior_summary(ProWar_Model_Prior)
@@ -72,6 +92,12 @@ simulate_mrp_data<-function(n) {
 
 simulate_mrp_data()
 ```
+
+```{r}
+summary(ProWar_Model_Posterior)
+rhat(ProWar_Model_Posterior)
+```
+
 
 ```{r}
 detach("package:rstanarm",unload=TRUE)
@@ -163,5 +189,43 @@ metadataStateGIS3<-metadataStateGIS3 %>%
   mutate(fips=GEOID)
 
 plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
+```
+
+```{r}
+library(bayesplot)
+```
+```{r}
+BayesianCoefficientList<-names(ProWar_Model_Posterior$coefficients)
+
+color_scheme_set("blue")
+
+length(BayesianCoefficientList)
+
+```
+
+
+```{r}
+
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:5])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[6:10])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[11:15])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[16:20])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[21:25])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[26:30])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[31:35])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[36:40])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[41:45])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[46:50])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[51:55])
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[56:61])
+
+```
+
+```{r}
+mcmc_intervals(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10])
+```
+
+```{r}
+mcmc_trace(ProWar_Model_Posterior,pars="AgeBracket25-34")
 ```
 
