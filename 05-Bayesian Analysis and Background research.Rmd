@@ -229,3 +229,10 @@ mcmc_intervals(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10])
 mcmc_trace(ProWar_Model_Posterior,pars="AgeBracket25-34")
 ```
 
+
+```{r}
+ratio<-neff_ratio(ProWar_Model_Posterior)
+
+mcmc_neff(ratio,size=2)
+```
+It is noted by the authors that we should only be worried about a low N_eff/N is the value is below .1. This is not the case in this regard. There are, certainly a few variables that may have some mild concerns, but nothing too worrying. 
