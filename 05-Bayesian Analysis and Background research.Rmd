@@ -2,10 +2,11 @@ Based on the Book "Paying the Human costs of War, we are introduced to some inte
 
 ```{r}
 library(rstanarm)
+library(bayesplot)
 ```
 
 ```{r}
-
+#PriorMeans<-c(,rep(0,51))
 # this would be good for us to find our new definitions
 #myprior<-normal(location=c())
 
@@ -95,7 +96,9 @@ simulate_mrp_data()
 
 ```{r}
 summary(ProWar_Model_Posterior)
-rhat(ProWar_Model_Posterior)
+rhats<-rhat(ProWar_Model_Posterior)
+print(rhats)
+mcmc_rhat(rhats)
 ```
 
 
