@@ -434,6 +434,8 @@ for (i in 1:51) {
 
 ## Abstract 
 
+One of the most complex topics in American Politics is Military Intervention. Public Opinion on Military Intervention is historically divided into Pro-War and Anti-War positions. Understanding which states may be more or less likely to be Pro or Anti War is important for predicting which areas may have more protests, and inform policy positions for elected officials. This paper will create a multilevel 
+
 The clarity of a candidate’s position is essential during the electoral process; the ambiguity of their public communications can be used to obfuscate positions that their constituents should be entitled to. The Democratic ideal of holding leaders accountable can only exist if voters can judge the promissory responsiveness of those representatives. In this paper, we look at data on the personal and district-level characteristics of a candidate to predict their level of ambiguity. This dataset used candidates from the 2014 congressional elections. We found that a model using ideology, partisanship, incumbency, demographic heterogeneity, and the number of total issue pages predicted the level of ambiguity. Incumbents tend to be clearer than challengers. As districts become more demographically heterogeneous, candidates are more ambiguous. In addition, with more total issue pages, the candidate is predicted to be clearer in their position. The candidate will become slightly more ambiguous for Democrats as ideology becomes more conservative. 
 
 

@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 #Markdown Notes
 
 ```{r, include=FALSE}
@@ -190,6 +195,12 @@ ggplot(ChicagoForeignCouncilClean,aes(x=PPRENT,fill=ProWarFactor))+geom_bar(posi
 ```
 
 ```{r}
+M25<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),family=binomial(link="logit"))
+summary(M25)
+```
+
+
+```{r eval=FALSE, include=FALSE}
 #Introductory Models
 
 #Based on our prior data samples, it appears like there are, primarily, 3 important variables in addition to geography: Age, Ethnicity, and Education level. Therefore, we will want to move forward using those variables, potentially. 
@@ -287,7 +298,7 @@ M25b<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3
 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 AIC(M0)
 AIC(M1)
 AIC(M2)
@@ -318,14 +329,14 @@ AIC(M25)
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 #summary(M16)
 #We can see that M16 minimizes the results of AIC, it appears. However, I do have some concerns about whether it would be better to use this to predict or poststratify for the state. Therefore, I believe that using a random effect for Region 9 might be preferred. In addition, the AIC only increases by one betweem Model 16 and Model 17. However, upon doing some more analysis, Model 19 appears to have a similar AIC, and a better BIC
 #summary(M17)
 summary(M19)
 summary(M23)
 summary(M24)
-summary(M25) # This might be something nice to include
+# This might be something nice to include
 summary(M25a)
 summary(M25b)
 
@@ -334,7 +345,7 @@ summary(M25b)
 
 I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 FullCoefficientsList<-coef(M19)$Region9
 FullCoefficientsList
 StateRandomEffects<-FullCoefficientsList[,0:1]
@@ -348,17 +359,17 @@ StateRandomEffects<-FullCoefficientsList[,0:1]
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 library(rstanarm)
 
 fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 #Prior attempt to make an MRP. This is likely not important. Therefore, I may consider trying to find a way to deactivate this code. 
 ```
-```{r}
+```{r eval=FALSE, include=FALSE}
 summary(fit)
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 #Prior MRP Attempt. This is not useful. This will likely be cut in any future condensed version of this project. 
 ranef(M25)$MALE
 
@@ -446,6 +457,9 @@ RawEstimates<-ChicagoForeignCouncilClean %>%
 ```
 
 
+```{r}
+stargazer(M25)
+```
 
 
 
