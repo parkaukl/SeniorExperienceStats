@@ -98,7 +98,7 @@ simulate_mrp_data()
 summary(ProWar_Model_Posterior)
 rhats<-rhat(ProWar_Model_Posterior)
 print(rhats)
-mcmc_rhat_hist(rhats)
+mcmc_rhat(rhats)
 ```
 
 
