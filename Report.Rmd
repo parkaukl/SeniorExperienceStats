@@ -30,419 +30,48 @@ library(dplyr)
 library(tidycensus)
 library(stargazer)
 library(coda)
-```
-
-```{r Data Cleaning}
-load("36806-0001-Data.rda") #This is 2016
-load("37970-0001-Data.rda") # This is 2017
-ChicagoForeignCouncilRaw2016<-as.data.frame(da36806.0001) %>%
-  mutate(Year=2016) %>%
-  dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
-
-ChicagoForeignCouncilRaw2017<-as.data.frame(da37970.0001) %>%
-  mutate(Year=2017) %>%
-  dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
-
-#PPNET
-#Q385
-# We had previously considered using PPEDUCAT, but this variable ended up not being helpful, and we felt that we could split this variable into a more interesting split of variables that aligned with the ACS
-
-#This will just allow use to reform this data in a more helpful way, so that we don't need to worry about it. This is the 2016 Edition of this file
-
-#Now We will need to clean the data. We will start off by removing the variables that are not useful to us. 
-
-# I have observed the 2015 file of this data, in the Chicago Foreign Council. It phrases questions differently then the question that we have previously observed. Instead of looking at the same phrasing related to military intervention, it instead poses it as "Are you Pro or Anti Drone Strikes". This is a valuable question, no doubt, but it leaves our discussion open to survey bias. We cannot compare whether someone answers "How Effective do you think each of the following approaches are to achieving the foreign policy goals of the United States-Very Effective, somewhat,not very not at all" and "Drone Strikes against suspected terrorists in other countries". These evoke two different responses, and thus we cannot consider them equivalent. 
-
-#However, the 2017 File does have these same measurements. Therefore, we should consider using this as our important variable. 
-
-# There are some additional interesting variables that we can observe. Q 7_4a is really fascinating, about whether we should strive to create a strong military presense around the globe
-
-
-
-ChicagoForeignCouncilRaw<-rbind(ChicagoForeignCouncilRaw2016,ChicagoForeignCouncilRaw2017)
-
-
-
-ChicagoForeignCouncilRaw2<-ChicagoForeignCouncilRaw[complete.cases(ChicagoForeignCouncilRaw),]
-
-#OTHER INTERESTING VARIABLES: ORLANDO, USR, MSC, CBSAMET. However, most of these are in the chicago Foreign Council 2016 File, but not the other
-
-#Insert Here what data might be appropriate: 
-# CASEID, XPHISPAN, ORLANDO, USR, MSC, CBSAMET, DOV_Q8_14,PPAGE,PPEDUC,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,PPNET,Q8_14,Q385,Q275
-
-#We now need to look into the codebook to observe whether our response variables are coded similarly. 
-
-#AGE appears to be coded in the same ways, as does Education, PPETHM,PPGENDER, XPHISPAN, Marital Status, Metropolitan Status, REgion, 
-
-##PPINCIMP has more stratas in 2017, including more different classes for households that have more than 175 thousand in income. 
- 
-#summary(ChicagoForeignCouncilRaw2)
-ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
-  mutate(HISPANIC=ifelse(XPHISPAN=="(1) No, I am not",0,1),
-         MALE=ifelse(PPGENDER=="(1) Male","MALE","FEMALE"),
-         IsHouseholdHead=ifelse(PPHHHEAD=="(0) NO",0,1),
-         State=substring(PPSTATEN,5),
-         Region4=substring(PPREG4,4),
-         Region9=substring(PPREG9,4),
-         StatementNumber=substring(DOV_Q8_14,2,2),
-         InterventionSet1=substring(Q8_14,2,2)) %>%
-    mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1),
-           ProWarFactor=as.factor(ProWarBinary)) %>%
-    mutate(AgeBracket=ifelse(PPAGE<=24,"18-24",
-                       ifelse(PPAGE<=34,"25-34",
-                       ifelse(PPAGE<=44,"35-44",
-                       ifelse(PPAGE<=64,"45-64","65+"))))) %>%
-    mutate(EducationNumber=as.integer(substring(PPEDUC,2,3))) %>%
-    mutate(EducationBracket=ifelse(EducationNumber<5,"1.Less Than Ninth Grade",
-                             ifelse(EducationNumber<=8,"2.High School, No Diploma",
-                             ifelse(EducationNumber==9,"3.High School Graduate",
-                             ifelse(EducationNumber==10,"4.Some College, No Degree",
-                             ifelse(EducationNumber==11,"5. Associate's Degree",
-                             ifelse(EducationNumber==12, "6.Bachelor's Degree","7.Graduate Degree")))))),
-           EducationBracket2=ifelse(EducationNumber<=8, "1. No High School Diploma",
-                             ifelse(EducationNumber==9,"2. High School Graduate",
-                              ifelse(EducationNumber==10,"3.Some College, No Degree",
-                             ifelse(EducationNumber==11,"4. Associate's Degree",
-                             ifelse(EducationNumber==12, "5.Bachelor's Degree","6.Graduate Degree"))))),
-            EducationBracket3=ifelse(EducationNumber<=8, "1. No High School Diploma",
-                             ifelse(EducationNumber==9,"2. High School Graduate",
-                              ifelse(EducationNumber<12,"3.Some College",
-                             ifelse(EducationNumber==12, "4.Bachelor's Degree","5.Graduate Degree"))))) %>%
-   dplyr::select(-XPHISPAN,-PPGENDER,-PPHHHEAD,-PPSTATEN,-PPREG4,-PPREG9,-EducationNumber,-PPAGE)
-
-#We have created two different education brackets. This will, in part, determine how many different variables might exist in order to determine the exact variable. 
-
-#Here, we have created some code, just to get an understanding of some different counts. I don't really consider a lot of the intermediate variables important anymore. Therefore, it might be good for my R-Console to remove some of them as the tail of my project. 
-
-
-# I made preference towards intervention a binary variable. I chose to make Very Effective and Somewhat Effective variables that might suggest these people would be "open" to war. However, those who answer Not very, or Not effective at all are extremely unlikely to support war. 
-
-# I should also consider how I might want to adjust the variable that shows household income. There is a chance that it is over-strata-d. This would be a problem. 
-
-remove(ChicagoForeignCouncilRaw,ChicagoForeignCouncilRaw2,ChicagoForeignCouncilRaw2016,ChicagoForeignCouncilRaw2017,da36806.0001,da37970.0001)
-
-M25<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),family=binomial(link="logit"))
-
-coefficients<-coef(M25)$State
-print(coefficients)
-names(coefficients)<-c("Intercept","MALE","HSGrad","SomeCollege","Bachelor","Graduate","A25.34","A35.44","A45.64","A65Plus")
-  
-
-
-
-#print(coefficients)
-estimates<-coefficients %>%
-  mutate(STUSPS=row.names(coefficients),
-         FeNoHS18_24=invlogit(Intercept),
-         FeNoHS25_34=invlogit(Intercept+A25.34),
-         FeNoHS35_44=invlogit(Intercept+A35.44),
-         FeNoHS45_64=invlogit(Intercept+A45.64),
-         FeNoHS65=invlogit(Intercept+A65Plus),
-         FeHSGrad18_24=invlogit(Intercept+HSGrad),
-         FeHSGrad25_34=invlogit(Intercept+HSGrad+A25.34),
-         FeHSGrad35_44=invlogit(Intercept+HSGrad+A35.44),
-         FeHSGrad45_64=invlogit(Intercept+HSGrad+A45.64),
-         FeHSGrad65=invlogit(Intercept+HSGrad+A65Plus),
-         FeSome18_24=invlogit(Intercept+SomeCollege),
-         FeSome25_34=invlogit(Intercept+SomeCollege+A25.34),
-         FeSome35_44=invlogit(Intercept+SomeCollege+A35.44),
-         FeSome45_64=invlogit(Intercept+SomeCollege+A45.64),
-         FeSome65=invlogit(Intercept+SomeCollege+A65Plus),
-         FeBach18_24=invlogit(Intercept+Bachelor),
-         FeBach25_34=invlogit(Intercept+Bachelor+A25.34),
-         FeBach35_44=invlogit(Intercept+Bachelor+A35.44),
-         FeBach45_64=invlogit(Intercept+Bachelor+A45.64),
-         FeBach65=invlogit(Intercept+Bachelor+A65Plus),
-         FeGrad18_24=invlogit(Intercept+Graduate),
-         FeGrad25_34=invlogit(Intercept+Graduate+A25.34),
-         FeGrad35_44=invlogit(Intercept+Graduate+A35.44),
-         FeGrad45_64=invlogit(Intercept+Graduate+A45.64),
-         FeGrad65=invlogit(Intercept+Graduate+A65Plus),
-         MaNoHS18_24=invlogit(Intercept+MALE),
-         MaNoHS25_34=invlogit(Intercept+MALE+A25.34),
-         MaNoHS35_44=invlogit(Intercept+MALE+A35.44),
-         MaNoHS45_64=invlogit(Intercept+MALE+A45.64),
-         MaNoHS65=invlogit(Intercept+MALE+A65Plus),
-         MaHSGrad18_24=invlogit(Intercept+MALE+HSGrad),
-         MaHSGrad25_34=invlogit(Intercept+MALE+HSGrad+A25.34),
-         MaHSGrad35_44=invlogit(Intercept+MALE+HSGrad+A35.44),
-         MaHSGrad45_64=invlogit(Intercept+MALE+HSGrad+A45.64),
-         MaHSGrad65=invlogit(Intercept+MALE+HSGrad+A65Plus),
-         MaSome18_24=invlogit(Intercept+MALE+SomeCollege),
-         MaSome25_34=invlogit(Intercept+MALE+SomeCollege+A25.34),
-         MaSome35_44=invlogit(Intercept+MALE+SomeCollege+A35.44),
-         MaSome45_64=invlogit(Intercept+MALE+SomeCollege+A45.64),
-         MaSome65=invlogit(Intercept+MALE+SomeCollege+A65Plus),
-         MaBach18_24=invlogit(Intercept+MALE+Bachelor),
-         MaBach25_34=invlogit(Intercept+MALE+Bachelor+A25.34),
-         MaBach35_44=invlogit(Intercept+MALE+Bachelor+A35.44),
-         MaBach45_64=invlogit(Intercept+MALE+Bachelor+A45.64),
-         MaBach65=invlogit(Intercept+MALE+Bachelor+A65Plus), 
-         MaGrad18_24=invlogit(Intercept+MALE+Graduate),
-         MaGrad25_34=invlogit(Intercept+MALE+Graduate+A25.34),
-         MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
-         MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
-         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) %>%     # We include a geometry variable in order to create a bind later
-         dplyr::select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
-
-RawEstimates<-ChicagoForeignCouncilClean %>%
-  group_by(State) %>%
-  summarize(PercentSupportSampled=(mean(ProWarBinary)*100),`Number Sampled`=n()) %>%
-  arrange(State) #We convert the percentage to be multiplied by 100.
-```
-
-```{r Census Data}
-STATEACSSTRATAS<- get_acs(
-  geography = "state",
-  variables = c("B15001_004","B15001_005","B15001_006","B15001_007","B15001_008","B15001_009","B15001_010","B15001_012","B15001_013","B15001_014","B15001_015","B15001_016","B15001_017","B15001_018","B15001_020","B15001_021","B15001_022","B15001_023","B15001_024","B15001_025","B15001_026","B15001_028","B15001_029","B15001_030","B15001_031","B15001_032","B15001_033","B15001_034","B15001_036","B15001_037","B15001_038","B15001_039","B15001_040","B15001_041","B15001_042","B15001_045","B15001_046","B15001_047","B15001_048","B15001_049","B15001_050","B15001_051","B15001_053","B15001_054","B15001_055","B15001_056","B15001_057","B15001_058","B15001_059","B15001_061","B15001_062","B15001_063","B15001_064","B15001_065","B15001_066","B15001_067","B15001_069","B15001_070","B15001_071","B15001_072","B15001_073","B15001_074","B15001_075","B15001_077","B15001_078","B15001_079","B15001_080","B15001_081","B15001_082","B15001_083"),
-  geometry = TRUE,
-  keep_geo_vars = TRUE,
-) %>%
-  dplyr::select(-moe) %>%
-  spread(variable, estimate) %>%  #TVP is the Total Voting Population. We are summing over all of the education variales, because this will allow us to prevent any difference in calculations between census calculations
-  mutate(TVP=B15001_004+B15001_005+B15001_006+B15001_007+B15001_008+B15001_009+B15001_010+B15001_012+B15001_013+B15001_014+B15001_015+B15001_016+B15001_017+B15001_018+B15001_020+B15001_021+B15001_022+B15001_023+B15001_024+B15001_025+B15001_026+B15001_028+B15001_029+B15001_030+B15001_031+B15001_032+B15001_033+B15001_034+B15001_036+B15001_037+B15001_038+B15001_039+B15001_040+B15001_041+B15001_042+B15001_045+B15001_046+B15001_047+B15001_048+B15001_049+B15001_050+B15001_051+B15001_053+B15001_054+B15001_055+B15001_056+B15001_057+B15001_058+B15001_059+B15001_061+B15001_062+B15001_063+B15001_064+B15001_065+B15001_066+B15001_067+B15001_069+B15001_070+B15001_071+B15001_072+B15001_073+B15001_074+B15001_075+B15001_077+B15001_078+B15001_079+B15001_080+B15001_081+B15001_082+B15001_083)
-
-fips_codes_clean<-as.data.frame(fips_codes) %>% dplyr::select(-county_code,-county) %>% unique() %>% rename(GEOID=state_code,NAME=state_name)
-
-STATEACSSTRATAS<-left_join(STATEACSSTRATAS,fips_codes_clean, by=c("GEOID"))
-
-metadataStateGIS <- STATEACSSTRATAS %>%
-  #rename(STUSPS=STUSPS.x) %>%
-  filter(STUSPS!="PR")
-
-#metadataCountyGIS <- COUNTYACSTOTALVOTEPOP %>%
-#  inner_join(COUNTYACSSTRATA, by="GEOID") %>%
-#  select(-NAME.x,-NAME.y)
-#This would be useful if we wanted to do county measurements. However, I do not believe that is best moving forward. 
-
-#STATECODE<-metadataStateGIS %>% dplyr::select(STATEFP,NAME.y,STUSPS,geometry)
-
-#B15001 is the prefix
-
-CellPerc<-metadataStateGIS %>%
-  mutate(
-    FeNoHS18_24=(B15001_045+B15001_046)/TVP,
-    FeNoHS25_34=(B15001_053+B15001_054)/TVP,
-    FeNoHS35_44=(B15001_061+B15001_062)/TVP,
-    FeNoHS45_64=(B15001_069+B15001_070)/TVP,
-    FeNoHS65=(B15001_077+B15001_078)/TVP,
-    FeHSGrad18_24=B15001_047/TVP,
-    FeHSGrad25_34=B15001_055/TVP,
-    FeHSGrad35_44=B15001_063/TVP,
-    FeHSGrad45_64=B15001_071/TVP,
-    FeHSGrad65=B15001_079/TVP,
-    FeSome18_24=(B15001_048+B15001_049)/TVP,
-    FeSome25_34=(B15001_056+B15001_057)/TVP,
-    FeSome35_44=(B15001_064+B15001_065)/TVP,
-    FeSome45_64=(B15001_072+B15001_073)/TVP,
-    FeSome65=(B15001_080+B15001_081)/TVP,
-    FeBach18_24=B15001_050/TVP,
-    FeBach25_34=B15001_058/TVP,
-    FeBach35_44=B15001_066/TVP,
-    FeBach45_64=B15001_074/TVP,
-    FeBach65=B15001_082/TVP,
-    FeGrad18_24=B15001_051/TVP,
-    FeGrad25_34=B15001_059/TVP,
-    FeGrad35_44=B15001_067/TVP,
-    FeGrad45_64=B15001_075/TVP,
-    FeGrad65=B15001_083/TVP,
-    MaNoHS18_24=(B15001_004+B15001_005)/TVP,
-    MaNoHS25_34=(B15001_012+B15001_013)/TVP,
-    MaNoHS35_44=(B15001_020+B15001_021)/TVP,
-    MaNoHS45_64=(B15001_028+B15001_029)/TVP,
-    MaNoHS65=(B15001_036+B15001_037)/TVP,
-    MaHSGrad18_24=B15001_006/TVP,
-    MaHSGrad25_34=B15001_014/TVP,
-    MaHSGrad35_44=B15001_022/TVP,
-    MaHSGrad45_64=B15001_030/TVP,
-    MaHSGrad65=B15001_038/TVP,
-    MaSome18_24=(B15001_007+B15001_008)/TVP,
-    MaSome25_34=(B15001_015+B15001_016)/TVP,
-    MaSome35_44=(B15001_023+B15001_024)/TVP,
-    MaSome45_64=(B15001_031+B15001_032)/TVP,
-    MaSome65=(B15001_039+B15001_040)/TVP,
-    MaBach18_24=B15001_009/TVP,
-    MaBach25_34=B15001_017/TVP,
-    MaBach35_44=B15001_025/TVP,
-    MaBach45_64=B15001_033/TVP,
-    MaBach65=B15001_041/TVP,
-    MaGrad18_24=B15001_010/TVP,
-    MaGrad25_34=B15001_018/TVP,
-    MaGrad35_44=B15001_026/TVP,
-    MaGrad45_64=B15001_034/TVP,
-    MaGrad65=B15001_042/TVP
-  )
-```
-
-```{r MRP Analysis Frequentist}
-KeyVariables<-colnames(estimates)
-
-CellPerc2<-as.data.frame(CellPerc) %>% dplyr::select(KeyVariables) %>%
-  arrange(STUSPS)
-
-estimates2 <- estimates %>% arrange(STUSPS)
-
-Weights<-CellPerc2[,2:51]
-ProbabilityPro<-estimates2[,2:51]
-row.names(ProbabilityPro)<-CellPerc2$STUSPS
-
-
-
-EstimatedProbability<-rep(NA,51)
-
-df<-data.frame(RawEstimates,EstimatedProbability)
-
-
-metadataStateGIS2<-data.frame(EstimatedProbability,metadataStateGIS)
-
-metadataStateGIS2 <-metadataStateGIS2 %>% arrange(STUSPS)
-
-df <- df %>% arrange(State)
-
-for (i in 1:51) {
-  df[i,4]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
-}
-for (i in 1:51) {
-  metadataStateGIS2[i,1]<-(sum(Weights[i,]*ProbabilityPro[i,])*100)
-}
-
-df<-df %>%
-  mutate(SSR=(EstimatedProbability-PercentSupportSampled)^2)
-
-df2<-df[2:51,]
-
-metadataStateGIS2<-metadataStateGIS2 %>%
-  mutate(fips=GEOID)
-
-
-```
-
-```{r Bayesian MRP}
 library(rstanarm)
 library(bayesplot)
-#PriorMeans<-c(,rep(0,51))
-# this would be good for us to find our new definitions
-#myprior<-normal(location=c())
-
-ProWar_Model_Prior<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),
-              family=binomial(link="logit"),
-              prior_intercept = normal(.5,2),
-              prior = normal(0,2, autoscale = TRUE),
-              chains=4,iter=5000,seed=050822,
-              prior_PD = TRUE)
-              
-# for a weakly informative, we might want to use a different variance. Use a larger variance for a weakly informative model. 
-
-# lower the number of chains, and increase the number of iterations. 
-
-# read a little bit of the Bayesian Data Analysis book. Read Chapter 11, section 11.4
-
-# Say a little bit about how you have tried to assess convergence
-
-# check the convergence out a little bit
-
-# Specify the number of iterations and chains, in order to ensure that it is working properly. 
-
-#Check out the Gelman Rubin and the Geweke
-
-#Make sure that the chains converge and that they are mixing well. 
-
-# Before next meeting: Look at Gelman Rubin and Geweke, see which works better on the Analysis we are doing. , Continue to work on Priors, I should wind up with a series of different trace plots. 
-
-# We use the prior intercept, and estimate that it is based around 60%, based on prior research on pro vs. anti war sentiment. This would match with, approximately, a .6 
-
-summary(ProWar_Model_Prior,effects="fixed",conf.int=TRUE)
-
-ProWar_Model_Posterior<-update(ProWar_Model_Prior,prior_PD=FALSE)
-
-summary(ProWar_Model_Posterior)
-
-detach("package:rstanarm",unload=TRUE)
-
-BayesCoefficients<-coef(ProWar_Model_Posterior)$State
-view(BayesCoefficients)
-names(BayesCoefficients)<-c("Intercept","MALE","HSGrad","SomeCollege","Bachelor","Graduate","A25.34","A35.44","A45.64","A65Plus")
-
-BayesEstimates<-BayesCoefficients %>%
-  mutate(STUSPS=row.names(coefficients),
-         FeNoHS18_24=invlogit(Intercept),
-         FeNoHS25_34=invlogit(Intercept+A25.34),
-         FeNoHS35_44=invlogit(Intercept+A35.44),
-         FeNoHS45_64=invlogit(Intercept+A45.64),
-         FeNoHS65=invlogit(Intercept+A65Plus),
-         FeHSGrad18_24=invlogit(Intercept+HSGrad),
-         FeHSGrad25_34=invlogit(Intercept+HSGrad+A25.34),
-         FeHSGrad35_44=invlogit(Intercept+HSGrad+A35.44),
-         FeHSGrad45_64=invlogit(Intercept+HSGrad+A45.64),
-         FeHSGrad65=invlogit(Intercept+HSGrad+A65Plus),
-         FeSome18_24=invlogit(Intercept+SomeCollege),
-         FeSome25_34=invlogit(Intercept+SomeCollege+A25.34),
-         FeSome35_44=invlogit(Intercept+SomeCollege+A35.44),
-         FeSome45_64=invlogit(Intercept+SomeCollege+A45.64),
-         FeSome65=invlogit(Intercept+SomeCollege+A65Plus),
-         FeBach18_24=invlogit(Intercept+Bachelor),
-         FeBach25_34=invlogit(Intercept+Bachelor+A25.34),
-         FeBach35_44=invlogit(Intercept+Bachelor+A35.44),
-         FeBach45_64=invlogit(Intercept+Bachelor+A45.64),
-         FeBach65=invlogit(Intercept+Bachelor+A65Plus),
-         FeGrad18_24=invlogit(Intercept+Graduate),
-         FeGrad25_34=invlogit(Intercept+Graduate+A25.34),
-         FeGrad35_44=invlogit(Intercept+Graduate+A35.44),
-         FeGrad45_64=invlogit(Intercept+Graduate+A45.64),
-         FeGrad65=invlogit(Intercept+Graduate+A65Plus),
-         MaNoHS18_24=invlogit(Intercept+MALE),
-         MaNoHS25_34=invlogit(Intercept+MALE+A25.34),
-         MaNoHS35_44=invlogit(Intercept+MALE+A35.44),
-         MaNoHS45_64=invlogit(Intercept+MALE+A45.64),
-         MaNoHS65=invlogit(Intercept+MALE+A65Plus),
-         MaHSGrad18_24=invlogit(Intercept+MALE+HSGrad),
-         MaHSGrad25_34=invlogit(Intercept+MALE+HSGrad+A25.34),
-         MaHSGrad35_44=invlogit(Intercept+MALE+HSGrad+A35.44),
-         MaHSGrad45_64=invlogit(Intercept+MALE+HSGrad+A45.64),
-         MaHSGrad65=invlogit(Intercept+MALE+HSGrad+A65Plus),
-         MaSome18_24=invlogit(Intercept+MALE+SomeCollege),
-         MaSome25_34=invlogit(Intercept+MALE+SomeCollege+A25.34),
-         MaSome35_44=invlogit(Intercept+MALE+SomeCollege+A35.44),
-         MaSome45_64=invlogit(Intercept+MALE+SomeCollege+A45.64),
-         MaSome65=invlogit(Intercept+MALE+SomeCollege+A65Plus),
-         MaBach18_24=invlogit(Intercept+MALE+Bachelor),
-         MaBach25_34=invlogit(Intercept+MALE+Bachelor+A25.34),
-         MaBach35_44=invlogit(Intercept+MALE+Bachelor+A35.44),
-         MaBach45_64=invlogit(Intercept+MALE+Bachelor+A45.64),
-         MaBach65=invlogit(Intercept+MALE+Bachelor+A65Plus), 
-         MaGrad18_24=invlogit(Intercept+MALE+Graduate),
-         MaGrad25_34=invlogit(Intercept+MALE+Graduate+A25.34),
-         MaGrad35_44=invlogit(Intercept+MALE+Graduate+A35.44),
-         MaGrad45_64=invlogit(Intercept+MALE+Graduate+A45.64),
-         MaGrad65=invlogit(Intercept+MALE+Graduate+A65Plus)) %>%     # We include a geometry variable in order to create a bind later
-         dplyr::select(-Intercept,-MALE,-HSGrad,-SomeCollege,-Bachelor,-Graduate,-A25.34,-A35.44,-A45.64,-A65Plus)
-
-BayesEstimates<- BayesEstimates %>% arrange(STUSPS)
-CellPerc2<-CellPerc2 %>% arrange(STUSPS)
-
-BayesProbabilityPro<-BayesEstimates[,2:51]
-
-metadataStateGIS3<-metadataStateGIS2 %>% mutate(BayesEstimatedProbability=NA) %>% dplyr::select(BayesEstimatedProbability, c(colnames(metadataStateGIS2)))
-
-metadataStateGIS3 <-metadataStateGIS3 %>% arrange(STUSPS)
-
-for (i in 1:51) {
-  metadataStateGIS3[i,1]<-(sum(Weights[i,]*BayesProbabilityPro[i,])*100)
-}
-
 ```
 
+
+```{r}
+ load("Workspace.RData") # This is data that had previously been collected from the previous files. I could also cretae an abbreviated file that shares my important codes.
+```
 ## Abstract 
 
-One of the most complex topics in American Politics is Military Intervention. Public Opinion on Military Intervention is historically divided into Pro-War and Anti-War positions. Understanding which states may be more or less likely to be Pro or Anti War is important for predicting which areas may have more protests, and inform policy positions for elected officials. This paper will create a multilevel 
-
-The clarity of a candidate’s position is essential during the electoral process; the ambiguity of their public communications can be used to obfuscate positions that their constituents should be entitled to. The Democratic ideal of holding leaders accountable can only exist if voters can judge the promissory responsiveness of those representatives. In this paper, we look at data on the personal and district-level characteristics of a candidate to predict their level of ambiguity. This dataset used candidates from the 2014 congressional elections. We found that a model using ideology, partisanship, incumbency, demographic heterogeneity, and the number of total issue pages predicted the level of ambiguity. Incumbents tend to be clearer than challengers. As districts become more demographically heterogeneous, candidates are more ambiguous. In addition, with more total issue pages, the candidate is predicted to be clearer in their position. The candidate will become slightly more ambiguous for Democrats as ideology becomes more conservative. 
-
-
+One of the most complex topics in American Politics is Military Intervention. Public Opinion on Military Intervention is historically divided into Pro-War and Anti-War positions. Understanding which states may be more or less likely to be Pro or Anti War is important for predicting which areas may have more protests, and inform policy positions for elected officials. This paper will create a model to predict opinions on war using a Frequentist and a Bayesian approach. Then, these models will be used in order to create a Multilevel Regression with Post-Stratification to estimate the public opinion within each state in the United States of America. In both the Bayesian and the Frequentist approaches, our Multilevel Regression with Post-Stratification estimates that the public opinion within each state to believe that War is effective is between 60% and 70%. These results tend to be similar to the public opinion polls on war, before any casualties have been incurred.
 
 \newpage
 
-### Background and Significance   
+
+### Introduction
+
+The decision to go to war is a complex decision that has severe consequences. 
+
+
+
+Outline
+>Discuss the Costs of War, and discuss some of the pro and anti war elements
+>Discuss the History of Anti War movements, and the U.S.'s History of Military Engagements
+>Discuss why these costs inform us of how important it is to understand why we choose to go into military conflicts, and how policymakers need information
+> Conclude, and lead into why we might expect that understanding this information is critical, and explain what the rest of this paper will be like. Allow for a lead up. Mention that, using Data from the ACS and CFC, we will analyze these issues
+>
+>
+
+
+
+
+
+### Background and Significance
+
+> In this paper, I might want to discuss so;me of the theories related to predictors of pro vs. anti war sentiment
+> I could also relate it a little bit to what we estimate the effects of war to be, and what conditions we go to war in (Just War Theory, and Weinberger's Theory, etc.), and that history. 
+> I could also mention ancedotal evidence of war, and the details from Gelpi and Haas
+> Some Demographics that we expect to be important are things such as Veterans Status, Age, Gender, Education Level, and race. We also may consider certain variables that represent individuals ideology, such as Political Party. We may also consider circumstantial, such as whether their party is perpitrating the war and perceived success of this conflict, to be important. 
+> Introduce the diachotomy of Casualty Tolerance and Conflict Tolerance (Hawks, Reluctant Hawks, Timid Hawks, and Doves)
+
+
 
 In a democracy, politicians are accountable to their constituents. Every two years, all 435 Representatives in the U.S. House are up for reelection. Mansbridge (2003) describes that promissory responsiveness, whereby citizens respond to campaign promises and hold politicians accountable, is virtually impossible with ambiguous communication (Mansbridge, 2003). When candidates do not engage in explicit policy debate, they deprive voters of critical information which may keep them from fully participating in the democratic process or lead them to base their political choices on other, suboptimal criteria (Druckman et al. 2010). Unfortunately, early research by Downs showed that candidates and parties have incentives to becloud their policies in a fog of ambiguity (Downs, 1957). Scholars differ in their analyses of these incentives. Tomz and Houweling argue that under the right circumstances, voters actually “embrace” ambiguity because they make optimistic inferences about candidates’ issue positions when campaigns send murky signals (Tomz and Houweling, 2000). In contrast, Krupnikov and Ryan note that preferences for ambiguous candidates are not equivalent to voting for those candidates (Krupnikov and Ryan, 2017). This is important to consider, as candidates' primary incentive is election; it doesn't matter if non-voters love you. Milita, Simas, Ryan, and Krupnikov (2017) add nuance to these findings, arguing that in the absence of issue statements, voters will rely on party heuristics to make inferences.
 
@@ -450,6 +79,12 @@ Measuring ambiguity is difficult, and explains why much scholarship on the topic
 
 
 ### Data  
+
+> Introduce the data from both the ACS and the Chicago Foreign Council. This introduction should include what major questions I am answering, the specificatoins of the data (variables, observations, etc.)
+> Do some mild Data Analysis, such as creating graphs, in order to visualize the data.
+> Discuss the limitations of this data. For instance, the Census cannot and does not ask questions related to how we feel about political parties, veteran status. Ideally, we would want to create more stratas, related to race, veteran status, political party orientation, etc. However, limitations in the census data, as well as time constraints, would prevent me from doing this. 
+> In addition, the CFC data only has data for 4767 observations over 2 years. Because of this smaller sample size, we are restrained from using more 
+
 
 The dataset used is from Chap et al. (2019) , which explored 2014 congressional candidates’ ambiguity on political issues. The authors "hand-coded a random sample of 2012 congressional candidates’ websites, assigning an ambiguity score." A total of 870 websites from 2014 were then automatically scored using Wordscores, a program designed for political textual analysis. 
 
@@ -467,7 +102,7 @@ To clean our data, we reversed the sign of ambiguity. In the original dataset, h
 pol_read <- read.csv("https://raw.githubusercontent.com/proback/BeyondMLR/master/data/ambiguity.csv")
 pol <- pol_read %>% filter(distID!=409) %>% mutate(ambiguity_fix = ambiguity*-1) %>% na.omit()
 #pol$democrat <- as.factor(pol$democrat)
-pol<-pol %>% select(-ambiguity)
+pol<-pol %>% dplyr::select(-ambiguity)
 T1 <- head(pol)       
 kable(T1, caption="First 6 rows of the dataset",col.names = c("Name","District ID", "Ideology Score","Issue Pages","Democrat","District Mismatch","Incumbent","Demographic Heterogeneity","Attitude Heterogeneity","District Lean","Ambiguity"),format="pipe") %>% kable_styling(latex_options=c(font_size = 8))
 #summary(pol)
@@ -484,7 +119,7 @@ BBB <- corrplot(AAA)
 
 ```{r, fig.cap="Correlation Matrix of Continuous Variables in the Dataset"}
 pol$democrat<-as.factor(pol$democrat)
-pol_matrix <- pol %>% select(ambiguity_fix, incumbent, ideology, distLean, mismatch, totalIssuePages)
+pol_matrix <- pol %>% dplyr::select(ambiguity_fix, incumbent, ideology, distLean, mismatch, totalIssuePages)
 ggpairs(pol_matrix)
 ```
 
