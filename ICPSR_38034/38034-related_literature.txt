@@ -1,0 +1,17 @@
+Bibliography
+ANES 2020 Time Series Study
+
+This bibliography includes published and unpublished works that are related 
+to ICPSR study 38034. It includes works that are based on primary
+or secondary analysis of the data, or which describe or critique those
+data or the collection methodology. 
+
+If you publish a work or know of other works that are based on these data,
+please send the complete citation and name of the ICPSR study used to:
+icpsr-biblio-notify@umich.edu 
+
+
+1. King, Jeremiah W., "How Did the COVID-19 Pandemic Affect Far-Right
+Populist Sentiment in the United States: An Empirical Analysis." Thesis,
+Johns Hopkins University, 2021.
+Abstract: https://jscholarship.library.jhu.edu/handle/1774.2/63893

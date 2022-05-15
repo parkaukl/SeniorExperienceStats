@@ -26,6 +26,7 @@ library(coda)
 ```{r}
 load("36806-0001-Data.rda") #This is 2016
 load("37970-0001-Data.rda") # This is 2017
+load("38034-0001-Data.rda") # This is the ANES election survey
 ChicagoForeignCouncilRaw2016<-as.data.frame(da36806.0001) %>%
   mutate(Year=2016) %>%
   dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
@@ -205,98 +206,103 @@ summary(M25)
 
 #Based on our prior data samples, it appears like there are, primarily, 3 important variables in addition to geography: Age, Ethnicity, and Education level. Therefore, we will want to move forward using those variables, potentially. 
 
-M0<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~1+(1|State),family=binomial(link="logit"))
+#M0<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~1+(1|State),family=binomial(link="logit"))
 
 #summary(M0)
-M1<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+(1|State),family=binomial(link="logit"))
+#M1<-glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+(1|State),family=binomial(link="logit"))
 
 #summary(M1)
-M2<-glmer(data = ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#M2<-glmer(data = ChicagoForeignCouncilClean,ProWarBinary~MALE+HISPANIC+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 
 #summary(M2)
 #M2 is worse than M1 according to our M1
 
-M3<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
+#M3<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
 #summary(M3)
 #M3 is better than any of our previous models. 
 
 #After working with all of these variables, one remarkably thing that I have seen is that it appears like relatively limited amount of this is determined by things such as education or gender. 
-M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
+#M4<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|State),family=binomial(link="logit"))
 #summary(M4)
 
 #M4 is better than our prior models, up to this point, according to BIC
 
-M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
+#M5<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+(1|Region9),family=binomial(link="logit"))
 #summary(M5)
 
-M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
+#M6<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+(1|State),family=binomial(link="logit"))
 #summary(M6)
 
-M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+#M7<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+MALE+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M7)
 
-M7a<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+#M7a<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(PPEDUCAT)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M7)
 
-M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#M8<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M8)
 
-M9<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(AgeBracket)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
+#M9<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(AgeBracket)+factor(PPETHM)+factor(PPINCIMP)+(1|State),family=binomial(link="logit"))
 #summary(M9)
 
-M10<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(AgeBracket)+factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
+#M10<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(AgeBracket)+factor(PPEDUCAT)+(1|State),family=binomial(link="logit"))
 #summary(M10)
 
-M11<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#M11<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE*factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M11)
 
-M12<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~Region9*MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#M12<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~Region9*MALE+factor(PPEDUCAT)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M12)
 
-M13<-glm(data=ChicagoForeignCouncilClean,ProWarBinary~State,family=binomial(link="logit"))
+#M13<-glm(data=ChicagoForeignCouncilClean,ProWarBinary~State,family=binomial(link="logit"))
 #summary(M13)
 
-M14<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)*Region4+(1|State),family=binomial(link="logit"))
+#M14<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(PPEDUCAT)+factor(AgeBracket)*Region4+(1|State),family=binomial(link="logit"))
 #summary(M14)
 
-M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#M15<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 #summary(M15)
 
-M16<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
-summary(M16)
+#M16<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#summary(M16)
 
 #State does perform better that Region in these tests. However, the number of responses per state is very low. Therefore, there may be more benefit in using something like region9. This will be, in hindsight, what I choose to use moving forward
 
 
-M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+#M17<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 #summary(M17)
 
-M18<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)*factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+#M18<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)*factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 
 #Up to this point, I've found that Education Level, broken into Strata, and Age Brackets seems to be a good predictor. I've elected to choose to move forward with a model if it is supported by the ACS. In addition, I have decided to move forward with a model if it is able to break the population into sufficiently small stratas.
 
-M19<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
+#M19<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
 
-M20<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
+#M20<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|State),family=binomial(link="logit"))
 
-M21<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+PPMARIT+(1|State),family=binomial(link="logit"))
+#M21<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket2)+factor(AgeBracket)+PPMARIT+(1|State),family=binomial(link="logit"))
 
-M22<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(EducationBracket2)+factor(PPETHM)+(1|State),family=binomial(link="logit"))
+#M22<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~factor(EducationBracket2)+factor(PPETHM)+(1|State),family=binomial(link="logit"))
 
-M23<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9)+(1|Year),family=binomial(link="logit"))
+#M23<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9)+(1|Year),family=binomial(link="logit"))
 
-M24<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~(1|MALE)+(1|EducationBracket3)+(1|AgeBracket)+(1|Region9)+(1|Year),family=binomial(link="logit"))
-
+#M24<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~(1|MALE)+(1|EducationBracket3)+(1|AgeBracket)+(1|Region9)+(1|Year),family=binomial(link="logit"))
 
 M25<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),family=binomial(link="logit"))
 
-M25a<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State)+(1|Year),family=binomial(link="logit"))
+#M25a<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State)+(1|Year),family=binomial(link="logit"))
 
-M25b<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State)+(1|Year)+(1|PPETHM),family=binomial(link="logit"))
+#M25b<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State)+(1|Year)+(1|PPETHM),family=binomial(link="logit"))
 
 #Here, we are considering adding additional random effects. These may be included in order to prevent extra changes. 
 
 ```
+
+
+```{r}
+summary(M25)
+```
+
 
 ```{r eval=FALSE, include=FALSE}
 AIC(M0)

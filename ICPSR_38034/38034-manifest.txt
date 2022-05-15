@@ -1,0 +1,53 @@
+File Manifest for ICPSR 38034
+
+American National Election Studies, University of Michigan, and Stanford
+University. ANES 2020 Time Series Study. ICPSR38034-v1. Ann Arbor, MI:
+Inter-university Consortium for Political and Social Research
+[distributor], 2021-07-13. http://doi.org/10.3886/ICPSR38034.v1
+
+
+Study-level Documentation
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    38034-descriptioncitation.pdf       -       -         -       2021-07-15  -
+
+    38034-related_literature.txt        -       -         -       daily       -
+
+    38034-manifest.txt                  -       -         -       daily       -
+
+
+DS0001 ANES 2020 Time Series Study
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    38034-0001-Codebook-ICPSR.pdf       -       -         -       2021-07-13  f4d80a7dae3a35d8fae49d18977cfedc
+
+    38034-0001-Data.dta                 -       8,280     1381    2021-07-13  515eb09ee55c2d34f6bf87fbabfeb39a
+
+    38034-0001-Data.rda                 -       8,280     1381    2021-07-13  ab024d3a18f1ed14f22b63dec955696a
+
+    38034-0001-Data.sav                 -       8,280     1381    2021-07-13  abf45f56a86206ed07bfdffa6b49ac4d
+
+    38034-0001-Data.stc                 -       8,280     1381    2021-07-13  c1b0b8de0fff29ab34387c961595bfe6
+
+    38034-0001-Data.tsv                 -       8,280     1381    2021-07-13  ae7a5374ddd991f252d9f194da2a06ba
+
+    38034-0001-Data.txt                 3086    8,280     1381    2021-07-13  eca860e2684febcf7ea3c4efa65ef34f
+
+    38034-0001-Questionnaire-POST.pdf   -       -         -       2021-07-13  45be9fc78925c85e1777ad33a700033d
+
+    38034-0001-Questionnaire-PRE.pdf    -       -         -       2021-07-13  f5e768c790229f9cb23bf74284ab4ef9
+
+    38034-0001-Setup.dct                -       -         -       2021-07-13  fa21e3197ce88af2f79d6e68e73c14a5
+
+    38034-0001-Setup.do                 -       -         -       2021-07-13  cb21c7e9d76173c9793ae27bd94c9a1c
+
+    38034-0001-Setup.sas                -       -         -       2021-07-13  9a7a7d1b85eec700c4cb36f41137bcfc
+
+    38034-0001-Setup.sps                -       -         -       2021-07-13  b2edbed81db4b1fe852c5d0e0263b6e2
+
+    38034-0001-User_guide.pdf           -       -         -       2021-07-13  091451231879eeec8ec397028f89b88b
+

@@ -243,3 +243,16 @@ mcmc_neff(ratio,size=2)
 # Make sure to mention the neff Ratio. 
 ```
 It is noted by the authors that we should only be worried about a low N_eff/N is the value is below .1. This is not the case in this regard. There are, certainly a few variables that may have some mild concerns, but nothing too worrying. 
+
+```{r}
+summary(da38034.0001$V201350)
+
+307+886+4068
+
+307+886+4068+2323+638
+
+5261/8222
+
+mean(metadataStateGIS2$EstimatedProbability)
+```
+
