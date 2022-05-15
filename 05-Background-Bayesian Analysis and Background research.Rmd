@@ -6,14 +6,15 @@ library(bayesplot)
 ```
 
 ```{r}
-#PriorMeans<-c(,rep(0,51))
+
+My_Prior<-normal(location=c(-.1,-.2,-.4,-.6,-.8,0,0,0,0),scale=c(rep(1,9)),autoscale=FALSE)
 # this would be good for us to find our new definitions
 #myprior<-normal(location=c())
 
 ProWar_Model_Prior<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3+AgeBracket+(1|State),
               family=binomial(link="logit"),
               prior_intercept = normal(.5,2),
-              prior = normal(0,2, autoscale = TRUE),
+              prior = My_Prior,
               chains=4,iter=5000,seed=050822,
               prior_PD = TRUE)
               
@@ -189,7 +190,8 @@ for (i in 1:51) {
 
 ```{r}
 metadataStateGIS3<-metadataStateGIS3 %>%
-  mutate(fips=GEOID)
+  mutate(fips=GEOID,
+         DifferenceSquared=(BayesEstimatedProbability-EstimatedProbability)^2)
 
 plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
 ```
