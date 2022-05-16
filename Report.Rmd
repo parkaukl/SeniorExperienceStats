@@ -236,7 +236,10 @@ $\beta_0$ represents the expected change that we would see in ambiguity scores f
 $\beta_3$ represents the expected change that we would see in ambiguity scores for incumbents, when compared to challengers, all else held equal. $\beta_4$ represents the change that we would expect in ambiguity scores as the Demographic Heterogeneity increases by a score of one within a district. Finally, $\beta_5$ represents the change in ambiguity scores as the total number of issue pages is increased by one for a candidate, all else held equal.
 
 
-### Results  
+
+
+
+### Frequentist Results  
 
 
 ```{r}
@@ -256,6 +259,12 @@ kable(summary(M5)$coefficients,digits = 4,format="pipe",caption = "Estimates of 
 
 
 The model estimates that Republican challengers with no issue pages, an ideology of 0, running in a district with no demographic heterogeneity will have communication ambiguity of -0.749305. For each additional point in ideology for Republicans, the model estimates a 0.012945 point increase in communication ambiguity after accounting for all other fixed effects. However, it should also be noted that this result is not statistically significant, with a large p-value of 0.45. Democrats are estimated to have communication ambiguity 0.047871 less than Republicans after accounting for all other fixed effects. Incumbents are estimated to have communication ambiguity 0.117505 less than challengers after accounting for all other fixed effects. For each additional point in a district's demographic heterogeneity, the model estimates a 0.815260 point increase in communication ambiguity after accounting for all other fixed effects. For each additional issue page on a candidate's website, the model estimates a 0.015542 point decrease in communication ambiguity after accounting for all other fixed effects. For each additional point in ideology, the model estimates that Democrats have an additional 0.100959 point increase in communication ambiguity over Republicans. The model estimates that the standard deviation in communication ambiguity across districts is 0.007862 after accounting for all fixed effects.
+
+
+
+### Bayesian Results
+
+
 
 ### Discussion and Conclusions   
 
