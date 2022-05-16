@@ -36,7 +36,7 @@ library(bayesplot)
 
 
 ```{r}
- load("Workspace.RData") # This is data that had previously been collected from the previous files. I could also cretae an abbreviated file that shares my important codes.
+ load("Workspace.RData") # This is data that had previously been collected from the previous files.
 ```
 ## Abstract 
 
