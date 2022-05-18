@@ -56,18 +56,15 @@ However, perhaps the most relevant and important influence on our perception of 
 
 Caspar Weinberger, a Secretary of Defense under Ronald Reagan, introduced the Weinberger Doctrine, which stated that force should only be used if there is public or congressional support for military conflict. This was furthered by Warren Christopher, the Secretary of Defense under Bill Clinton, who said that having "a high likelihood of support" of popular and congressional support was a prerequisite for military intervention. Other Politicians have not mentioned public opinion as a prerequisite, but have mentioned that it is desirable to have support for any military intervention. 
 
-The Effects of Public Opinion during Wartime are numerous. As noted by George Gallup, Public Opinion can often coincide with political changes. As stated in _How Important is Public Opinion in Time of War?_, "In addition to conscription, the people of this country have been ahead of their political leaders on virtually all important war-time issues" (Gallup, 441). In addition, Conflict is often likely to not occur, or forces are likely to be withdrawn in the case of public disapproval. This can be seen in a lack of approval for U.S. Intervention in Somalia, and later the U.S.'s lack of military intervention in Rwanda. In addition, the mismanagement of military intervention threatens re-election campaigns for politicians. Public Opinion acts as a Political constraint to the use of force. 
+The Effects of Public Opinion during Wartime are numerous. As noted by George Gallup, Public Opinion can often coincide with political changes. As stated in _How Important is Public Opinion in Time of War?_, "In addition to conscription, the people of this country have been ahead of their political leaders on virtually all important war-time issues" (Gallup, 441). In addition, Conflict is often likely to not occur, or forces are likely to be withdrawn in the case of public disapproval. This can be seen in a lack of approval for U.S. Intervention in Somalia, and later the U.S.'s lack of military intervention in Rwanda. In addition, the mismanagement of military intervention threatens re-election campaigns for politicians. Because of this threat, "Politicians--Whose foremost goal is to gain or retain office- will, in an electoral context, be motivated to support changes in war policy if opinion trends among their constituents offer an incentive to do so" (Lieberfeld, 2008). Public Opinion acts as a Political constraint to the use of force, in addition to providing probable policy platforms during upcoming elections. 
 
-For Policymakers, understanding Public Opinion is crucial to making the correct decision about when it is appropriate to use military force. Therefore, this paper will attempt to create a frequentist and a Bayesian model in order to estimate the public opinion, based off a series of surveys known as the Chicago Council Survey of
-American Public Opinion on U.S.Foreign Policy from 2016 and 2017. Using this data, we will estimate the expected value of political support in each U.S. state during that time span. This will be done using a method known as Multilevel Regression with Post-stratification. 
+For Policymakers, understanding Public Opinion is crucial to making the correct decision about when it is appropriate to use military force. In addition, for citizens, Public Opinion can provide a good predictor of future policy decisions. Therefore, this paper will attempt to create a frequentist and a Bayesian model in order to estimate the public opinion, based off a series of surveys known as the Chicago Council Survey of American Public Opinion on U.S.Foreign Policy from 2016 and 2017. Using this data, we will estimate the expected value of political support in each U.S. state during that time span. This will be done using a method known as Multilevel Regression with Post-stratification. Then, this paper will attempt to validate these models by checking that there are no errors in this model, and doing model validation.  
 
 Outline
 >Discuss the Costs of War, and discuss some of the pro and anti war elements
 >Discuss the History of Anti War movements, and the U.S.'s History of Military Engagements
 >Discuss why these costs inform us of how important it is to understand why we choose to go into military conflicts, and how policymakers need information
 > Conclude, and lead into why we might expect that understanding this information is critical, and explain what the rest of this paper will be like. Allow for a lead up. Mention that, using Data from the ACS and CFC, we will analyze these issues
->
->
 
 
 
@@ -75,7 +72,7 @@ Outline
 
 ### Background and Significance
 
-> In this paper, I might want to discuss so;me of the theories related to predictors of pro vs. anti war sentiment
+> In this paper, I might want to discuss some of the theories related to predictors of pro vs. anti war sentiment
 > I could also relate it a little bit to what we estimate the effects of war to be, and what conditions we go to war in (Just War Theory, and Weinberger's Theory, etc.), and that history. 
 > I could also mention ancedotal evidence of war, and the details from Gelpi and Haas
 > Some Demographics that we expect to be important are things such as Veterans Status, Age, Gender, Education Level, and race. We also may consider certain variables that represent individuals ideology, such as Political Party. We may also consider circumstantial, such as whether their party is perpitrating the war and perceived success of this conflict, to be important. 
@@ -291,10 +288,13 @@ It is clear that certain candidate- and district-level factors lead to more ambi
 
 Brown University. (2021, September 1). Costs of the 20-Year War on terror: $8 trillion and 900,000 deaths. Brown University. Retrieved May 17, 2022, from https://www.brown.edu/news/2021-09-01/costsofwar 
 
+
 Gallup, G. (1942). How Important is Public Opinion in Time of War. Proceedings of the American Philosophical Society, 85(5), 440–444.
 
 
 Haas, R. (1994). Intervention: The Use of American Military Force in the Post-Cold War World. Carnegie Endowment for International Peace.
+
+Lieberfeld, D. (2008). WHAT MAKES AN EFFECTIVE ANTIWAR MOVEMENT? THEME-ISSUE INTRODUCTION. International Journal of Peace Studies, 13(1), 1–14. http://www.jstor.org/stable/41852966
 
 
 
