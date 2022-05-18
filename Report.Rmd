@@ -1,11 +1,12 @@
 ---
 title: Estimating Pro-War and Anti-War Sentiments by State Using Multilevel Regression with Poststratification
 author: "Parker Kaukl"
-date: "5/12/2022"
+date: 5/17/2022
 output:
   pdf_document: default
   html_document:
     df_print: paged
+fontsize: 11pt
 ---
 
 ```{r setup, include=FALSE}
@@ -47,9 +48,18 @@ One of the most complex topics in American Politics is Military Intervention. Pu
 
 ### Introduction
 
-The decision to go to war is a complex decision that has severe consequences. 
+The decision to go to war is a complex decision that has severe consequences. A report from Brown University estimated that around 900,000 deaths occurred in the War on Terror. These fatalities  include soldiers, civilians, journalists and aid workers.In addition, the U.S.'s War on terror has incurred a cost of $8 trillion dollars for the wars since 2001. Because of these high societal costs, it is not surprising that conflict tends to be a polarizing topic, and a topic that has attracted theories. 
 
+One of the first theories of War is defined as "Just War" theory, by St. Augustine. This posited that conflict should occur for a worthy cause, if conflict is likely to achieve that cause and sponsored by a legitimate government. "Just War" theory also states that conflict should only be used as a last resort, and that conflict should not be disproportionate to the cause, and that non-combatants should be respected. Although this theory is valuable, the discourse on military conflict has been furthered by philosophers, politicians, and theologians over the past centuries. 
 
+However, perhaps the most relevant and important influence on our perception of war has been the United State's recent history of War. A lot of theories and thoughts on War developed in the aftermath of the Vietnam War. As noted in Richard Haas's book, Intervention, the Vietnam War acted as an event that informs both our policymakers and citizens on what War is like. Perhaps more importantly, the Vietnam War and the protests related to U.S. involvement introduced the importance of U.S. public opinion to whether we should engage in military conflicts. 
+
+Caspar Weinberger, a Secretary of Defense under Ronald Reagan, introduced the Weinberger Doctrine, which stated that force should only be used if there is public or congressional support for military conflict. This was furthered by Warren Christopher, the Secretary of Defense under Bill Clinton, who said that having "a high likelihood of support" of popular and congressional support was a prerequisite for military intervention. Other Politicians have not mentioned public opinion as a prerequisite, but have mentioned that it is desirable to have support for any military intervention. 
+
+The Effects of Public Opinion during Wartime are numerous. As noted by George Gallup, Public Opinion can often coincide with political changes. As stated in _How Important is Public Opinion in Time of War?_, "In addition to conscription, the people of this country have been ahead of their political leaders on virtually all important war-time issues" (Gallup, 441). In addition, Conflict is often likely to not occur, or forces are likely to be withdrawn in the case of public disapproval. This can be seen in a lack of approval for U.S. Intervention in Somalia, and later the U.S.'s lack of military intervention in Rwanda. In addition, the mismanagement of military intervention threatens re-election campaigns for politicians. Public Opinion acts as a Political constraint to the use of force. 
+
+For Policymakers, understanding Public Opinion is crucial to making the correct decision about when it is appropriate to use military force. Therefore, this paper will attempt to create a frequentist and a Bayesian model in order to estimate the public opinion, based off a series of surveys known as the Chicago Council Survey of
+American Public Opinion on U.S.Foreign Policy from 2016 and 2017. Using this data, we will estimate the expected value of political support in each U.S. state during that time span. This will be done using a method known as Multilevel Regression with Post-stratification. 
 
 Outline
 >Discuss the Costs of War, and discuss some of the pro and anti war elements
@@ -279,39 +289,13 @@ It is clear that certain candidate- and district-level factors lead to more ambi
 
 ### References
 
-Chapp, C., Roback, P., Johnson-Tesch, K., Rossing, A., & Werner, J. (2019). Going Vague: Ambiguity and Avoidance in Online Political Messaging. Social Science Computer Review, 37(5), 591–610.
+Brown University. (2021, September 1). Costs of the 20-Year War on terror: $8 trillion and 900,000 deaths. Brown University. Retrieved May 17, 2022, from https://www.brown.edu/news/2021-09-01/costsofwar 
 
- 
+Gallup, G. (1942). How Important is Public Opinion in Time of War. Proceedings of the American Philosophical Society, 85(5), 440–444.
 
-Downs, A. (1957). An economic theory of democracy. New York: Harper.
 
- 
+Haas, R. (1994). Intervention: The Use of American Military Force in the Post-Cold War World. Carnegie Endowment for International Peace.
 
-Druckman, J. N., Hennessy, C. L., Kifer, M. J., & Parkin, M. (2010). Issue engagement on congressional candidate web sites, 2002—2006. Social Science Computer Review, 28(1), 3-23.
-
- 
-
-Druckman, J. N., Jacobs, L. R., Ostermeier, E. (2004). Candidate strategies to prime issues and image. The Journal of Politics, 66, 1205–1227.
-
- 
-
-Krupnikov, Y., Ryan, J. B. (2017). Choice vs. action: Candidate ambiguity and voter decision making. Quarterly Journal of Political Science, 12, 479–505.
-
- 
-
-Mansbridge, J. (2003). Rethinking representation. American political science review, 97(4), 515-528.
-
- 
-
-Milita, K., Simas, E., Ryan, J., Krupnikov, Y. (2017). The effects of ambiguous rhetoric in congressional elections. Electoral Studies, 46, 48–63.
-
- 
-
-Shepsle, K. A. (1972). The strategy of ambiguity: Uncertainty and electoral competition. The American Political Science Review, 66, 555–568.
-
- 
-
-Tomz, M., Van Houweling, R. P. (2009). The electoral implications of candidate ambiguity. American Political Science Review, 103, 83–98.
 
 
 
