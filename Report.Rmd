@@ -84,7 +84,9 @@ According to Gelpi and Weaver, the determination of a citizen's preference is ba
 
 In addition, individuals are likely to make choices depending on the Principal Policy Objective, according to Jentleson (1992). This thesis argues that individuals have different values, and that the primary objective of why is going to war is likely to influence the level of political support for intervention. For instance, according to a poll from Jentleson, individuals tend to be more in support of Foreign Policy Restraint missions, as opposed to Internal Political Change missions.
 
-Finally, individuals also tend to support missions that they believe will be successful. As noted by Gelpi and Weaver (2009), public support for military intervention tends to drastically decreasing during periods of failure. For instance, In the aftermath of a failed raid in Somalia in 1993, public support for military intervention dropped by 8 percentage points. In general, individuals tend to 
+Finally, individuals also tend to support missions that they believe will be successful. As noted by Gelpi and Weaver (2009), public support for military intervention tends to drastically decreasing during periods of failure. For instance, In the aftermath of a failed raid in Somalia in 1993, public support for military intervention dropped by 8 percentage points. In general, individuals tend to support a war when there is evidence that there is some level of success. 
+
+While these circumstantual predictors are important, there are additional variables that might be important in order to predict
 
 
 ### Data  
@@ -290,7 +292,6 @@ It is clear that certain candidate- and district-level factors lead to more ambi
 
 Brown University. (2021, September 1). Costs of the 20-Year War on terror: $8 trillion and 900,000 deaths. Brown University. Retrieved May 17, 2022, from https://www.brown.edu/news/2021-09-01/costsofwar 
 
-
 Gallup, G. (1942). How Important is Public Opinion in Time of War. Proceedings of the American Philosophical Society, 85(5), 440–444.
 
 Gelpi, C., Feaver, P., & Reifler, J. (2009). Paying the Human Costs of War. Princeton University Press.
@@ -302,7 +303,7 @@ Jentleson, B. W. (1992). The Pretty Prudent Public: Post Post-Vietnam American O
 Khazan, O. (2013, September 4). What are the big factors determining whether Americans support war? The Atlantic. Retrieved March 29, 2022, from https://www.theatlantic.com/politics/archive/2013/09/what-are-the-big-factors-determining-whether-americans-support-war/279290/-sets-box-office-record 
 
 
-Lieberfeld, D. (2008). WHAT MAKES AN EFFECTIVE ANTIWAR MOVEMENT? THEME-ISSUE INTRODUCTION. International Journal of Peace Studies, 13(1), 1–14. http://www.jstor.org/stable/41852966
+Lieberfeld, D. (2008). What Makes An Effective Antiwar Movement? Theme-Issue Introduction. International Journal of Peace Studies, 13(1), 1–14. http://www.jstor.org/stable/41852966
 
 
 
