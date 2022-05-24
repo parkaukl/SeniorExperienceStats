@@ -76,7 +76,7 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilRaw2 %>%
          State=substring(PPSTATEN,5),
          Region4=substring(PPREG4,4),
          Region9=substring(PPREG9,4),
-         StatementNumber=substring(DOV_Q8_14,2,2),
+         StatementNumber=as.factor(as.numeric(ifelse(Year==2016,substring(DOV_Q8_14,2,2),substring(DOV_Q8_14,2,3)))),
          InterventionSet1=substring(Q8_14,2,2)) %>%
     mutate(ProWarBinary=ifelse(InterventionSet1>2,0,1),
            ProWarFactor=as.factor(ProWarBinary)) %>%

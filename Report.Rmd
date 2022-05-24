@@ -33,6 +33,7 @@ library(stargazer)
 library(coda)
 library(rstanarm)
 library(bayesplot)
+library(stringr)
 ```
 
 
@@ -97,6 +98,22 @@ There are three different datasets that I used in this paper. The Chicago Counci
 The first dataset that I used was the Chicago Council Survey of American Public Opinion on U.S. Foreign Policy. This is an annual survey that asks questions related to the foreign policies in the United States, and the public opinion on these policies. For the purpose of my data, I am using the 2016 and 2017 Chicago Council Survey of American public Opinion. These two years were used because they are both publically available, and they both have a question that is coded the same. The target population of this survey was those living in the U.S. who were non-institutionalized and who are aged over 18. The survey was administered by the KnowledgePanel, which is a probability based web panel designed to be representative of the U.S. results. The administrators of this survey included various checks, such as removing those who answered the test too quick and those who failed the "quality checks". The "quality checks" consisted of questions such as "Pick option 3", which indicates whether a respondent was actually attentive during the survey. 
 
 In order to clean this data, we took multiple steps. First, any cases where there was a missing value were discarded, in order to prevent any bias that might occur by keeping these variables in the dataset. In addition, many of the variables were manipulated in order to create new variables for the purpose of a regression. Initially, there was a variable called *Q8_14*. This variable recorded the respondents answer to the question *How effective do you think each of the following approaches are to achieving the foreign policy goals of the United States- very effective, somewhat effective, not very effective, or not effective at all: Intervening Militarily*. Using this variable, we manipulated it into a new variable called *ProWarBinary*. If this variable is equal to 1, then the respondent believes that military intervention is either very effective or somewhat effective. Meanwhile, if the respondent believes that military intervention is not very effective or not effective at all, then the variable will return with a value of 0. 
+
+In addition, the Chicago Foreign Council data also had additional variables that reflect the demographics of the respondents. In this case, the variables includes information about the racial, political, social, economic and family history of the respondent. There are a few variables of note that will later be used in the model to build the Multilevel Regression with Post stratification. The variable *EducationBracket3* represents a subset of different levels of education. This includes a variables for those who did not get a High School Diploma, those with a High School Diploma, those with some college, those with a bachelor's degree, and those with more education than a bachelor's degree. 
+
+Another variable of note is *AgeBracket*. This variables indicates what strata of age the respondent is in. Respondents can either be in a strata for those aged 18 to 24, 25 to 34, 35 to 44, 45 to 64, and for those who are 65 or older. These stratas were constructed to match the format of the stratas that are reported in the ACS. In addition, the Chicago Foreign Council also included information about what state a respondent was from, reported in the variable titled *State*. 
+
+There are some checks that we may want to do in order to evaluate whether there was any response bias. In presenting the question represented in variable *Q8_14*. In the survey, this response could have been showed anywhere between first and eighth. We might suspect that the order that Military Intervention is presented will influence the response and create response bias. One method can be checking if the order to the response is likely to change the effect of whether an individual thinks military intervention is effective or not depending on when the respondent is presented with the policy choice of military intervention. 
+
+```{r}
+ChicagoForeignCouncilClean<-ChicagoForeignCouncilClean %>% mutate(
+  StatementNumber=as.factor(as.numeric(ifelse(Year==2016,substring(DOV_Q8_14,2,2),
+                             substring(DOV_Q8_14,2,3)))))
+  #this is being done to adjust for the fact that there is a slight difference in how statement order was coded. 
+
+ggplot(ChicagoForeignCouncilClean,aes(x=StatementNumber,fill=ProWarFactor))+geom_bar(position=position_fill())+ggtitle("Figure 1:Proportion of Belief in Effectiveness of War")+xlab("Position that the Statement was Shown In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "ProWarFactor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
+```
+Figure One illustrates the response of the effectiveness of war, based on the Variable *ProWarFactor*. There is not a lot of variation in the responses of the effectiveness of war depending on the position that the statement was shown in. For instance, we can see that people who were shown this statement earlier may report being more in favor of war, as opposed to those who were asked about military intervention later. 
 
 
 
