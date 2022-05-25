@@ -109,7 +109,7 @@ ChicagoForeignCouncilClean<-ChicagoForeignCouncilClean %>% mutate(
 ggplot(ChicagoForeignCouncilClean,aes(x=StatementNumber,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Position that the Statement was Shown In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
 ```
 
-Figure One illustrates the response of the effectiveness of war, based on the Variable *ProWarFactor*. There is not a lot of variation in the responses of the effectiveness of war depending on the position that the statement was shown in. For instance, we can see that people who were shown this statement earlier may report being more in favor of war, as opposed to those who were asked about military intervention later. However, it appears like the position that the statement was shown in does not carry a significant level of bias, and therefore we can consider that source of response bias as insignificant. 
+Figure 1 illustrates the response of the effectiveness of war, based on the Variable *ProWarFactor*. There is not a lot of variation in the responses of the effectiveness of war depending on the position that the statement was shown in. For instance, we can see that people who were shown this statement earlier may report being more in favor of war, as opposed to those who were asked about military intervention later. However, it appears like the position that the statement was shown in does not carry a significant level of bias, and therefore we can consider that source of response bias as insignificant. 
 
 We can also observe other relationships in our data. One particular question might be whether individuals have different levels of support based on what region they live in. Different cultural values and different regional relationships with the military may determine the different levels of support for military conflict. For instance, Karol and Miguel (2007) tested whether different regions had different levels of political support for reelecting George W. Bush based on the number of casualties in Iraq, based on the speculation that different geographic regions had different relationships with the War. Therefore, observing the prowar and antiwar levels of support within each U.S. region may be important to determining if there is a different level of support depending on geographic region. 
 
@@ -141,20 +141,33 @@ This paper will focus on using a Multilevel Regression with Poststratification, 
 
 There are a few steps needed in order to create an MRP. First, data needs to be collected that focuses on public opinion data, and different potential predictors. Next, there would need to be census data collected in order to estimate the proportion of different stratas in each state. We would also need to estimate the probability of believing U.S. intervention is effective within each strata based on our public opinion data, using a logistic regression from the Chicago Council Surveys. Then, using our estimates of the probability of any person within a strata being pro war, we poststratify these models using the proportional size of the strata relative to the rest of the state. 
 
-One important detail in an MRP is that we are required to have the design of the logistic regression and the design of the ACS must match in order to effectively implement an MRP. An MRP works because it is accurately able to assign each predicted response based on our regression to our weights for poststratification. Therefore, there would be significant problems in using a Multilevel Regression with Post Stratification if the multilevel regression includes terms that are not included in poststratify weights. This would result in us having predicted response probabilities without any understanding of what the approximate weights of these responeses will be. 
+One important detail in an MRP is that we are required to have the design of the logistic regression and the design of the ACS must match in order to effectively implement an MRP. An MRP works because it is accurately able to assign each predicted response based on our regression to our weights for poststratification. Therefore, there would be significant problems in using a Multilevel Regression with Post Stratification if the multilevel regression includes terms that are not included in poststratify weights. This would result in us having predicted response probabilities without any understanding of what the approximate weights of these responses will be. 
 
-Therefore, in building our logistical regression, we will attempt to reduce the AIC and we will only build a model where we can also estimate the weights of these different responses based on the ACS data. In addition, the model that we analyze will also focus on the most important aspects that may have been identified in our data section. 
+Therefore, in building our logistical regression, we will attempt to reduce the AIC and we will only build a model where we can also estimate the weights of these different responses based on the ACS data. In addition, the model that we analyze will also focus on the most important aspects that may have been identified in our data section. For instance, one important variable to use in our regressions would be education. Education level is a variable that shows a clear relationship to pro vs. antiwar sentiment. There are roughly 1000 different distinct counts that exist in the ACS data. However, only about 30 different types of counts include educational attainment as a key variable. In addition, very few of these variables account for the full voting aged population. 
 
-
-
-
+The best model that we could find that includes variables that could be weighted in the census was a model which used educational attainment, gender, and age brackets. However, the state was also used as a random effect. This model produced the smallest AIC of any model that was built in this experiment, at a value of 6130.953[1]. We can therefore write the estimated model as a two part section. The first part represents our Post-stratification. The se
 
 
 
+
+$P(\theta=1|\text{State=j})=P(\theta|\text{Strata}=i)*P(\text{Strata}=i|\text{State}=J)$
+
+$P(\theta=1|\text{Strata}=i)=logit^{-1}(\beta_0+\alpha)$
+
+$Y_{ij}=[\alpha_{0}+\beta_{0}\text{ideology}_{ij}+\beta_{1}\text{ideology}_{ij}\times\text{democrat}_{ij}+\beta_{2}\text{democrat}_{ij}+\beta_{3}\text{incumbent}_{ij}$
+$\beta_{4}\text{Dem.Heterogeneity}_{i}+\beta{5}\text{TotalIssuePages}_{ij}]+[u_{i}+\epsilon_{ij}]$
+
+
+
+
+
+\newpage
 
 
 
 To evaluate different models, we have used the AIC and BIC values. These values show us how much variability in a model is accounted for, while penalizing the use of additional variables. We decided that the best model minimizes these AIC and BIC terms compared to other models. In addition, the model that we want to choose would investigate the relationships with ambiguity that we have previously identified. We started with a baseline unconditional means model. From there, we decided to include additional terms, as this improved the AIC and BIC of our model. An ideal model for this report would reduce the AIC and BIC relative to other models, while addressing the effect on ambiguity of candidate’s party, ideology, the number of issue pages and demographic heterogeneity. 
+
+
 
 
 With only two observations per district, any random slope would be created from only those two observations and thus any random slope term would be inappropriate to apply to this dataset. Therefore, we choose to use a random effect term for District, instead of any other random effects or slopes. 
@@ -165,10 +178,7 @@ Finally, we included an interaction term between ideology and the candidate's pa
 
 This will create a model that has an AIC of approximately -42.68, and a BIC of approximately -2.209. These are remarkably small values for AIC and BIC compared to the other models that we tried to make. Some models had slight improvements on AIC, but these results were often only a small improvement on AIC, and a significant reduction in effectiveness for BIC. In addition, this model tested the relationships that we wanted to investigate.
 
-\begin{align}
-Y_{ij}&=[\alpha_{0}+\beta_{0}\text{ideology}_{ij}+\beta_{1}\text{ideology}_{ij}\times\text{democrat}_{ij}+\beta_{2}\text{democrat}_{ij}+\beta_{3}\text{incumbent}_{ij}\\
-&+\beta_{4}\text{Dem.Heterogeneity}_{i}+\beta{5}\text{TotalIssuePages}_{ij}]+[u_{i}+\epsilon_{ij}]
-\end{align}
+
 
 where, $u_i\sim N(0,\sigma^2_u)$ and $\epsilon_{ij}\sim N(0,\sigma^2)$.  
 
@@ -250,7 +260,10 @@ Smith, C., & Lindsay, J. M. (2003, June 1). Rally 'Round the flag: Opinion in th
 
 ## Appendix
 
-[1] For more information on the specific methodology of their textual analysis, the original paper of Wordscores may be of interest. From that paper: "The ultimate methodological price to be paid for the benefits of a posteriori interpretation is the lack of any objective criterion for deciding between rival spatial interpretations, in situations in which the precise choice of interpretation can be critical to the purpose at hand. The price for taking the a priori route, on the other hand, is the need to accept take-it-or-leave-it propositions about the number and substantive meaning of the policy dimensions under investigation. Using the a priori method we introduce here, however, this price can be drastically reduced. This is because, once texts have been processed, it is very easy to re-estimate their positions on a new a priori dimension in which the analyst might be interested. For this reason we concentrate here on estimating positions on a priori policy dimensions."
+[1] There were other models that did produce AIC. However, these would not have allowed us to get a comprehensive set of weights from the ACS. For instance, some of these models would have produced estimations that we would not have any adequate weights to use in order to poststratify, according to the ACS summary statistics. Another case could be seen by the Model titled "M25b". This model included the effect of ethnicity. However, it would have not allowed us to provide weights for any individual who was between the ages of 18 and 25. This would be a large chunk of the voting population that the model would not have adequate weights for, which would be a problem. 
+
+
+For more information on the specific methodology of their textual analysis, the original paper of Wordscores may be of interest. From that paper: "The ultimate methodological price to be paid for the benefits of a posteriori interpretation is the lack of any objective criterion for deciding between rival spatial interpretations, in situations in which the precise choice of interpretation can be critical to the purpose at hand. The price for taking the a priori route, on the other hand, is the need to accept take-it-or-leave-it propositions about the number and substantive meaning of the policy dimensions under investigation. Using the a priori method we introduce here, however, this price can be drastically reduced. This is because, once texts have been processed, it is very easy to re-estimate their positions on a new a priori dimension in which the analyst might be interested. For this reason we concentrate here on estimating positions on a priori policy dimensions."
 
 [2] In some of our data wrangling, we chose to switch the sign of the ambiguity variable in the dataset. Previously, it was higher scores that indicated higher clarity. However, because ambiguity is the response variable and the variable is titled 'ambiguity' we thought it made more sense for analysis to switch these around. 
 

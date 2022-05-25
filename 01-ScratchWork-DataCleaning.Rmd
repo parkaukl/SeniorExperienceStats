@@ -300,6 +300,8 @@ M25b<-glmer(data= ChicagoForeignCouncilClean,ProWarBinary~MALE+EducationBracket3
 
 
 ```{r}
+
+
 summary(M25)
 ```
 
