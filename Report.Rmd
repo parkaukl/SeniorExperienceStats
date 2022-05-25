@@ -2,11 +2,14 @@
 title: Estimating Pro-War and Anti-War Sentiments by State Using Multilevel Regression with Poststratification
 author: "Parker Kaukl"
 date: 5/17/2022
+
 output:
   pdf_document: default
   html_document:
     df_print: paged
 fontsize: 11pt
+indent: true
+
 ---
 
 ```{r setup, include=FALSE}
@@ -40,7 +43,7 @@ library(stringr)
 ```{r}
  load("Workspace.RData") # This is data that had previously been collected from the previous files.
 ```
-## Abstract 
+## Abstract
 
 One of the most complex topics in american politics is military intervention. Public opinion on military intervention is historically divided into pro-war and anti-war positions. Understanding which states may be more or less likely to be pro or anti War is important for predicting which areas may have more protests, and inform policy positions for elected officials. This paper will create a model to predict opinions on war using a Frequentist and a Bayesian approach. Then, these models will be used in order to create a Multilevel Regression with Post-Stratification to estimate the public opinion within each state in the United States of America. In both the Bayesian and the Frequentist approaches, our Multilevel Regression with Post-Stratification estimates that the public opinion within each state to believe that War is effective is between 60% and 70%. These results tend to be similar to the public opinion polls on war, before any casualties have been incurred.
 
@@ -48,6 +51,7 @@ One of the most complex topics in american politics is military intervention. Pu
 
 
 ### Introduction
+
 
 The decision to go to war is a complex decision that has severe consequences. A report from Brown University estimated that around 900,000 deaths occurred in the War on Terror. These fatalities  include soldiers, civilians, journalists and aid workers.In addition, the U.S.'s War on Terror has incurred a cost of $8 trillion dollars since 2001. Because of these high societal costs, it is not surprising that conflict tends to be a polarizing topic, and a topic that has attracted theories on when conflict may occur. 
 
@@ -63,11 +67,6 @@ For policymakers, understanding public opinion is crucial to making the correct 
 
 ### Background and Significance
 
-> In this paper, I might want to discuss some of the theories related to predictors of pro vs. anti war sentiment
-> I could also mention ancedotal evidence of war, and the details from Gelpi and Haas
-> Some Demographics that we expect to be important are things such as Veterans Status, Age, Gender, Education Level, and race. We also may consider certain variables that represent individuals ideology, such as Political Party. We may also consider circumstantial, such as whether their party is perpitrating the war and perceived success of this conflict, to be important. 
-> Introduce the diachotomy of Casualty Tolerance and Conflict Tolerance (Hawks, Reluctant Hawks, Timid Hawks, and Doves)
-
 There have been numerous opinion polls and regressions that have been run in order to estimate pro or anti war opinion during the "post cold war" era. There are a few reasons why authors and academics tend to start their analysis of war trends in the "post cold war" era. In general, the individual's personal policy preference on war tends to be very temporal. The cold war provided a very unique circumstance, such as the policy of deterrence and the fear of a global war, that does not necessarily reflect the current circumstances of conflicts in the "post cold war" era. Because of this, our scholarship tends to focus on the "post cold war" era as a separate era to the cold war era. 
 
 According to Gelpi and Feaver, the determination of a citizen's preference is based on that individual's demographics, and the context of the situation. Specifically, individuals tend to be in support of military intervention if they believe that they have the "Right" to attack, and they believe that military intervention will be successful to achieve their preferred policy goals. Many of these contextual results are likely to reflect incredibly temporal events that are vulnerable to political changes. For instance, individuals tend to look towards individuals such as politicians that they trust, and organizations such as NATO. If an organization like NATO, or a president that they trust endorse a military action, individuals are extremely likely to support that military interaction. This was found by both Olga Khazan(2013) and by Gelpi and Feaver(2009). 
@@ -79,22 +78,21 @@ Finally, individuals also tend to support missions that they believe will be suc
 While these circumstantial predictors are important, there are additional variables that might be important in order to predict pro vs. antiwar sentiment. These variables are demographic, and tend to be less dependent on the context of the conflict in determining public opinion. For instance, our evidence of gender suggests that there is a mixed effect of whether women or men are more supportive of conflict. Gelpi and Feaver wrote *Paying the Human Costs of War*, which collects regressions that indicate that there is conflicting evidence about the effect of gender in being pro or antiwar. Men were more supportive of military intervention in Lebanon in 1983. Men also tended to be more supportive of military intervention in Somalia in 1993. In the early 2000s, a general poll reported by Gelpi and Feaver stated that there was no statistical significance in gender in determining whether an individual supports military intervention. However, evidence from polls taken during the Kosovo crisis suggests that Women were more likely to support military intervention through Air strikes in the Kosovo War. Women were also more likely to fall into the category that Gelpi and Feaver refer to as "Timid Hawks". Gelpi and Feaver use this term to classify individuals who are supportive of War in the abstract, but tend to withdraw their support as the war becomes costly, or as casualties from the conflict increase. This is also important to note, as it highlights a major theme of Gelpi and Feaver, which is that casualty tolerance is not the same thing as conflict tolerance. 
 
 
-Another variable that is very important to consider is age. Anecdotally, there is evidence that suggests that age can both increase and decrease support for War. Many historians note the fervor that younger men tended to have, and their excitement for World War 1. Meanwhile, Vietnam War Era protests are remembered for the swarms of college students who protested against the U.S's involvement in Southeast Asia. However, data tends to provide a conflicted history of who tends to be more pro war. Older individuals were less likely to support a military intervention in Lebanon and in Somalia. However, age did not appear to play any significant role in whether an individual supported intervention in the Kosovo War. 
+Another variable that is very important to consider is age. Anecdotally, there is evidence that suggests that age can both increase and decrease support for War. Many historians note the fervor that younger men tended to have, and their excitement for World War 1. Meanwhile, Vietnam War Era protests are remembered for the swarms of college students who protested against the U.S's involvement in Southeast Asia. However, data tends to provide a conflicted history of who tends to be more pro war. Older individuals were less likely to support a military intervention in Lebanon and in Somalia. However, older individuals were less likely to support the Iraq War (Smith and Lindsay, 2003). However, age did not appear to play any significant role in whether an individual supported intervention in the Kosovo War. In general, the role that age plays in determining pro and anti war support appears to be inconsistent. 
 
-The role of education in determining pro and anti war stance tends to be very consistent. These estimates tend to suggest that individuals with higher levels of education may be less likely to support war. People were less likely to support a military intervention in Kosovo with higher levels of education. In addition, people with higher levels of education were less likely to support the use of force if the objective of the mission is a matter of national security. However, education did not have a significant change for whether an individual supported military intervention in Yemen or in Lebanon.
+The role of education in determining pro and anti war stance tends to be very consistent. These estimates tend to suggest that individuals with higher levels of education may be less likely to support war. People were less likely to support a military intervention in Kosovo with higher levels of education. In addition, people with higher levels of education were less likely to support the use of force if the objective of the mission is a matter of national security. However, education did not have a significant change for whether an individual supported military intervention in Yemen or in Lebanon. In addition, according to Smith and Lindsay (2003), education plays a major role in determining support. Individuals with a postgraduate education were among the few groups who were not in favor of the Iraq War in late 2002. 
 
 There are many different additional variables that might be important in determining which individuals will support or not support a war. For instance, people tend to support a war if that war was initiated by the party that aligns with their own personal politics. For instance, democrats tend to be more supportive of military intervention if a democratic president initiated that war, and republican voters are more likely to support wars initiated during a republican presidency. In addition, individuals who are veterans tend to be less likely to support military intervention, as found by Khazan (2013). The affect of other demographic variables, such as Race, tend to have inconsistent evidence on the direction and the significance of the effect of racial identity on pro and antiwar stance. 
+
 
 
 
 ### Data
 
 > Introduce the data from both the ACS and the Chicago Foreign Council. This introduction should include what major questions I am answering, the specificatoins of the data (variables, observations, etc.)
-> Do some mild Data Analysis, such as creating graphs, in order to visualize the data.
 > Discuss the limitations of this data. For instance, the Census cannot and does not ask questions related to how we feel about political parties, veteran status. Ideally, we would want to create more stratas, related to race, veteran status, political party orientation, etc. However, limitations in the census data, as well as time constraints, would prevent me from doing this. 
 > In addition, the CFC data only has data for 4767 observations over 2 years. Because of this smaller sample size, we are restrained from using more 
 
-There are three different datasets that I used in this paper. The Chicago Council Survey was used in order to collect variables, including both the response variable and our explanatory variables. Next, the American Community Survey was used in order to collect population proportions in each state. Finally, the American National Election Studies data from 2020 was used in order to check if our estimates of state level proportions are accurate to future studies that have analyzed the support for military actions. 
 
 The first dataset that I used was the Chicago Council Survey of American Public Opinion on U.S. Foreign Policy. This is an annual survey that asks questions related to the foreign policies in the United States, and the public opinion on these policies. For the purpose of my data, I am using the 2016 and 2017 Chicago Council Survey of American public Opinion. These two years were used because they are both publically available, and they both have a question that is coded the same. The target population of this survey was those living in the U.S. who were non-institutionalized and who are aged over 18. The survey was administered by the KnowledgePanel, which is a probability based web panel designed to be representative of the U.S. results. The administrators of this survey included various checks, such as removing those who answered the test too quick and those who failed the "quality checks". The "quality checks" consisted of questions such as "Pick option 3", which indicates whether a respondent was actually attentive during the survey. The Chicago Council Survey has 4767 observations over the 2 years. 
 
@@ -106,150 +104,41 @@ Another variable of note is *AgeBracket*. This variables indicates what strata o
 
 There are some checks that we may want to do in order to evaluate whether there was any response bias. In presenting the question represented in variable *Q8_14*. In the survey, this response could have been showed anywhere between first and eighth. We might suspect that the order that Military Intervention is presented will influence the response and create response bias. One method can be checking if the order to the response is likely to change the effect of whether an individual thinks military intervention is effective or not depending on when the respondent is presented with the policy choice of military intervention. 
 
-```{r, fig.cap="Proportion of Belief in Effectiveness of War"}
+```{r}
 ChicagoForeignCouncilClean<-ChicagoForeignCouncilClean %>% mutate(
   StatementNumber=as.factor(as.numeric(ifelse(Year==2016,substring(DOV_Q8_14,2,2),
                              substring(DOV_Q8_14,2,3)))))
   #this is being done to adjust for the fact that there is a slight difference in how statement order was coded. 
-
-ggplot(ChicagoForeignCouncilClean,aes(x=StatementNumber,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Position that the Statement was Shown In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "ProWarFactor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
 ```
+
+```{r, fig.cap="Proportion of Belief in Effectiveness of War"}
+ggplot(ChicagoForeignCouncilClean,aes(x=StatementNumber,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Position that the Statement was Shown In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
+```
+
 Figure One illustrates the response of the effectiveness of war, based on the Variable *ProWarFactor*. There is not a lot of variation in the responses of the effectiveness of war depending on the position that the statement was shown in. For instance, we can see that people who were shown this statement earlier may report being more in favor of war, as opposed to those who were asked about military intervention later. However, it appears like the position that the statement was shown in does not carry a significant level of bias, and therefore we can consider that source of response bias as insignificant. 
 
 We can also observe other relationships in our data. One particular question might be whether individuals have different levels of support based on what region they live in. Different cultural values and different regional relationships with the military may determine the different levels of support for military conflict. For instance, Karol and Miguel (2007) tested whether different regions had different levels of political support for reelecting George W. Bush based on the number of casualties in Iraq, based on the speculation that different geographic regions had different relationships with the War. Therefore, observing the prowar and antiwar levels of support within each U.S. region may be important to determining if there is a different level of support depending on geographic region. 
 
 ```{r, fig.cap="Belief in the Effectiveness of War by Region of Residence"}
-ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Region the Respondent Lives In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "ProWarFactor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))+theme(axis.text.x=element_text(angle=90))
+ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Region the Respondent Lives In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))+theme(axis.text.x=element_text(angle=90))
 ```
 
 On Figure 2, we are able to see that there does appear to be some slight differences between different regions in determining the pro and anti war support for the effectiveness of war. The New England region has less support for conflict than the other regions. However, the West-South Central region and the East-South Central Region both tend to be more supportive of conflict than other regions. However, the significance of these responses is not clear based on Figure 2. 
 
+In addition, we are able to observe whether there are differences in pro war and anti war sentiment based on education. This is observed in Figure 3, which indicates that there is some correlation between education level and belief in the effectiveness of war. For people who did not receive an high school diploma, roughly 75% of respondents believed that military intervention is an effective method to achieve the U.S's foreign policy goals. However, for those with a postgraduate degree, about 50% of respondents believed that military intervention is likely to achieve the U.S's foreign policy goals. In addition, Figure 4 illustrates that there is some potential relationship between age and support for military intervention. Those who were between ages 18-24 and 45-64 are more likely support intervention, relative to other age brackets. However, this relationship does not appear to be as strong as other relationships. 
 
+```{r, fig.cap="Belief in the Effectiveness of War by Level of Education"}
 
-
-V201350<- This is the data set that we use for everything in the ANES dataset
-
-The dataset used is from Chap et al. (2019) , which explored 2014 congressional candidates’ ambiguity on political issues. The authors "hand-coded a random sample of 2012 congressional candidates’ websites, assigning an ambiguity score." A total of 870 websites from 2014 were then automatically scored using Wordscores, a program designed for political textual analysis. 
-
-Wordscores is a textual analysis software that performs spatial regressions and frequency clouds on training texts to analyze the "ambiguity" of political statements by analyzing their distance from actionable positions as compared to adjectival statements about the issues. In the original paper that documented the creation of Wordscores, researchers stated that "because it treats words unequivocally as data, our technique not only allows us to estimate policy positions from political texts written in any language but, uniquely among the methods currently available, it allows us to calculate confidence intervals around these point estimates."
-
-This kind of machine-learning analysis can be hard to interpret because verbs were shown to have much higher clarity scores in policy position pages, while adjectives and pronouns were seen as ambiguous. However, the verbs that were labeled as more clear were not necessarily actionable, such as "do," "can," and modifiers like "will." Relying on training texts (taken from the same genre of material) to code which words are more or less ambiguous can be an unreliable measure, as other ambiguous political communication could just as easily be seen in the training texts. [Footnote 1]
-
-The dataset is multilevel because it captures information both on a candidate and their district. The first level variables pertain to candidates. The candidates name, their party (a binary variable of 1 for Democrats and 0 for Republicans), incumbency (also binary, with 1 indicating incumbency), ideology and ambiguity are included. Ideology is a more specific measure of the candidate’s left-right orientation. Higher (positive) scores indicate more conservative candidates and lower (negative) scores indicate more liberal candidates; this type of ideological measure was done on both candidates and their district to create a 'mismatch' variable. Mismatch is the distance between the candidate’s ideology and the district’s ideology. The response variable is ambiguity. It is an assigned score, produced by the Wordscores software; higher scores indicate greater ambiguity (i.e., less clarity). This score is a standardized measurement of ambiguity, where a measurement of 0 represents that a candidate's ambiguity is equal to the average ambiguity for all candidates. [Footnote 2]
-
-The second level is the congressional district that the candidate is in. Each district is assigned an identification number. The district's ideological lean was measured to indicate whether the district was more liberal or conservative. There are also two "heterogeneity" variables at the district level, which measure the variability within a district's demographic information and ideological lean of their citizens. For both, higher scores imply more heterogeneity among voters.
-
-To clean our data, we reversed the sign of ambiguity. In the original dataset, higher ambiguity scores indicated less ambiguity. This method of measurement was confusing, and therefore we decided to multiply the ambiguity value by negative one, to get a new variable. Because this variable was a z-score, this will only change the direction, but not the magnitude. In addition, we also removed a datapoint. In District 409, some of the values for district level measurements had values that were mathematically impossible, such as having a negative value of Attitude Heterogeneity. A value of 0 indicates that there is complete Attitude Homogeneity, so therefore, a negative value would be impossible. 
-
-```{r, fig.cap="Table One: A Preview of the Dataset and its Variables"}
-pol_read <- read.csv("https://raw.githubusercontent.com/proback/BeyondMLR/master/data/ambiguity.csv")
-pol <- pol_read %>% filter(distID!=409) %>% mutate(ambiguity_fix = ambiguity*-1) %>% na.omit()
-#pol$democrat <- as.factor(pol$democrat)
-pol<-pol %>% dplyr::select(-ambiguity)
-T1 <- head(pol)       
-kable(T1, caption="First 6 rows of the dataset",col.names = c("Name","District ID", "Ideology Score","Issue Pages","Democrat","District Mismatch","Incumbent","Demographic Heterogeneity","Attitude Heterogeneity","District Lean","Ambiguity"),format="pipe") %>% kable_styling(latex_options=c(font_size = 8))
-#summary(pol)
+ggplot(ChicagoForeignCouncilClean,aes(x=EducationBracket3,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))+xlab("Level of Education")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
 ```
 
-We start with a correlation plot (Figure 1) and a scatterplot matrix (Figure 2) to analyze the relationships between numeric and continuous variables. As shown in Figure 1, the strongest linear correlation is between ideology and partisanship, which is expected because both are measures of ideology in their own way and (with few exceptions), democratic candidates will fall on the left and Republican candidates on the right. 
-
-
-```{r, fig.cap="Correlation Plot of Numeric Variables in the Dataset"}
-Pol_Corr_Matrix <- select_if(pol, is.numeric)
-AAA <- cor(Pol_Corr_Matrix, use = "pairwise.complete.obs")
-BBB <- corrplot(AAA)
+```{r, fig.cap="Belief in the Effectiveness of War by Age"}
+ggplot(ChicagoForeignCouncilClean,aes(x=AgeBracket,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Level of Education")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
 ```
 
-```{r, fig.cap="Correlation Matrix of Continuous Variables in the Dataset"}
-pol$democrat<-as.factor(pol$democrat)
-pol_matrix <- pol %>% dplyr::select(ambiguity_fix, incumbent, ideology, distLean, mismatch, totalIssuePages)
-ggpairs(pol_matrix)
-```
+Another dataset that was used in this analysis is the American Community Survey. The American Community Survey, or ACS, is a survey that has information on individuals and households throughout the country. In particular, this data focuses on the demographics, occupations, education and other background info of any respondents. The data that was used in this paper was the summary statistic named *B15001*, from the 5-Year ACS between 2015 and 2019. This data includes the raw count of number of respondents who were in a certain strata defined by gender, education level and age bracket. These stratas are pairwise disjoint, as it would require individuals to belong to multiple brackets. Then, I created a new variable, titled *TVP*, standing for Total Voting Population. This was the sum of all of the stratas. I then divided each strata by the variable *TVP*, in order to get an estimation of the proportion of each strata within each state.
 
-Following this, we specifically explore the relationships between ideological variables `ideology`, `party`, and `incumbency`. Figure 3 shows an overall trend of more ambiguous political communications as a candidate becomes more ideologically conservative. Figure 2 shows a more nuanced picture of the relationship between `ideology` and `ambiguity` where slopes differ according to party.The tendency for both parties is to have more ambiguous language for more candidates with moderate ideologies, but the effect is more extreme for Democrats. When we add whether a candidate was an incumbent or challenger in Figure 4, we see that for Republicans `incumbency` has a balancing effect. We see consistent ambiguity scores for Republican incumbents over a range of ideologies, unlike the other three groups. From Figure 5 we can also see that for both parties, challengers have more ambiguous language overall than their incumbent counterparts. This is reflected in Table 1 comparing `mean_ambiguity` for each group. These figures suggest we should consider adding interaction terms for `party` and `ideology`, and `party` and `incumbency`. Figure 6 shows the distribution of ideologies by party. We see overlap near the center of the distribution. This histogram, along with the party/ideology correlation test result showing correlation = -0.6724306 tell us that we should proceed with models including party and evaluate further using AIC and BIC.
-
-```{r, fig.cap="Scatterplot of Communication Ambiguity by Ideology"}
-
-ggplot(pol, aes(x = ideology, y = ambiguity_fix)) + geom_point() + geom_smooth(method = "lm", se = F) + labs(title = "Communication Ambiguity by Ideology", x = "Ideology", y = "Ambiguity") + scale_x_continuous(limits=c(-4,4), breaks=c(-4, -2, 0, 2, 4)) + scale_color_manual(values = c("red", "blue"), labels = c("Republican", "Democrat"))
-
-```
-
-```{r, fig.cap="Scatterplot of Communication Ambiguity by Ideology, Grouped by Partisanship"}
-
-ggplot(pol, aes(x = ideology, y = ambiguity_fix)) + geom_point(aes(color = factor(democrat)), alpha = 0.2) + geom_smooth(method = "lm", se = F, aes(color = factor(democrat))) + labs(title = "Communication Ambiguity by Party and Ideology", x = "Ideology", y = "Ambiguity", col = "Party") + scale_x_continuous(limits=c(-4,4), breaks=c(-4, -2, 0, 2, 4)) + scale_color_manual(values = c("red", "blue"), labels = c("Republican", "Democrat"))
-
-```
-
-```{r, fig.cap="Scatterplot of Communication Ambiguity by Ideology, Grouped by Partisanship and Incumbency"}
-
-ggplot(pol, aes(x = ideology, y = ambiguity_fix)) + geom_point(aes(color = factor(democrat)), alpha = 0.2) + geom_smooth(method = "lm", se = F, aes(color = factor(democrat), linetype = factor(incumbent))) + labs(title = "Communication Ambiguity by Party, Ideology, and Incumbency", x = "Ideology", y = "Ambiguity", col = "Party") + scale_x_continuous(limits=c(-4,4), breaks=c(-4, -2, 0, 2, 4)) + scale_color_manual(values = c("red", "blue"), labels = c("Republican", "Democrat")) + scale_linetype_discrete(name  ="Incumbency", breaks=c("0", "1"), labels=c("Challenger", "Incumbent"))
-
-```
-
-```{r, fig.cap="Ideological Distribution by Party"}
-
-ggplot(pol, aes(x = ideology)) + geom_histogram(aes(fill = factor(democrat))) + labs(title = "Ideological Distribution by Party", x = "Ideology", y = "Count", fill = "Party") + scale_x_continuous(limits=c(-4,4), breaks=c(-4, -2, 0, 2, 4)) + scale_fill_manual(values = c("red", "blue"), labels = c("Republican", "Democrat"))
-
-```
-
-This exploratory analysis of the relationship between party, ideology, and their effect on ambiguity was particularly important due to the strong but incomplete correlation of partisanship and ideology. We felt that using both ideology and party as a fixed effect may cause multicollinearity when we were originally creating our model. However, our correlation tests, plots, and further analysis have suggested that using both variables would not create a multicollinearity problem. In addition, both variables play an important part in profiling a candidate and explaining ambiguity in their messaging. Table 2 shows that incumbent Republicans and Democratic challengers have very similar mean ambiguity scores. 
-
-```{r}
-
-table_1 <- pol %>% group_by(factor(democrat), factor(incumbent)) %>% summarise(mean_ambiguity = mean(ambiguity_fix, na.rm = TRUE), standard_deviation = sd(ambiguity_fix, na.rm = TRUE), min = min(ambiguity_fix, na.rm = TRUE), max = max(ambiguity_fix, na.rm = TRUE), N = n())
-
- 
-
-kable(table_1, col.names=c("Democrat","Incumbent","Mean Ambiguity", "Standard Deviation of Ambiguity","Minimum Ambiguity", "Maximum Ambiguity","Number"),format="pipe",caption="Summary Statistics of Ambiguity, Grouped by Partisanship and Incumbency")
-
-```
-
-
-One important dimension of the political data set focuses on the political characteristics of the district. Some of these variables are important to predict political ambiguity. For instance, we might predict that districts that are more polarized might have more ambiguity in their politicians. In districts with higher levels of polarization, or in districts that have a greater variety in political ideologies, we might expect that there is a different level of ambiguity in a politician. Therefore, it may be important to observe different district level variables.
-
-First, we will construct numerous plots to observe the different variables at a district leve, in order to understand their distribution and the relationship that these variables have with ambiguity. These resulting figures are shown in Figure 7. District Lean, Attitude Heterogeneity and Demographic Heterogeneity all have a roughly normal distribution. District Demographic Heterogeneity and District Lean both appear to have skews, with District Lean having a skew towards liberal ideologies, and a skew towards districts with more Demographic Heterogeneity. In these graphs, we are able to see a few weaker, general trends. We can see that there is no clear correlation between ambiguity and District Lean, or District Attitude Heterogeneity and Ambiguity. However, the District Demographic Heterogeneity appears to have a relationship with the ambiguity, so we might consider adding that variable.
-
-\newpage
-
-```{r,fig.width=10,fig.height=5, fig.cap="Analyzing Frequency and Trends of District-Level Variables in Relation to Ambiguity"}
-
-pol_level_two<-pol %>%
-  group_by(distID) %>%
-  summarize(DistdemHeterogeneity=mean(demHeterogeneity),
-         DistattHeterogeneity=mean(attHeterogeneity),
-         DistAmbiguity=mean(ambiguity_fix),
-         DistLean=mean(distLean),
-         count=n())
-
- 
-
-h1<-ggplot(pol_level_two,aes(x=DistdemHeterogeneity))+xlab("District Demographic Heterogeneity")+ylab("Frequency")+geom_density(color="blue",fill="blue",alpha=.4)
-
- 
-
-h2<-ggplot(pol_level_two,aes(x=DistattHeterogeneity))+xlab("District Attitude Heterogeneity")+ylab("Frequency")+geom_density(color="blue",fill="blue",alpha=.4)
-
- 
-
-h3<-ggplot(pol_level_two,aes(x=DistLean))+xlab("District Lean")+ylab("Frequency")+geom_density(color="blue",fill="blue",alpha=.4)
-
- 
-
-a1<-ggplot(pol_level_two,aes(x=DistdemHeterogeneity,y=DistAmbiguity))+xlab("District Demographic Heterogeneity")+ylab("Average Ambiguity")+geom_point()+geom_smooth(method="lm",color="red")
-
- 
-
-a2<-ggplot(pol_level_two,aes(x=DistattHeterogeneity,y=DistAmbiguity))+geom_point()+xlab("District Attitude Heterogeneity")+ylab("Average Ambiguity")+geom_smooth(method="lm",color="red")
-
- 
-
-a3<-ggplot(pol_level_two,aes(x=DistLean,y=DistAmbiguity))+geom_point()+xlab("District Lean")+ylab("Average Ambiguity")+geom_smooth(method="lm",color="red")
-
- 
-
-grid.arrange(h1,h2,h3,a1,a2,a3,ncol=3)
-
-```
+The ACS does have a few problems with it that make it a suboptimal resource in order to estimate proportions. The ACS does not ask questions about values such as what political party an individual identifies with, or what foreign policy goals the U.S. should have. These questions may be important in relation to pro and anti war sentiment. These problems will be of particular concern during the implementation of a Multilevel Regression with Poststratification model. 
 
 
 ### Methods 
@@ -285,19 +174,10 @@ $\beta_3$ represents the expected change that we would see in ambiguity scores f
 ### Frequentist Results  
 
 
-```{r}
-M5<-lmer(data=pol,ambiguity_fix~ideology*democrat+incumbent+demHeterogeneity+totalIssuePages+(1|distID),REML=TRUE)
-#summary(M5)
-```
-
-
-```{r, fig.cap="Variance and Covariance Estimates for Random Effects",fig.width=6}
-kable(as.data.frame(VarCorr(M5)),digits=4,col.names = c("Group","Var. 1","Var. 2","Variance","Standard Deviation"),format="pipe",caption="Variance and Covariance Estimates for Random Effects")
-```
 
 
 ```{r, fig.cap="Estimates of Fixed Effects",fig.width=6}
-kable(summary(M5)$coefficients,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
+#kable(summary(M5)$coefficients,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 
 
@@ -322,6 +202,11 @@ It is clear that certain candidate- and district-level factors lead to more ambi
 
 ### References
 
+American National Election Studies. 2021. ANES 2020 Time Series
+Study Preliminary Release: Combined Pre-Election and Post-Election
+Data [dataset and documentation]. March 24, 2021 version.
+www.electionstudies.org
+
 British Broadcasting Corporation. (2014, November 11). The teenage soldiers of World War One. BBC News. Retrieved May 20, 2022, from https://www.bbc.com/news/magazine-29934965 
 
 Brown University. (2021, September 1). Costs of the 20-Year War on terror: $8 trillion and 900,000 deaths. Brown University. Retrieved May 17, 2022, from https://www.brown.edu/news/2021-09-01/costsofwar 
@@ -341,7 +226,11 @@ Khazan, O. (2013, September 4). What are the big factors determining whether Ame
 
 Lieberfeld, D. (2008). What Makes An Effective Antiwar Movement? Theme-Issue Introduction. International Journal of Peace Studies, 13(1), 1–14. http://www.jstor.org/stable/41852966
 
+Smeltz, Dina, Friedhoff, Karl, Kafura, Craig J., Holyk, Gregory, and Busby, Joshua W. 2016 Chicago Council Survey of American Public Opinion on U.S. Foreign Policy. Ann Arbor, MI: Inter-university Consortium for Political and Social Research [distributor], 2018-04-13. https://doi.org/10.3886/ICPSR36806.v1
 
+Smeltz, Dina, Daalder, Ivo, Friedhoff, Karl, and Kafura, Craig. 2017 Chicago Council Survey of American Public Opinion on U.S. Foreign Policy. Inter-university Consortium for Political and Social Research [distributor], 2021-06-21. https://doi.org/10.3886/ICPSR37970.v1
+
+Smith, C., & Lindsay, J. M. (2003, June 1). Rally 'Round the flag: Opinion in the United States before and after the Iraq War. Brookings. Retrieved March 29, 2022, from https://www.brookings.edu/articles/rally-round-the-flag-opinion-in-the-united-states-before-and-after-the-iraq-war/ 
 
 
 \newpage
@@ -354,12 +243,3 @@ Lieberfeld, D. (2008). What Makes An Effective Antiwar Movement? Theme-Issue Int
 
 This is important for two reasons: First, any outside analysis that a person sees about Wordscores software will seem to draw the opposite conclusions; this is not the case, but the language prioritizes clarity over ambiguity. And second, this mutation was made after beginning work on our graphics and may not be reflected as clearly as possible in our analysis. This footnote serves to hopefully dispel any confusion. 
 
-```{r,include=FALSE}
-Check <- pol_read %>% group_by(distID) %>% summarize(MeanLean=mean(distLean),MeanDemHet=mean(demHeterogeneity),MeanAttHet=mean(attHeterogeneity))
-
-Check2 <-left_join(pol_read,Check)
-Check3 <-Check2 %>% mutate(DiffLean=distLean-MeanLean,Diffatt=attHeterogeneity-MeanAttHet,DiffDemHet=demHeterogeneity-MeanDemHet)
-
-Check3 %>% filter(DiffLean!=0|Diffatt!=0|DiffDemHet!=0)
-#this was a check done to make sure that none of our level 2 data was different within the same district. 
-```
