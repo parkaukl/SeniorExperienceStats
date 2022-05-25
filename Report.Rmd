@@ -2,7 +2,6 @@
 title: Estimating Pro-War and Anti-War Sentiments by State Using Multilevel Regression with Poststratification
 author: "Parker Kaukl"
 date: 5/17/2022
-
 output:
   pdf_document: default
   html_document:
@@ -89,11 +88,6 @@ There are many different additional variables that might be important in determi
 
 ### Data
 
-> Introduce the data from both the ACS and the Chicago Foreign Council. This introduction should include what major questions I am answering, the specificatoins of the data (variables, observations, etc.)
-> Discuss the limitations of this data. For instance, the Census cannot and does not ask questions related to how we feel about political parties, veteran status. Ideally, we would want to create more stratas, related to race, veteran status, political party orientation, etc. However, limitations in the census data, as well as time constraints, would prevent me from doing this. 
-> In addition, the CFC data only has data for 4767 observations over 2 years. Because of this smaller sample size, we are restrained from using more 
-
-
 The first dataset that I used was the Chicago Council Survey of American Public Opinion on U.S. Foreign Policy. This is an annual survey that asks questions related to the foreign policies in the United States, and the public opinion on these policies. For the purpose of my data, I am using the 2016 and 2017 Chicago Council Survey of American public Opinion. These two years were used because they are both publically available, and they both have a question that is coded the same. The target population of this survey was those living in the U.S. who were non-institutionalized and who are aged over 18. The survey was administered by the KnowledgePanel, which is a probability based web panel designed to be representative of the U.S. results. The administrators of this survey included various checks, such as removing those who answered the test too quick and those who failed the "quality checks". The "quality checks" consisted of questions such as "Pick option 3", which indicates whether a respondent was actually attentive during the survey. The Chicago Council Survey has 4767 observations over the 2 years. 
 
 In order to clean this data, we took multiple steps. First, any cases where there was a missing value were discarded, in order to prevent any bias that might occur by keeping these variables in the dataset. In addition, many of the variables were manipulated in order to create new variables for the purpose of a regression. Initially, there was a variable called *Q8_14*. This variable recorded the respondents answer to the question *How effective do you think each of the following approaches are to achieving the foreign policy goals of the United States- very effective, somewhat effective, not very effective, or not effective at all: Intervening Militarily*. Using this variable, we manipulated it into a new variable called *ProWarBinary*. If this variable is equal to 1, then the respondent believes that military intervention is either very effective or somewhat effective. Meanwhile, if the respondent believes that military intervention is not very effective or not effective at all, then the variable will return with a value of 0. 
@@ -138,10 +132,27 @@ ggplot(ChicagoForeignCouncilClean,aes(x=AgeBracket,fill=ProWarFactor))+geom_bar(
 
 Another dataset that was used in this analysis is the American Community Survey. The American Community Survey, or ACS, is a survey that has information on individuals and households throughout the country. In particular, this data focuses on the demographics, occupations, education and other background info of any respondents. The data that was used in this paper was the summary statistic named *B15001*, from the 5-Year ACS between 2015 and 2019. This data includes the raw count of number of respondents who were in a certain strata defined by gender, education level and age bracket. These stratas are pairwise disjoint, as it would require individuals to belong to multiple brackets. Then, I created a new variable, titled *TVP*, standing for Total Voting Population. This was the sum of all of the stratas. I then divided each strata by the variable *TVP*, in order to get an estimation of the proportion of each strata within each state.
 
-The ACS does have a few problems with it that make it a suboptimal resource in order to estimate proportions. The ACS does not ask questions about values such as what political party an individual identifies with, or what foreign policy goals the U.S. should have. These questions may be important in relation to pro and anti war sentiment. These problems will be of particular concern during the implementation of a Multilevel Regression with Poststratification model. 
+The ACS does have a few problems with it that make it a suboptimal resource in order to estimate proportions. The ACS does not ask questions about values such as what political party an individual identifies with, or what foreign policy goals the U.S. should have. These questions may be important in relation to pro and anti war sentiment. These problems will be of particular concern during the implementation of a Multilevel Regression with Post Stratification model. 
 
 
 ### Methods 
+
+This paper will focus on using a Multilevel Regression with Poststratification, or MRP. A Multilevel Regression with Post Stratification is a method to estimate public opinion for areas that are smaller than the national level. It is highly unlikely that there will be multiple state surveys that will all ask the same questions, in similar ways. Because of this, statisticians have developed strategies to use national level opinion polls to estimate public opinion for smaller geographic areas. One method is disaggregation, which is where national surveys are pooled in order to calculate public opinion. However, MRP has become a alternative method to disaggregation. MRP has been shown to outperform disaggregation with small and medium sized samples, and can estimate state public opinion with a single large national poll of roughly 1,400 respondents. MRP is better suited for estimating public opinion issues that are swayed heavily by circumstances. In addition, MRP is useful for estimating the responses in smaller states that do not have a large number of respondents who reside in those states. Because of these advantages, building an MRP model is preferable to using a model of disaggregation to estimate the beliefs on the effectiveness of war in each U.S. State. 
+
+There are a few steps needed in order to create an MRP. First, data needs to be collected that focuses on public opinion data, and different potential predictors. Next, there would need to be census data collected in order to estimate the proportion of different stratas in each state. We would also need to estimate the probability of believing U.S. intervention is effective within each strata based on our public opinion data, using a logistic regression from the Chicago Council Surveys. Then, using our estimates of the probability of any person within a strata being pro war, we poststratify these models using the proportional size of the strata relative to the rest of the state. 
+
+One important detail in an MRP is that we are required to have the design of the logistic regression and the design of the ACS must match in order to effectively implement an MRP. An MRP works because it is accurately able to assign each predicted response based on our regression to our weights for poststratification. Therefore, there would be significant problems in using a Multilevel Regression with Post Stratification if the multilevel regression includes terms that are not included in poststratify weights. This would result in us having predicted response probabilities without any understanding of what the approximate weights of these responeses will be. 
+
+Therefore, in building our logistical regression, we will attempt to reduce the AIC and we will only build a model where we can also estimate the weights of these different responses based on the ACS data. In addition, the model that we analyze will also focus on the most important aspects that may have been identified in our data section. 
+
+
+
+
+
+
+
+
+
 
 To evaluate different models, we have used the AIC and BIC values. These values show us how much variability in a model is accounted for, while penalizing the use of additional variables. We decided that the best model minimizes these AIC and BIC terms compared to other models. In addition, the model that we want to choose would investigate the relationships with ambiguity that we have previously identified. We started with a baseline unconditional means model. From there, we decided to include additional terms, as this improved the AIC and BIC of our model. An ideal model for this report would reduce the AIC and BIC relative to other models, while addressing the effect on ambiguity of candidate’s party, ideology, the number of issue pages and demographic heterogeneity. 
 
@@ -220,6 +231,8 @@ Haas, R. (1994). Intervention: The Use of American Military Force in the Post-Co
 Jentleson, B. W. (1992). The Pretty Prudent Public: Post Post-Vietnam American Opinion on the Use of Military Force. International Studies Quarterly, 36(1), 49–73. https://doi.org/10.2307/2600916
 
 Karol, D., & Miguel, E. (2007). The Electoral Cost of War: Iraq Casualties and the 2004 Presidential Election. The Journal of Politics, 69(3), 633–648.
+
+Kastellec, J., Lax, J., & Phillips, J. (2019). Estimating State Public Opinion With Multi-Level Regression and Poststratification using R. Princeton.
 
 Khazan, O. (2013, September 4). What are the big factors determining whether Americans support war? The Atlantic. Retrieved March 29, 2022, from https://www.theatlantic.com/politics/archive/2013/09/what-are-the-big-factors-determining-whether-americans-support-war/279290/-sets-box-office-record 
 
