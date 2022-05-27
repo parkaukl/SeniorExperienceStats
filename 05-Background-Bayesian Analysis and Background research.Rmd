@@ -57,7 +57,6 @@ ProWar_Model_Posterior<-update(ProWar_Model_Prior,prior_PD=FALSE)
 print(ProWar_Model_Posterior)
 summary(ProWar_Model_Posterior)
 
-#THIS BAYESIAN COMPONENT IS A FUCKING NIGHTMARE, with how all of this is set up. 
 
 
 ```
@@ -92,7 +91,6 @@ simulate_mrp_data<-function(n) {
 
 }
 
-simulate_mrp_data()
 ```
 
 ```{r}
@@ -244,15 +242,4 @@ mcmc_neff(ratio,size=2)
 ```
 It is noted by the authors that we should only be worried about a low N_eff/N is the value is below .1. This is not the case in this regard. There are, certainly a few variables that may have some mild concerns, but nothing too worrying. 
 
-```{r}
-summary(da38034.0001$V201350)
-
-307+886+4068
-
-307+886+4068+2323+638
-
-5261/8222
-
-mean(metadataStateGIS2$EstimatedProbability)
-```
 

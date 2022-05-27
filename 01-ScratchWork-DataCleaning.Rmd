@@ -26,7 +26,6 @@ library(coda)
 ```{r}
 load("36806-0001-Data.rda") #This is 2016
 load("37970-0001-Data.rda") # This is 2017
-load("38034-0001-Data.rda") # This is the ANES election survey
 ChicagoForeignCouncilRaw2016<-as.data.frame(da36806.0001) %>%
   mutate(Year=2016) %>%
   dplyr::select(CASEID, XPHISPAN, DOV_Q8_14,PPAGE,PPEDUC,PPEDUCAT,PPETHM,PPGENDER,PPHHHEAD,PPHHSIZE,PPHOUSE,PPINCIMP,PPMARIT,PPMSACAT,PPREG4,PPREG9,PPRENT,PPSTATEN,PPWORK,Q8_14,Year)
@@ -339,64 +338,12 @@ AIC(M25b)
 ```
 
 
-```{r eval=FALSE, include=FALSE}
-#summary(M16)
-#We can see that M16 minimizes the results of AIC, it appears. However, I do have some concerns about whether it would be better to use this to predict or poststratify for the state. Therefore, I believe that using a random effect for Region 9 might be preferred. In addition, the AIC only increases by one betweem Model 16 and Model 17. However, upon doing some more analysis, Model 19 appears to have a similar AIC, and a better BIC
-#summary(M17)
-summary(M19)
-summary(M23)
-summary(M24)
-# This might be something nice to include
-summary(M25a)
-summary(M25b)
-
-```
-
-
-I feel like Model 16 works the best of anything that I have seen so far. Therefore, we are able to find a lot of different variables, and what their expected values are. In addition, we can observe some of the effects in r of each random effect. 
-
-```{r eval=FALSE, include=FALSE}
-FullCoefficientsList<-coef(M19)$Region9
-FullCoefficientsList
-StateRandomEffects<-FullCoefficientsList[,0:1]
-#This Will allow us to understand what variable is the most important for this
-
-# Background says that Men tend to be more pro-war, 
-# Background says that higher levels of education tend to be more anti war
-
-#This set was a prior attempt to create an MRP
-
-```
-
-
-```{r eval=FALSE, include=FALSE}
-library(rstanarm)
-
-fit<-stan_glmer(data=ChicagoForeignCouncilClean,ProWarBinary~MALE+factor(EducationBracket3)+factor(AgeBracket)+(1|Region9),family=binomial(link="logit"))
-#Prior attempt to make an MRP. This is likely not important. Therefore, I may consider trying to find a way to deactivate this code. 
-```
-```{r eval=FALSE, include=FALSE}
-summary(fit)
-```
-
-```{r eval=FALSE, include=FALSE}
-#Prior MRP Attempt. This is not useful. This will likely be cut in any future condensed version of this project. 
-ranef(M25)$MALE
-
-ranef(M25)$EducationBracket3
-
-ranef(M25)$AgeBracket
-
-ranef(M25)$State
-```
 
 ```{r}
 coefficients<-coef(M25)$State
 print(coefficients)
 names(coefficients)<-c("Intercept","MALE","HSGrad","SomeCollege","Bachelor","Graduate","A25.34","A35.44","A45.64","A65Plus")
   
-
-
 
 print(coefficients)
 estimates<-coefficients %>%
@@ -466,10 +413,6 @@ RawEstimates<-ChicagoForeignCouncilClean %>%
   arrange(State) #We convert the percentage to be multiplied by 100. 
 ```
 
-
-```{r}
-stargazer(M25)
-```
 
 
 
