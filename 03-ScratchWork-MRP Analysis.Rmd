@@ -60,7 +60,7 @@ df2<-df[2:51,]
 ```{r}
 # Define SSR
 
-ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text(nudge_y=1)
+ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text_repel(size=3)
 
 # Change wording to Sample Size
 

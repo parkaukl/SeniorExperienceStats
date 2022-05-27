@@ -36,6 +36,7 @@ library(coda)
 library(rstanarm)
 library(bayesplot)
 library(stringr)
+library(ggrepel)
 ```
 
 
@@ -162,7 +163,7 @@ $\theta$ represents whether an individual believes that war is effective or inef
 
 By construction, our stratas will be pairwise disjoint and they will cover the voting aged population. The stratas are broken up into categories based on age, sex, and educational obtainment. In addition, it is not possible for an individual in the voting age population to not fit into any of the stratas, or for them to fit into multiple stratas. This is important to ensuring that our MRP model will be successful in estimating the probability of an individual's beliefs on war within a certain state. 
 
-This paper will also build a logistic regression under a Bayesian framework. This would require us to set our priors. These priors would be based on the background research, mostly from the regressions that are in Gelpi and Feaver (2009).
+This paper will also build a logistic regression under a Bayesian framework. This would require us to set our priors. These priors would be based on the background research, mostly from the regressions that are in Gelpi and Feaver (2009). Using logitsic regressions on public opinion on conflict, we should be able to have an estimate of 
 
 
 
@@ -171,11 +172,6 @@ This paper will also build a logistic regression under a Bayesian framework. Thi
 
 ### Frequentist Results  
 
-
-```{r}
-plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
-```
-
 ```{r, fig.cap="Estimates of Fixed Effects",fig.width=6}
 M25Table<-summary(M25)$coefficient
 rownames(M25Table)<-c("Intercept","Male","High School Graduate","Some College","Bachelor's Degree","Graduate Degree","Age 25 to 34","Age 35 to 44","Age 45 to 64","Age 65 or older")
@@ -183,11 +179,22 @@ kable(M25Table,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 
 
+```{r}
+plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
+```
+
+```{r}
+ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text_repel(size=3)+theme_minimal()+xlab("Number of Respondents from Each Sttae")+ylab("Squared Difference of Estimates of Beliefs on War")
+```
+
+
+
 The model estimates that Republican challengers with no issue pages, an ideology of 0, running in a district with no demographic heterogeneity will have communication ambiguity of -0.749305. For each additional point in ideology for Republicans, the model estimates a 0.012945 point increase in communication ambiguity after accounting for all other fixed effects. However, it should also be noted that this result is not statistically significant, with a large p-value of 0.45. Democrats are estimated to have communication ambiguity 0.047871 less than Republicans after accounting for all other fixed effects. Incumbents are estimated to have communication ambiguity 0.117505 less than challengers after accounting for all other fixed effects. For each additional point in a district's demographic heterogeneity, the model estimates a 0.815260 point increase in communication ambiguity after accounting for all other fixed effects. For each additional issue page on a candidate's website, the model estimates a 0.015542 point decrease in communication ambiguity after accounting for all other fixed effects. For each additional point in ideology, the model estimates that Democrats have an additional 0.100959 point increase in communication ambiguity over Republicans. The model estimates that the standard deviation in communication ambiguity across districts is 0.007862 after accounting for all fixed effects.
 
 
 
 ### Bayesian Results
+
 
 
 
