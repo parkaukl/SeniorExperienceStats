@@ -169,16 +169,20 @@ The expected prior for the effect of beliefs on war for gender is rather complex
 
 Another important prior to set is the expectations for the priors by age bracket. Most of these surveys use age as a continuous variable, instead of establishing different age brackets. However, these linear relationships tend to suggest that the effect of age on support for war tends to be roughly close to 0. In many of these regressions, the effect of age was also not statistically significant. Therefore, there may be some value in establishing a vague prior, since there is not strong evidence establishing a trend. Therefore, we might decide to use a prior, where for each age bracket we assume that the coefficient has a normal prior, with a mean of zero and a standard deviation of 1. 
 
-Finally, a prior would need to be set for the effect of education on beliefs of war. During recent history, the 
+Finally, a prior would need to be set for the effect of education on beliefs of war. In older studies, such as examining support for conflicts in Lebanon and Somalia, there was not a very strong relationship between the level of education and an individual's preference for military conflict. However, In Kosovo, higher levels of education lead to an individual to be less likely to support military intervention. In addition, individuals were more likely be classified as "timid hawks" if they had more education. Because of these relationships, we might expect that the prior is that higher levels of education result in a lower likelihood of supporting war. Arbitrarily, some priors can therefore be set. For instance, we may establish that every subsequent level of education will affect education by -.2. Therefore, we might establish that each of our levels of education has an independent prior, as established below. 
 
-
-
-
-
-
-
+\begin{flalign}
+&\text{High School Graduate}\sim N(-.2,1) &\\
+& \text{Some College} \sim N(-.4,1) &\\
+& \text{Bacehlor Degree} \sim N(-.6,1) &\\
+& \text{Graduate Degree} \sim N(-.8,1) &
+\end{flalign}
 
 ### Frequentist Results  
+
+On Table 1, we are able to see the effects of each standard effect in our model, as outlined previously on our equation through lines 2 to 4. We are able to see that the estimated intercept on this equation is 1.1191. This indicates that we expect that the average Women, aged between 18-24 and that did not obtain a high school diploma is 75.38% likely to believe that military intervention is effective.  According to our data from the Chicago Council, all else held equal, men are 23.5% less likely to believe that military intervention is an effective method of achieving the U.S.'s policy goals. These results are statistically significant. 
+
+The effects of education are also very evident, based on our model. A respondent who had graduate from high school was 21.56% less likely to believe that military intervention is effective in achieving the U.S.'s goals, when compared to individuals who did not achieve a high school education. Meanwhile, respondents who attended some college were likely be 
 
 ```{r, fig.cap="Estimates of Fixed Effects",fig.width=6}
 M25Table<-summary(M25)$coefficient
