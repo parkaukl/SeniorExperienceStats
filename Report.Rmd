@@ -169,7 +169,7 @@ The expected prior for the effect of beliefs on war for gender is rather complex
 
 Another important prior to set is the expectations for the priors by age bracket. Most of these surveys use age as a continuous variable, instead of establishing different age brackets. However, these linear relationships tend to suggest that the effect of age on support for war tends to be roughly close to 0. In many of these regressions, the effect of age was also not statistically significant. Therefore, there may be some value in establishing a vague prior, since there is not strong evidence establishing a trend. Therefore, we might decide to use a prior, where for each age bracket we assume that the coefficient has a normal prior, with a mean of zero and a standard deviation of 1. 
 
-Finally, a prior would need to be set for the effect of education on beliefs of war. 
+Finally, a prior would need to be set for the effect of education on beliefs of war. During recent history, the 
 
 
 
@@ -204,7 +204,10 @@ The model estimates that Republican challengers with no issue pages, an ideology
 ### Bayesian Results
 
 ```{r}
-kable(summary(ProWar_Model_Posterior)[1:10,])
+M25TableBayes<-summary(ProWar_Model_Posterior)[1:10,]
+rownames(M25TableBayes)<-c("Intercept","Male","High School Graduate","Some College","Bachelor's Degree","Graduate Degree","Age 25 to 34","Age 35 to 44","Age 45 to 64","Age 65 or older")
+colnames(M25TableBayes)<-c("Mean","MCSE","SD","10% Quantile","Median","90% Quantile","n_eff","Rhat")
+kable(M25TableBayes,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 
 
