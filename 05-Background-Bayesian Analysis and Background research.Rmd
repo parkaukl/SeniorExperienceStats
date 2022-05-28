@@ -67,31 +67,6 @@ ChicagoForeignCouncilBayes<-ChicagoForeignCouncilClean %>%
 ```
 
 
-```{r}
-# This is copied from MRP in rstanarm. This is important in order to do our MRP Function
-
-# A significant problem here is the differences in formatting. Because of this, I will either have to switch the Original Chicago Foreign Council File, or the new file
-
-
-Stratas<-colnames(estimates)[2:51]
-
-
-simulate_mrp_data<-function(n) {
-  J<-c(Stratas,States) # The first represents our "strata", the second our state
-  poststrat<-as.data.frame(array(NA,c(prod(J),length(J)+1)))
-  colnames(poststrat)<-c("Strata","State",'N')
-  count<-0
-  for(i1 in 1:J[1]) {
-    for (i2 in 1:J[2]){
-      count<-count+1
-      poststrat[count,1:2]<-c(i1,i2)
-      poststrat$N<-NA
-    }
-  }
-
-}
-
-```
 
 ```{r}
 summary(ProWar_Model_Posterior)

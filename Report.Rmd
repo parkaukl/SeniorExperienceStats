@@ -163,7 +163,15 @@ $\theta$ represents whether an individual believes that war is effective or inef
 
 By construction, our stratas will be pairwise disjoint and they will cover the voting aged population. The stratas are broken up into categories based on age, sex, and educational obtainment. In addition, it is not possible for an individual in the voting age population to not fit into any of the stratas, or for them to fit into multiple stratas. This is important to ensuring that our MRP model will be successful in estimating the probability of an individual's beliefs on war within a certain state. 
 
-This paper will also build a logistic regression under a Bayesian framework. This would require us to set our priors. These priors would be based on the background research, mostly from the regressions that are in Gelpi and Feaver (2009). Using logitsic regressions on public opinion on conflict, we should be able to have an estimate of 
+This paper will also build a logistic regression under a Bayesian framework. This would require us to set our priors. These priors would be based on the background research, mostly from the regressions that are in Gelpi and Feaver (2009). Using logistic regressions on public opinion on conflict, we should be able to have an estimate of the effects of gender, education, and age on an individual's beliefs on war. 
+
+The expected prior for the effect of beliefs on war for gender is rather complex. For instance, traditional studies that focused on War, particularly in the 1980s and 1990s, tend to suggest that men tend to be more supportive of conflicts. However, this is contrasted with some contemporary data. For instance, Women tended to be more likely to be classified as "Timid Hawks". In addition, women tended to have higher levels of support for military intervention is Kosovo, and for Humanitarian Missions in Yemen. There are two very important distinctions to be made in our previous data, the age of the data that we are observing, and how similar these surveys are to the Chicago Council survey question that we analyzed. For instance, more recent data tends to suggest women may be more likely to believe in conflict than men. In addition, when asked about military intervention before it happened, women tended to be more likely to support intervention, as seen in supporting intervention in Kosovo and Yemen. This is similar to the structure of the Chicago Foreign Council question, as it asks for the respondents level of support before any military intervention has occurred. Because of this bias, there is some evidence that Men may be slightly less likely to believe that war is effective in the abstract. Because of this, it might make sense to assign that the prior for gender is a vague prior with a slight preference to show that women may prefer military conflict. Because of this, a prior of $Male\sim N(-.1,1)$ may be appropriate. The standard deviation suggests that we believe it is plausible that the effect could be far greater. 
+
+Another important prior to set is the expectations for the priors by age bracket. Most of these surveys use age as a continuous variable, instead of establishing different age brackets. However, these linear relationships tend to suggest that the effect of age on support for war tends to be roughly close to 0. In many of these regressions, the effect of age was also not statistically significant. Therefore, there may be some value in establishing a vague prior, since there is not strong evidence establishing a trend. Therefore, we might decide to use a prior, where for each age bracket we assume that the coefficient has a normal prior, with a mean of zero and a standard deviation of 1. 
+
+Finally, a prior would need to be set for the effect of education on beliefs of war. 
+
+
 
 
 
@@ -195,8 +203,23 @@ The model estimates that Republican challengers with no issue pages, an ideology
 
 ### Bayesian Results
 
+```{r}
+kable(summary(ProWar_Model_Posterior)[1:10,])
+```
 
 
+
+```{r}
+plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
+```
+
+```{r}
+mcmc_rhat(rhats)
+```
+
+```{r}
+mcmc_intervals(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10])
+```
 
 ### Discussion and Conclusions   
 
