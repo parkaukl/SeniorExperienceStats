@@ -180,7 +180,7 @@ Finally, a prior would need to be set for the effect of education on beliefs of 
 
 ### Frequentist Results  
 
-On Table 1, we are able to see the effects of each standard effect in our model, as outlined previously on our equation through lines 2 to 4. We are able to see that the estimated intercept on this equation is 1.1191. This indicates that we expect that the average Women, aged between 18-24 and that did not obtain a high school diploma is 75.38% likely to believe that military intervention is effective.  According to our data from the Chicago Council, all else held equal, men are 23.5% less likely to believe that military intervention is an effective method of achieving the U.S.'s policy goals. These results are statistically significant. 
+On Table 1, we are able to see the effects of each standard effect in our model, as outlined previously on our equation through lines 2 to 4. We are able to see that the estimated intercept on this equation is 1.1191. This indicates that we expect that the average Women, aged between 18-24 and that did not obtain a high school diploma is 75.38% likely to believe that military intervention is effective, before accounting for the random effect of the state.  According to our data from the Chicago Council, all else held equal, men are 23.5% less likely to believe that military intervention is an effective method of achieving the U.S.'s policy goals. These results are statistically significant. 
 
 The effects of education are also very evident, based on our model. A respondent who had graduate from high school was 21.56% less likely to believe that military intervention is effective in achieving the U.S.'s goals, when compared to individuals who did not achieve a high school education. However, these results were not statistically significant at the 5% level. Meanwhile, respondents who attended some college were likely be 38.07% less likely to believe in military intervention as effective when compared to those who did not achieve a high school education. Respondents who got a bachelor's degree were 46.31% less likely to believe that military intervention was effective compared to those who did not get a high school diploma. Finally, respondents who had a postgraduate education were 64.67% less likely to believe that war is effective compared to those who did not get a high school diploma. All of these results were statistically significant at the 5% level. 
 
@@ -191,38 +191,43 @@ kable(M25Table,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 The final set of fixed effects are related to the age of the respondent. People who are in the age range from 25 to 34 are 2.19% less likely to believe that military conflict is an effective strategy to achieve the U.S's foreign policy goals. However, these results are not statistically significant. Respondents who are aged 35 to 44 were 14.83% more likely to believe that military intervention is effective, but this result was not statistically significant. People aged 45 to 64 were 26.07% more likely to believe that military intervention, compared to people who were aged 18 to 24. These results were only statistically significant at the 10% level. 
 
-```{r}
+Using our estimates, we are able to guess what the potential public opinion within each state may be. Therefore, this data can be displayed on Figure 5. Some states and regions tend to have a lower opinion of war than other states, as illustrated by the Map. However, in general, most states tend to have a level estimated 60 to 70% of voting aged adults within that state who believe that War is effective at achieving the U.S's goals. States such as California, Massachusetts, and Minnesota all have roughly 62% of their citizens who believe that military intervention is an effective strategy to achieve the U.S's goals. Meanwhile, in Texas roughly 68% of citizens believe that military intervention is an effective strategy to achieve the U.S's foreign policy goals. Other states, such as Arkansas, North Carolina, and Indiana, also have comparatively high levels of public belief that military intervention is effective. 
+
+```{r, fig.cap="U.S. Map of Public Opinion on the Effectiveness of War under a Frequentist Model"}
 plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
 ```
 
-```{r}
-ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text_repel(size=3)+theme_minimal()+xlab("Number of Respondents from Each Sttae")+ylab("Squared Difference of Estimates of Beliefs on War")
+```{r, fig.cap="Differences in estimates of Public Opinion within Each State, from an MRP and a Simple Disaggregation Model"}
+ggplot(data=df2,aes(x=Number.Sampled,y=(EstimatedProbability-PercentSupportSampled),label=State))+geom_point()+geom_text_repel(size=3)+theme_minimal()+xlab("Number of Respondents from Each State")+ylab("Squared Difference of Estimates of Beliefs on War")+geom_hline(yintercept = 0,color="red")
 ```
 
-
-
+Another interesting detail will be observing the comparison of using MRP and using disaggregation in order to estimate the probability that an individual is supportive of war. Disaggregation is a blunt method, where we first break a national survey into each subsequent, smaller region, and then use the raw percent of responses from that subset of the survey to estimate public opinion without any model. The difference between the MRP model and a simple disaggregation model is illustrated on Figure 6. On this graph, points above the red line indicate that the MRP estimate is greater than the estimate provided by observing at the percent who believed war was effective in the poll within each state. Likewise, points below the red line indicate that the MRP based estimate is lower than the estimate provided by observing the percent who believed war was effective within each state. Within some states, such as Hawaii, Vermont, Kansas, and North Dakota, the estimates are substantially different between these two methods. 
 
 ### Bayesian Results
 
+Table 2 illustrates the results of running a Bayesian model, using the priors from the methods section. Before accounting for the random effect of what state the respondent lives in, a 18 to 24 year old women who does not have a high school diploma has a 75.46% probability of believing the war is an effective strategy to achieve foreign goals. Men are 23.44% less likely to support war, all else held equal. Meanwhile, high school graduates are 21.39% less likely to believe that military intervention is effective. Respondents who attended some college, obtained a bachelors degree, and attended beyond a bachelors degree were 37.97%, 46.17% and 64.52% less likely to believe that war was effective respectively, all else held equal.
+
+The effects of age are also illustrated on Table 2. Respondents who are aged 25 to 34 were 2.76% less likely to believe that war was effective when compared to 
+
 ```{r}
-M25TableBayes<-summary(ProWar_Model_Posterior)[1:10,]
+M25TableBayes<-summary(ProWar_Model_Posterior)[1:10,c(1,3,4,5,6,7,8)]
 rownames(M25TableBayes)<-c("Intercept","Male","High School Graduate","Some College","Bachelor's Degree","Graduate Degree","Age 25 to 34","Age 35 to 44","Age 45 to 64","Age 65 or older")
-colnames(M25TableBayes)<-c("Mean","MCSE","SD","10% Quantile","Median","90% Quantile","n_eff","Rhat")
+colnames(M25TableBayes)<-c("Mean","SD","10% Quantile","Median","90% Quantile","n_eff","Rhat")
 kable(M25TableBayes,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 
 
 
-```{r}
+```{r, fig.cap="U.S. Map of Public Opinion on the Effectiveness of War under a Bayesian Model"}
 plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
 ```
 
-```{r}
-mcmc_rhat(rhats)
+```{r, fig.cap="R-Hat Measures for each Effect to Estimate Between- and Within-Chain Covergence"}
+plot(mcmc_rhat(rhats))
 ```
 
-```{r}
-mcmc_intervals(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10])
+```{r,fig.cap="The 95% Credible Intervals of Estimates for the Coefficients in the Bayesian Model"}
+plot(mcmc_intervals(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10]),prob_outer=.95)
 ```
 
 ### Discussion and Conclusions   
@@ -290,7 +295,4 @@ Wang,W., et al., Forecasting elections with non-representative polls. Internatio
 [1] There were other models that did produce AIC. However, these would not have allowed us to get a comprehensive set of weights from the ACS. For instance, some of these models would have produced estimations that we would not have any adequate weights to use in order to poststratify, according to the ACS summary statistics. Another case could be seen by the Model titled "M25b". This model included the effect of ethnicity. However, it would have not allowed us to provide weights for any individual who was between the ages of 18 and 25. This would be a large chunk of the voting population that the model would not have adequate weights for, which would be a problem. 
 
 
-[2] In some of our data wrangling, we chose to switch the sign of the ambiguity variable in the dataset. Previously, it was higher scores that indicated higher clarity. However, because ambiguity is the response variable and the variable is titled 'ambiguity' we thought it made more sense for analysis to switch these around. 
-
-This is important for two reasons: First, any outside analysis that a person sees about Wordscores software will seem to draw the opposite conclusions; this is not the case, but the language prioritizes clarity over ambiguity. And second, this mutation was made after beginning work on our graphics and may not be reflected as clearly as possible in our analysis. This footnote serves to hopefully dispel any confusion. 
-
+For information on the coding of this project, as well as the data files that were used in this project, please go to
