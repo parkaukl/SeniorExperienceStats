@@ -182,14 +182,14 @@ Finally, a prior would need to be set for the effect of education on beliefs of 
 
 On Table 1, we are able to see the effects of each standard effect in our model, as outlined previously on our equation through lines 2 to 4. We are able to see that the estimated intercept on this equation is 1.1191. This indicates that we expect that the average Women, aged between 18-24 and that did not obtain a high school diploma is 75.38% likely to believe that military intervention is effective.  According to our data from the Chicago Council, all else held equal, men are 23.5% less likely to believe that military intervention is an effective method of achieving the U.S.'s policy goals. These results are statistically significant. 
 
-The effects of education are also very evident, based on our model. A respondent who had graduate from high school was 21.56% less likely to believe that military intervention is effective in achieving the U.S.'s goals, when compared to individuals who did not achieve a high school education. Meanwhile, respondents who attended some college were likely be 
+The effects of education are also very evident, based on our model. A respondent who had graduate from high school was 21.56% less likely to believe that military intervention is effective in achieving the U.S.'s goals, when compared to individuals who did not achieve a high school education. However, these results were not statistically significant at the 5% level. Meanwhile, respondents who attended some college were likely be 38.07% less likely to believe in military intervention as effective when compared to those who did not achieve a high school education. Respondents who got a bachelor's degree were 46.31% less likely to believe that military intervention was effective compared to those who did not get a high school diploma. Finally, respondents who had a postgraduate education were 64.67% less likely to believe that war is effective compared to those who did not get a high school diploma. All of these results were statistically significant at the 5% level. 
 
 ```{r, fig.cap="Estimates of Fixed Effects",fig.width=6}
 M25Table<-summary(M25)$coefficient
 rownames(M25Table)<-c("Intercept","Male","High School Graduate","Some College","Bachelor's Degree","Graduate Degree","Age 25 to 34","Age 35 to 44","Age 45 to 64","Age 65 or older")
 kable(M25Table,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
-
+The final set of fixed effects are related to the age of the respondent. People who are in the age range from 25 to 34 are 2.19% less likely to believe that military conflict is an effective strategy to achieve the U.S's foreign policy goals. However, these results are not statistically significant. Respondents who are aged 35 to 44 were 14.83% more likely to believe that military intervention is effective, but this result was not statistically significant. People aged 45 to 64 were 26.07% more likely to believe that military intervention, compared to people who were aged 18 to 24. These results were only statistically significant at the 10% level. 
 
 ```{r}
 plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
@@ -199,9 +199,6 @@ plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white"
 ggplot(data=df2,aes(x=Number.Sampled,y=SSR,label=State))+geom_point()+geom_text_repel(size=3)+theme_minimal()+xlab("Number of Respondents from Each Sttae")+ylab("Squared Difference of Estimates of Beliefs on War")
 ```
 
-
-
-The model estimates that Republican challengers with no issue pages, an ideology of 0, running in a district with no demographic heterogeneity will have communication ambiguity of -0.749305. For each additional point in ideology for Republicans, the model estimates a 0.012945 point increase in communication ambiguity after accounting for all other fixed effects. However, it should also be noted that this result is not statistically significant, with a large p-value of 0.45. Democrats are estimated to have communication ambiguity 0.047871 less than Republicans after accounting for all other fixed effects. Incumbents are estimated to have communication ambiguity 0.117505 less than challengers after accounting for all other fixed effects. For each additional point in a district's demographic heterogeneity, the model estimates a 0.815260 point increase in communication ambiguity after accounting for all other fixed effects. For each additional issue page on a candidate's website, the model estimates a 0.015542 point decrease in communication ambiguity after accounting for all other fixed effects. For each additional point in ideology, the model estimates that Democrats have an additional 0.100959 point increase in communication ambiguity over Republicans. The model estimates that the standard deviation in communication ambiguity across districts is 0.007862 after accounting for all fixed effects.
 
 
 
