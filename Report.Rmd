@@ -12,7 +12,7 @@ indent: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, fig.height=4, fig.width=6)
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, fig.height=3, fig.width=6)
 # feel free to change fig.height or fig.width here or in specific chunk headings. 
 ```
 
@@ -114,7 +114,7 @@ Figure 1 illustrates the response of the effectiveness of war, based on the Vari
 
 We can also observe other relationships in our data. One particular question might be whether individuals have different levels of support based on what region they live in. Different cultural values and different regional relationships with the military may determine the different levels of support for military conflict. For instance, Karol and Miguel (2007) tested whether different regions had different levels of political support for reelecting George W. Bush based on the number of casualties in Iraq, based on the speculation that different geographic regions had different relationships with the War. Therefore, observing the prowar and antiwar levels of support within each U.S. region may be important to determining if there is a different level of support depending on geographic region. 
 
-```{r, fig.cap="Belief in the Effectiveness of War by Region of Residence"}
+```{r, fig.cap="Belief in the Effectiveness of War by Region of Residence",fig.height=4}
 ggplot(ChicagoForeignCouncilClean,aes(x=Region9,fill=ProWarFactor))+geom_bar(position=position_fill())+xlab("Region the Respondent Lives In")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))+theme(axis.text.x=element_text(angle=90))
 ```
 
@@ -122,7 +122,7 @@ On Figure 2, we are able to see that there does appear to be some slight differe
 
 In addition, we are able to observe whether there are differences in pro war and anti war sentiment based on education. This is observed in Figure 3, which indicates that there is some correlation between education level and belief in the effectiveness of war. For people who did not receive an high school diploma, roughly 75% of respondents believed that military intervention is an effective method to achieve the U.S's foreign policy goals. However, for those with a postgraduate degree, about 50% of respondents believed that military intervention is likely to achieve the U.S's foreign policy goals. In addition, Figure 4 illustrates that there is some potential relationship between age and support for military intervention. Those who were between ages 18-24 and 45-64 are more likely support intervention, relative to other age brackets. However, this relationship does not appear to be as strong as other relationships. 
 
-```{r, fig.cap="Belief in the Effectiveness of War by Level of Education"}
+```{r, fig.cap="Belief in the Effectiveness of War by Level of Education",fig.height=4}
 
 ggplot(ChicagoForeignCouncilClean,aes(x=EducationBracket3,fill=ProWarFactor))+geom_bar(position=position_fill())+theme(axis.text.x=element_text(angle=90))+xlab("Level of Education")+ylab("Proportion of Respondents")+scale_fill_discrete(name = "Pro War Factor", labels = c("Military Intervention is not Effective","Military Intervention is Effective"))
 ```
@@ -197,7 +197,7 @@ Using our estimates, we are able to guess what the potential public opinion with
 plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
 ```
 
-```{r, fig.cap="Differences in estimates of Public Opinion within Each State, from an MRP and a Simple Disaggregation Model"}
+```{r, fig.cap="Differences in estimates of Public Opinion within Each State, from an MRP and a Simple Disaggregation Model",fig.height=4}
 ggplot(data=df2,aes(x=Number.Sampled,y=(EstimatedProbability-PercentSupportSampled),label=State))+geom_point()+geom_text_repel(size=3)+theme_minimal()+xlab("Number of Respondents from Each State")+ylab("Squared Difference of Estimates of Beliefs on War")+geom_hline(yintercept = 0,color="red")
 ```
 
@@ -207,7 +207,9 @@ Another interesting detail will be observing the comparison of using MRP and usi
 
 Table 2 illustrates the results of running a Bayesian model, using the priors from the methods section. Before accounting for the random effect of what state the respondent lives in, a 18 to 24 year old women who does not have a high school diploma has a 75.46% probability of believing the war is an effective strategy to achieve foreign goals. Men are 23.44% less likely to support war, all else held equal. Meanwhile, high school graduates are 21.39% less likely to believe that military intervention is effective. Respondents who attended some college, obtained a bachelors degree, and attended beyond a bachelors degree were 37.97%, 46.17% and 64.52% less likely to believe that war was effective respectively, all else held equal.
 
-The effects of age are also illustrated on Table 2. Respondents who are aged 25 to 34 were 2.76% less likely to believe that war was effective when compared to 
+The effects of age are also illustrated on Table 2. Respondents who are aged 25 to 34 were 2.76% less likely to believe that war was effective when compared to those who were aged 18 to 24. Respondents aged 35 to 44 were on average 14.02% more likely to believe that war was effective all else held equal. Respondents who were aged 45 to 64 were 25.23% more likely to believe that war was effective, while respondents who were aged 65 or older were .93% more likely to believe that war is effective. 
+
+The results from the Bayesian analysis tend to be rather similar to the results from our frequentist model. This may be due to the fact that the priors that were used were vague. In a logistic regression a standard deviation of 1, as used in our prior, then the majority of the information on this regression will be similar to our data model if we used a simple frequentist model.
 
 ```{r}
 M25TableBayes<-summary(ProWar_Model_Posterior)[1:10,c(1,3,4,5,6,7,8)]
@@ -216,18 +218,26 @@ colnames(M25TableBayes)<-c("Mean","SD","10% Quantile","Median","90% Quantile","n
 kable(M25TableBayes,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 
-
+Using these results from the Bayesian Analysis, we can then undergo the same MRP process to estimate the public opinion within each state by estimating the expected value within each strata. The results of this analysis are shown in figure 7. The results of these estimates are similar to the estimates for each state generated under the frequentist model. States such as Texas, North Dakota, Arkansas and Mississippi all have larger percentages of their voting aged populations who believe that war is effective. In each of these states, we estimate that between 67% to 68% of their population believe that war is effective. However, states such as Massachussets, California, and Minnesota all have estimates that between 62% to 63% of their population believe that militaary intervention is effective. 
 
 ```{r, fig.cap="U.S. Map of Public Opinion on the Effectiveness of War under a Bayesian Model"}
 plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that War is Effective",label= scales::comma)+theme(legend.position="right")
 ```
 
+In order to ensure that our model has blended well, we need to observe the R-Hat Convergence values. This value, also known as the Gelman-Rubin Convergence Diagnostic, evaluates the level of between chain convergence and within chain convergence of the estimates for each predictor. If this value is above 1.05, then it is expected that the models are not converging well, which suggests that there are significant problems. On Figure 8, the R-Hat score for each predictors is shown. Here, we are able to see that the R-Hat suggests that every predictor has converged well in this Bayesian model. 
+
 ```{r, fig.cap="R-Hat Measures for each Effect to Estimate Between- and Within-Chain Covergence"}
 plot(mcmc_rhat(rhats))
 ```
 
-```{r,fig.cap="The 95% Credible Intervals of Estimates for the Coefficients in the Bayesian Model"}
-plot(mcmc_intervals(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10]),prob_outer=.95)
+Another important detail to analyze is the credible intervals of the Bayesian predictors. The credible intervals are displayed by observing Figure 9. This figure displays the credible intervals. By observing these credible intervals, we can note whether we expect the effects of each predictor to have a statistically significant effect. For instance, we can see that gender and education related variables tend to be statistically significant at the 5% level. The exception of the statistical significance of education related effects is the difference between those who did not complete high school, and those who completed high school. However, age based predictors are not statistically significant, based on Figure 9. 
+
+```{r,fig.cap="The 95% Credible Intervals of Estimates for the Coefficients in the Bayesian Model",fig.height=4}
+#posterior_interval(ProWar_Model_Posterior,prob=.95,type="central",pars = BayesianCoefficientList[1:10])
+
+mcmc_areas(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10],prob_outer = .95)+scale_y_discrete(labels = c("(Intercept)"="Intercept",
+                                    "MALEMALE"="Male",
+                                    "EducationBracket33.Some College"="Some College","EducationBracket34.Bachelor's Degree"="Bachelor's Degree","EducationBracket35.Graduate Degree"="Graduate Degree","AgeBracket25-34"="Age 25 to 34","AgeBracket35-44"="Age 35 to 44","AgeBracket45-64"="Age 45 to 64","AgeBracket65+"="Age 65 and Over", "EducationBracket32. High School Graduate"="High School Graduate"))
 ```
 
 ### Discussion and Conclusions   
@@ -259,6 +269,8 @@ Bohr, J. (2014). Public Views on the Dangers and Importance of Climate Change: P
 Gallup, G. (1942). How Important is Public Opinion in Time of War. Proceedings of the American Philosophical Society, 85(5), 440–444.
 
 Gelman, A., & Little, T. (1997). Poststratication Into Many Categories Using Hierarchical Logistic Regression. Survey Methodology. http://www.stat.columbia.edu/~gelman/research/published/poststrat3.pdf
+
+Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). Bayesian Data Analysis. Chapman & Hall/CRC Press, London, third edition. (Ch. 6)
 
 Gelman, A., Lax, J., Phillips, J., Gabry, J., & Trangucci, R. (2018). Using Multilevel Regression and Poststratification to Estimate Dynamic Public Opinion. Columbia. http://www.stat.columbia.edu/~gelman/research/unpublished/MRT(1).pdf
 
