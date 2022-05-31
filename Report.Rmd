@@ -150,12 +150,12 @@ The best model that I could find that includes variables that could be weighted 
 
 \begin{flalign}
 & P(\theta_{j}=1|\text{State=j})=\sum_{i=1}^{50}P(\theta_{ij}=1|\text{Stratum}=i)*P(\text{Stratum}=i|\text{State}=j) &\\
-& P(\theta_{ij}=1|\text{Strata}_{j}=i)=\text{logit}^{-1}(\alpha+\beta_{1}*\text{Male}_{i}+\beta_{2}*\text{High School Degree}_{i} &\\
+& P(\theta_{ij}=1|\text{Stratum}_{j}=i)=\text{logit}^{-1}(\alpha+\beta_{1}*\text{Male}_{i}+\beta_{2}*\text{High School Degree}_{i} &\\
 & +\beta_{3}*\text{Some College}_{i}+\beta_{4}*\text{Bachelor Degree}_{i}+\beta_{5}*\text{Graduate Degree}_{i}+\beta_{6}*\text{25 to 34}_{i} &\\
 & +\beta_{7}*\text{35 to 44}_{i}+\beta_{8}*\text{45 to 64}_{i}+\beta_9*\text{65+}_{i}+u_{j}+\epsilon{ij}) &\\
 & u_{j}\sim \mathcal{N}(0,\,\sigma_{u}^{2}) &\\
 & \epsilon{ij}\sim \mathcal{N}(0,\,\sigma_{\epsilon}^{2}) &\\
-& P(\text{Strata}=i|\text{State}=j)=\frac{\text{Population in Stratum i in State j}}{\text{Total Voting Population in State j}} &
+& P(\text{Stratum}=i|\text{State}=j)=\frac{\text{Population in Stratum i in State j}}{\text{Total Voting Population in State j}} &
 \end{flalign}
 
 $\theta$ represents whether an individual believes that military intervention is effective or ineffective at achieving the U.S.'s policy goals. $\alpha$ represents the intercept, which would calculate the probability a women who is between the ages of 18 to 24 with less than a high school education believes that military intervention is effective. Each of the subsequent $\beta$'s then represent the effect of individual effects, such as identifying as a man, or having a Graduate Education, on pro-intervention sentiment. The value $u_j$ is the random effect that being within a certain state has on their beliefs of intervention, while $\epsilon_{ij}$ is the random error term. 
