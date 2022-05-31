@@ -1,0 +1,1203 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Estimating Support for Military Intervention by State Using Multilevel Regression with Post-Stratification},
+  pdfauthor={Parker Kaukl},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Estimating Support for Military Intervention by State Using
+Multilevel Regression with Post-Stratification}
+\author{Parker Kaukl}
+\date{5/31/2022}
+
+\begin{document}
+\maketitle
+
+\hypertarget{abstract}{%
+\subsection{Abstract}\label{abstract}}
+
+One of the most complex topics in American politics is military
+intervention. Public opinion on military intervention is historically
+divided into pro-war and anti-war positions. Understanding which states
+may be more or less likely to be pro-war is important for predicting
+which areas may have more protests, and inform policy positions for
+elected officials. This paper will create a model to predict opinions on
+military intervention using a Frequentist and a Bayesian approach. Then,
+these models will be used in order to create a multilevel regression
+with post-stratification to estimate the public opinion within each
+state in the United States of America. In both the Bayesian and the
+Frequentist approaches, our multilevel regression with
+post-stratification estimates that the public opinion within each state
+to believe that intervention is effective is between 60\% and 70\%.
+These results tend to be similar to the public opinion polls on military
+interventions throughout the late 2010s. \newpage
+
+\hypertarget{introduction}{%
+\subsubsection{Introduction}\label{introduction}}
+
+The decision to go to war is a complex decision that has severe
+consequences. A report from Brown University estimated that around
+900,000 deaths occurred in the War on Terror. These fatalities include
+soldiers, civilians, journalists, and aid workers. In addition, the
+U.S.'s War on Terror has incurred a cost of eight trillion dollars since
+2001. Because of these high societal costs, it is not surprising that
+conflict tends to be a polarizing topic and a topic that has attracted
+theories on when conflict may occur.
+
+One of the first theories of conflict is the ``Just War'' theory, by
+St.~Augustine. This posited that conflict should occur if it is for a
+worthy cause, if conflict is likely to achieve that cause and if the
+conflict is sponsored by a legitimate government. ``Just War'' theory
+also states that conflict should only be used as a last resort, that
+conflict should not be disproportionate to the cause, and that
+non-combatants should be respected. Although this theory is valuable,
+the discourse on military conflict has been furthered by philosophers,
+politicians, and theologians over the past centuries.
+
+However, perhaps the most relevant and important influence on our
+perception of conflict has been the United States' recent history of
+war. A lot of theories and thoughts on war were developed in the
+aftermath of the Vietnam War. As noted in Richard Haas's book,
+Intervention, the Vietnam War was an event that informs both our
+policymakers and citizens on what war is like. Perhaps more importantly,
+the Vietnam War and the protests related to U.S. involvement introduced
+the importance of U.S. public opinion to whether we should engage in
+military conflicts.
+
+Caspar Weinberger, a Secretary of Defense under Ronald Reagan,
+introduced the Weinberger Doctrine, which stated that force should only
+be used if there is public or congressional support for military
+conflict. This was furthered by Warren Christopher, the Secretary of
+Defense under Bill Clinton, who said that having ``a high likelihood of
+support'' of popular and congressional support was a prerequisite for
+military intervention. Other politicians, such as George H.W. Bush, have
+not mentioned public opinion as a prerequisite, but have mentioned that
+it is desirable to have support for any military intervention.
+
+The effects of public opinion during wartime are numerous. As noted by
+George Gallup, public opinion can often coincide with political changes.
+As stated in \emph{How Important is Public Opinion in Time of War?},
+``In addition to conscription, the people of this country have been
+ahead of their political leaders on virtually all important war-time
+issues'' (Gallup, 441). In addition, conflict is often likely to not
+occur, or forces are likely to be withdrawn in the case of public
+disapproval. This can be seen in a lack of approval for U.S.
+intervention in Somalia, and later the U.S.'s lack of military
+intervention in Rwanda during the Rwandan Genocide. In addition, the
+mismanagement of military intervention threatens re-election campaigns
+for politicians. Because of this threat, ``Politicians--Whose foremost
+goal is to gain or retain office- will, in an electoral context, be
+motivated to support changes in war policy if opinion trends among their
+constituents offer an incentive to do so'' (Lieberfeld, 2008). Public
+opinion acts as a political constraint to the use of force, in addition
+to providing probable policy platforms during upcoming elections.
+
+For policymakers, understanding public opinion is crucial to making the
+correct decision about when it is appropriate to use military force. In
+addition, for citizens, public opinion can provide a good predictor of
+future policy decisions. Therefore, this paper will attempt to create a
+Frequentist and a Bayesian model to estimate the public opinion on
+military intervention based on a series of surveys known as the
+\emph{Chicago Council Survey of American Public Opinion on U.S.Foreign
+Policy} from 2016 and 2017. The survey question that we will analyze
+focuses on the public opinion on the effectiveness of military
+intervention in achieving the foreign policy goals of the United States.
+Using this data, we will estimate the expected political support in each
+U.S. state in 2016 and 2017. This will be done using a method known as
+multilevel regression with post-stratification, using data from the
+American Community Survey. Then, this paper will attempt to validate
+these models by checking that there are no errors in this model, and
+observing if national surveys from 2015 to 2019 produce similar national
+results to the results of this paper.
+
+\hypertarget{background-and-significance}{%
+\subsubsection{Background and
+Significance}\label{background-and-significance}}
+
+There have been numerous opinion polls and regressions that have been
+run in order to estimate pro- or anti-war opinions during the
+``post-cold war'' era. There are a few reasons why authors and academics
+tend to start their analysis of war trends in the ``post-cold war'' era.
+In general, the individual's personal policy preference on war tends to
+be very temporal. The cold war provided a very unique circumstance, such
+as the policy of deterrence and the fear of a global war, that does not
+necessarily reflect the current circumstances of conflicts in the
+``post-cold war'' era. Because of this, our scholarship tends to focus
+on the ``post-cold war'' era as a separate era to the cold war era in
+understanding the how the public perceives military intervention.
+
+According to Gelpi and Feaver, the determination of a citizen's
+preference is based on that individual's demographics, and the context
+of the situation. Specifically, individuals tend to be in support of
+military intervention if they believe that they have the ``Right'' to
+attack, and they believe that military intervention will be successful
+to achieve their preferred policy goals. Many of these contextual
+results are likely to reflect incredibly temporal events that are
+vulnerable to political changes. For instance, individuals tend to look
+towards individuals such as politicians that they trust, and
+organizations such as NATO. If an organization like NATO, or a president
+that they trust endorse a military action, individuals are extremely
+likely to support that military interaction. This was found by both
+Khazan (2013) and by Gelpi and Feaver (2009).
+
+In addition, individuals are likely to make choices depending on the
+Principal Policy Objective, according to Jentleson (1992). This thesis
+argues that individuals can evaluate the reasons why the U.S is
+intervening, and that the primary objective of intervention is likely to
+influence the level of political support. For instance, according to a
+poll from Jentleson, individuals tend to be more in support of Foreign
+Policy Restraint missions, as opposed to Internal Political Change
+missions. Foreign Policy Restraint typically involves the use of
+military force in order to affect the behavior of a nation, whereas
+Internal Political Change Missions involve using the military to replace
+or restructure an existing regime.
+
+Finally, individuals also tend to support missions that they believe
+will be successful. As noted by Gelpi and Feaver (2009), public support
+for military intervention tends to drastically decrease during periods
+of failure. For instance, in the aftermath of a failed raid in Somalia
+in 1993, public support for military intervention dropped by 8
+percentage points. In general, individuals tend to support a military
+intervention when there is evidence that the intervention is likely to
+be successful.
+
+While these circumstantial predictors are important, there are
+additional variables that might be important in order to predict pro-
+versus anti-war sentiment. These variables are demographic, and tend to
+be less dependent on the context of the conflict in determining public
+opinion. For instance, our evidence of gender suggests that there is a
+mixed effect of whether women or men are more supportive of conflict.
+Gelpi and Feaver wrote \emph{Paying the Human Costs of War}, which
+collects regressions that indicate that there is conflicting evidence
+about the effect of gender in being pro- or anti-war. Men were more
+supportive of military intervention in Lebanon in 1983. Men also tended
+to be more supportive of military intervention in Somalia in 1993. In
+the early 2000s, a general poll reported by Gelpi and Feaver stated that
+there was no statistical significance in gender in determining whether
+an individual supports military intervention. However, evidence from
+polls taken during the Kosovo crisis suggests that Women were more
+likely to support military intervention through air strikes in the
+Kosovo War. Women were also more likely to fall into the category that
+Gelpi and Feaver refer to as ``Timid Hawks''. Gelpi and Feaver use this
+term to classify individuals who are supportive of war in the abstract,
+but tend to withdraw their support as the conflict becomes costly, or as
+casualties from the conflict increase. This is also important to note,
+as it highlights a major theme of Gelpi and Feaver, which is that
+casualty tolerance is not the same thing as conflict tolerance.
+
+Another variable that is very important to consider is age. Anecdotally,
+there is evidence that suggests that age can both increase and decrease
+support for war. Many historians note the fervor that younger men tended
+to have for World War 1. Meanwhile, Vietnam War Era protests are
+remembered for the swarms of college students who protested against the
+U.S's involvement in Southeast Asia. However, data tends to provide a
+conflicted history of who tends to be more pro-war. Older individuals
+were less likely to support military intervention in Lebanon and
+Somalia. Older individuals were less likely to support the Iraq War
+(Smith and Lindsay, 2003). However, age did not appear to play any
+significant role in whether an individual supported intervention in the
+Kosovo War. In general, the role that age plays in determining pro- and
+anti-war support appears to be suggesting that, younger individuals are
+more likely to support conflict. However, this is only if we consider
+this to be a linear relationship.
+
+The role of education in determining pro- and anti-war stance tends to
+be very consistent. These estimates tend to suggest that individuals
+with higher levels of education may be less likely to support war.
+People were less likely to support a military intervention in Kosovo
+with higher levels of education. In addition, people with higher levels
+of education were less likely to support the use of force if the
+objective of the mission is a matter of national security. However,
+education did not have a significant change for whether an individual
+supported military intervention in Yemen or Lebanon. In addition,
+according to Smith and Lindsay (2003), individuals with a postgraduate
+education were among the few groups to show majority opposition to the
+Iraq War in late 2002. All of this evidence tends to suggest that
+individuals with a high level of education are less likely to support
+war.
+
+There are many different additional variables that might be important in
+determining which individuals will support or not support a war. For
+instance, people tend to support a war if that war was initiated by the
+party that aligns with their political identity. For instance, democrats
+tend to be more supportive of military intervention if a Democratic
+president initiated that war, and Republican voters are more likely to
+support wars initiated during a Republican presidency. In addition,
+individuals who are veterans tend to be less likely to support military
+intervention, as found by Khazan (2013). The effect of other demographic
+variables, such as race, tend to have inconsistent evidence on the
+direction and the significance of the effect of racial identity on pro-
+and anti-war stance.
+
+\hypertarget{data}{%
+\subsubsection{Data}\label{data}}
+
+The first dataset that I used was the Chicago Council Survey of American
+Public Opinion on U.S. Foreign Policy. This is an annual survey that
+asks questions related to the foreign policies in the United States and
+the public opinion on these policies. For my data, I am using the 2016
+and 2017 Chicago Council Survey of American Public Opinion. These two
+years were used because they are both publicly available, and the
+response question is worded the same in both surveys. The target
+population of this survey was those living in the U.S. who were
+non-institutionalized and who are aged over 18. The survey was
+administered by the KnowledgePanel, which is a probability-based web
+panel designed to be representative of the U.S. The administrators of
+this survey included various checks, such as removing those who answered
+the test too quick and those who failed the ``quality checks''. The
+``quality checks'' consisted of questions such as ``Pick option 3'',
+which indicates whether a respondent was attentive during the survey.
+The Chicago Council Survey has 4767 observations over the 2 years.
+
+We took multiple steps to clean this data. First, any cases where there
+was a missing value were discarded to prevent any bias that might occur
+by keeping these variables in the dataset. In addition, many of the
+variables were manipulated to create new variables for the purpose of a
+regression. Initially, there was a variable called \emph{Q8\_14}. This
+variable recorded the respondent's answer to the question \emph{How
+effective do you think each of the following approaches are to achieving
+the foreign policy goals of the United States- very effective, somewhat
+effective, not very effective, or not effective at all: Intervening
+Militarily}. Using this variable, we manipulated it into a new variable
+called \emph{ProWarBinary}. If this variable is equal to 1, then the
+respondent believes that military intervention is either very effective
+or somewhat effective. Meanwhile, if the respondent believes that
+military intervention is not very effective or not effective at all,
+then the variable will return with a value of 0.
+
+In addition, the Chicago Foreign Council data also had additional
+variables that reflect the demographics of the respondents. In this
+case, the variables includes information about the racial, political,
+social, economic and family history of the respondent. There are a few
+variables of note that will later be used in the model to build the
+multilevel regression with post-stratification. The variable
+\emph{EducationBracket3} represents a subset of different levels of
+education. This includes a variables for those who did not get a high
+school diploma, those with a high school diploma, those with some
+college, those with a bachelor's degree, and those with more education
+than a bachelor's degree.
+
+Another variable of note is \emph{AgeBracket}. This variables indicates
+what age range the respondent is in. Respondents can either be in a
+stratum for those aged 18 to 24, 25 to 34, 35 to 44, 45 to 64, and for
+those who are 65 or older. These strata were constructed to match the
+format of the strata that are reported in the ACS. In addition, the
+Chicago Foreign Council also included information about what state a
+respondent was from, reported in the variable titled \emph{State}.
+
+There are some checks that we may want to do to evaluate whether there
+was any response bias. In presenting the question represented in
+variable \emph{Q8\_14}. In the survey, this response could have been
+shown anywhere between the first and the eighth statement. We might
+suspect that the order that military intervention is presented will
+influence the response and create response bias. One method can be
+checking if an individual thinks military intervention is effective or
+not depending on when the respondent is presented with the policy choice
+of military intervention.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-4-1.pdf}
+\caption{Proportion of Belief in Effectiveness of Intervention by
+Statement Order}
+\end{figure}
+
+Figure 1 illustrates the response of the perception of the effectiveness
+of military intervention, based on the Variable \emph{Pro War Factor}.
+There is not a lot of variation in the responses of the effectiveness of
+military intervention depending on the position that the statement was
+shown in. For instance, we can see that people who were shown this
+statement earlier may report being more in favor of intervention, as
+opposed to those who were asked about military intervention later.
+However, it appears like the position that the statement was shown in
+does not carry a significant level of bias, and therefore we can
+consider that source of response bias as insignificant.
+
+We can also observe other relationships in our data. One particular
+question might be whether individuals have different levels of support
+based on what region they live in. Different cultural values and
+different regional relationships with the military may determine the
+different levels of support for military conflict. For instance, Karol
+and Miguel (2007) tested whether different regions had different levels
+of political support for reelecting George W. Bush based on the number
+on how many casualties had occurred from citizens in each region, based
+on the speculation that different geographic regions had different
+relationships with the war. Therefore, support for intervention within
+each U.S. region may be important to determining if there is a different
+level of support depending on geographic region.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-5-1.pdf}
+\caption{Belief in the Effectiveness of Intervention by Region of
+Residence}
+\end{figure}
+
+In Figure 2, we can see that there does appear to be some slight
+differences between different regions in determining the beliefs of
+effectiveness of confclit The New England region has less support for
+conflict than the other regions. However, the West-South Central region
+and the East-South Central Region both tend to be more supportive of
+conflict than other regions. However, the significance of these
+responses is not clear based on Figure 2.
+
+In addition, we are able to observe whether there are differences in
+pro-conflict and anti-intervention sentiment based on education. This is
+observed in Figure 3, which indicates that there is some correlation
+between education level and belief in the effectiveness of military
+intervention. For people who did not receive a high school diploma,
+roughly 75\% of respondents believed that military intervention is an
+effective method to achieve the U.S's foreign policy goals. However, for
+those with a postgraduate degree, about 50\% of respondents believed
+that military intervention is likely to achieve the U.S's foreign policy
+goals. In addition, Figure 4 illustrates that there is some potential
+relationship between age and support for military intervention. Those
+who were between ages 18-24 and 45-64 are more likely to support
+intervention, relative to other age brackets. However, this relationship
+does not appear to be as strong as other relationships.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-6-1.pdf}
+\caption{Belief in the Effectiveness of Intervention by Level of
+Education}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-7-1.pdf}
+\caption{Belief in the Effectiveness of Intervention by Age}
+\end{figure}
+
+Another dataset that was used in this analysis is the American Community
+Survey. The American Community Survey, or ACS, is a survey that has
+information on individuals and households throughout the country. In
+particular, this data focuses on the demographics, occupations,
+education, and other background info of any respondents. The data that
+was used in this paper was the summary statistic named \emph{B15001},
+from the 5-Year ACS between 2015 and 2019. This data includes the raw
+count of number of respondents who were in a certain strata defined by
+gender, education level, and age bracket. These strata are pairwise
+disjoint, individuals cannot belong to multiple strata within the
+structure of the ACS. Then, I created a new variable, titled \emph{TVP},
+standing for Total Voting Population. This was the sum of all of the
+strata. I then divided each stratum by the variable \emph{TVP}, in order
+to get an estimation of the proportion of each stratum within each
+state.
+
+The ACS does have a few problems with it that make it a suboptimal
+resource to estimate proportions. The ACS does not ask questions about
+values such as what political party an individual identifies with, or
+what foreign policy goals the U.S. should have. These questions may be
+important in relation to pro- and ant-conflict sentiment. These problems
+will be of particular concern during the implementation of a multilevel
+regression with post-stratification model.
+
+\hypertarget{methods}{%
+\subsubsection{Methods}\label{methods}}
+
+This paper will focus on using a multilevel regression with
+post-stratification, or MRP. A multilevel regression with
+post-stratification is a method to estimate public opinion for areas
+that are smaller than the national level, such as individual states. It
+is highly unlikely that there will be multiple state surveys that all
+ask the same questions using similar wording and surveying methods.
+Because of this, statisticians have developed strategies to use national
+level opinion polls to estimate public opinion for smaller geographic
+areas. One method is disaggregation, which is where national surveys are
+pooled and then sorted by region to calculate public opinion. However,
+MRP has become an alternative method to disaggregation. MRP has been
+shown to outperform disaggregation with small and medium sized samples
+and can estimate state public opinion with a single large national poll
+of roughly 1,400 respondents(Gelman, 2018). MRP is better suited for
+estimating public opinion issues that are swayed heavily by
+circumstances. In addition, MRP is useful for estimating the responses
+in smaller states that do not have a large number of respondents who
+reside in those states. Because of these advantages, building an MRP
+model is preferable to using a model of disaggregation to estimate the
+beliefs on the effectiveness of military intervention in each U.S.
+State. Multilevel regression with post-stratification has been used
+frequently by statisticians to estimate public opinion by geographic
+area. For instance, Bohr (2014) used MRP to estimate the probability of
+an individual in each U.S. county believing in climate change, and
+understanding their preferences for environmental policy. In addition,
+Wang (2014) used MRP in order to estimate the voters' preferences for
+the U.S. election in 2012 by using surveys submitted through the online
+platform Xbox Live, which estimated the share of votes for Barack Obama
+with a margin of error of .6 percentage points.
+
+There are a few steps needed in order to create an MRP. First, data
+needs to be collected that focuses on public opinion data, and different
+potential predictors. Next, there would need to be census data collected
+in order to estimate the proportion of different strata in each state.
+We would then estimate the probability of believing U.S. intervention is
+effective within each stratum based on our public opinion data, using a
+logistic regression from the Chicago Council Surveys. Then, using our
+estimates of the probability of any person within a strata being pro
+conflict, we post-stratify these models using the proportional size of
+the strata relative to the rest of the state.
+
+One important detail in an MRP is that the design of the logistic
+regression and the design of the ACS must be cohesive in order to
+effectively implement an MRP. An MRP works because it is accurately able
+to assign each possible predicted response based on our regression to
+our weights for post-stratification. Therefore, there would be
+significant problems in using a multilevel regression with
+post-stratification if the multilevel regression includes terms that are
+not included in poststratify weights. This would result in us having
+predicted response probabilities without any understanding of what the
+approximate weights of these responses will be.
+
+Therefore, in building our logistical regression, we will attempt to
+reduce the AIC value and we will only build a model where we can also
+estimate the weights of these different responses based on the ACS data.
+In addition, the model that we analyze will also focus on the most
+important aspects that may have been identified in our data section. For
+instance, one important variable to use in our regressions would be
+education. Education level is a variable that shows a clear relationship
+to pro vs.~anti-war sentiment. There are roughly 1000 different distinct
+counts that exist in the ACS data. However, only about 30 different
+types of counts include educational attainment as a key variable. In
+addition, very few of these variables account for the full voting aged
+population.
+
+The best model that I could find that includes variables that could be
+weighted in the census was a model which used educational attainment,
+gender, and age brackets. However, the state was also used as a random
+effect. This model produced the smallest AIC of any adequate model that
+was built in this experiment, at a value of 6130.953{[}1{]}. We can
+therefore write the estimated model as a two-part section. The first
+part represents our post-stratification, where we multiply the
+probability of support of intervention by each stratum within the state
+by the probability of any given person in that state being within that
+stratum. We then sum the product of all these probabilities and weights
+in order to estimate the probability of support within each state. The
+second line through the fourth line represents our multilevel model,
+which includes a random effect for the state, in order to account for
+variations in public opinion within each state that are not accounted
+for by our model. Finally, our estimation of the probability of being
+within each strata is defined by calculating the percent of people
+within each state \(j\), who were in stratum \(i\) as a percent of the
+total voting population.
+
+\begin{flalign}
+& P(\theta_{j}=1|\text{State=j})=\sum_{i=1}^{50}P(\theta_{ij}=1|\text{Stratum}=i)*P(\text{Stratum}=i|\text{State}=j) &\\
+& P(\theta_{ij}=1|\text{Strata}_{j}=i)=\text{logit}^{-1}(\alpha+\beta_{1}*\text{Male}_{i}+\beta_{2}*\text{High School Degree}_{i} &\\
+& +\beta_{3}*\text{Some College}_{i}+\beta_{4}*\text{Bachelor Degree}_{i}+\beta_{5}*\text{Graduate Degree}_{i}+\beta_{6}*\text{25 to 34}_{i} &\\
+& +\beta_{7}*\text{35 to 44}_{i}+\beta_{8}*\text{45 to 64}_{i}+\beta_9*\text{65+}_{i}+u_{j}+\epsilon{ij}) &\\
+& u_{j}\sim \mathcal{N}(0,\,\sigma_{u}^{2}) &\\
+& \epsilon{ij}\sim \mathcal{N}(0,\,\sigma_{\epsilon}^{2}) &\\
+& P(\text{Strata}=i|\text{State}=j)=\frac{\text{Population in Stratum i in State j}}{\text{Total Voting Population in State j}} &
+\end{flalign}
+
+\(\theta\) represents whether an individual believes that military
+intervention is effective or ineffective at achieving the U.S.'s policy
+goals. \(\alpha\) represents the intercept, which would calculate the
+probability a women who is between the ages of 18 to 24 with less than a
+high school education believes that military intervention is effective.
+Each of the subsequent \(\beta\)'s then represent the effect of
+individual effects, such as identifying as a man, or having a Graduate
+Education, on pro-intervention sentiment. The value \(u_j\) is the
+random effect that being within a certain state has on their beliefs of
+intervention, while \(\epsilon_{ij}\) is the random error term.
+
+By construction, our stratum will be pairwise disjoint and they will
+cover the voting aged population. The stratum are broken up into
+categories based on age, sex, and educational obtainment. In addition,
+it is not possible for an individual in the voting age population to not
+fit into any of the stratum, or for them to fit into multiple strata,
+based on the construction of the ACS and the Chicago Council survey.
+This is important to ensuring that our MRP model will be successful in
+estimating the probability of an individual's beliefs on military
+intervention within a certain state.
+
+This paper will also build a logistic regression under a Bayesian
+framework. This would require us to set our priors. These priors would
+be based on the background research from the regressions that are in
+Gelpi and Feaver (2009). Using logistic regressions on public opinion on
+conflict, we should be able to have an estimate of the effects of
+gender, education, and age on an individual's beliefs on military
+intervention.
+
+The expected prior for the effect of beliefs on military intervention
+for gender is rather complex. For instance, traditional studies that
+focused on war, particularly in the 1980s and 1990s, tend to suggest
+that men tend to be more supportive of conflicts. However, this is
+contrasted with some contemporary data. For instance, women tended to be
+more likely to be classified as ``Timid Hawks''. In addition, women
+tended to have higher levels of support for military intervention is
+Kosovo, and for humanitarian missions in Yemen. There are two very
+important distinctions to be made in our previous data, the age of the
+data that we are observing, and how similar these surveys are to the
+Chicago Council survey question that we analyzed. For instance, more
+recent data tends to suggest women may be more likely to believe in
+conflict than men. In addition, when asked about military intervention
+before it happened, women tended to be more likely to support
+intervention, as seen in supporting intervention in Kosovo and Yemen.
+This is similar to the structure of the Chicago Foreign Council
+question, as it asks for the respondent's level of support before any
+military intervention has occurred. Because of this bias, there is some
+evidence that men may be slightly less likely to believe that war is
+effective in the abstract. Because of this, it might make sense to
+assign that the prior for gender is a vague prior with a slight
+preference to show that women may prefer military conflict. Because of
+this, a prior of \(Male\sim N(-.1,1)\) may be appropriate. The standard
+deviation suggests that we believe it is plausible that the effect could
+be far greater, or that the effect could suggest that men are more
+likely to support conflict.
+
+Another important prior to set is the expectations for the priors by age
+bracket. Most of these surveys use age as a continuous variable, instead
+of establishing different age brackets. However, these linear
+relationships tend to suggest that the effect of age on support for
+military intervention tends to be roughly close to 0, or suggest that
+younger individuals are more likely to support military intervention. In
+many of these regressions, the effect of age was also not statistically
+significant. Therefore, there may be some value in establishing a vague
+prior, since there is not strong evidence establishing a trend. In
+addition, we are constructing a categorical variable, as opposed to
+other regressions which have treated age as a linear effect. Therefore,
+we might decide to use a prior, where for each age bracket we assume
+that the coefficient has a normal prior, with a mean of zero and a
+standard deviation of 1.
+
+Finally, a prior would need to be set for the effect of education on
+beliefs of military intervention. In older studies, such as examining
+support for conflicts in Lebanon and Somalia, there was not a very
+strong relationship between the level of education and an individual's
+preference for military conflict. However, In Kosovo, higher levels of
+education lead to an individual to be less likely to support military
+intervention. In addition, individuals were more likely be classified as
+``timid hawks'' if they had more education. Because of these
+relationships, we might expect that the prior is that higher levels of
+education result in a lower likelihood of supporting war. Arbitrarily,
+some priors can therefore be set. For instance, we may establish that
+every subsequent level of education will affect education by -.2.
+Therefore, we might establish that each of our levels of education has
+an independent prior, as established below.
+
+\begin{flalign}
+&\text{High School Graduate}\sim N(-.2,1) &\\
+& \text{Some College} \sim N(-.4,1) &\\
+& \text{Bacehlor Degree} \sim N(-.6,1) &\\
+& \text{Graduate Degree} \sim N(-.8,1) &
+\end{flalign}
+
+\hypertarget{frequentist-results}{%
+\subsubsection{Frequentist Results}\label{frequentist-results}}
+
+On Table 1, we are able to see the effects of each standard effect in
+our model, as outlined previously on our equation through lines 2 to 4.
+We are able to see that the estimated intercept on this equation is
+1.1191. This indicates that we expect that on average, a women aged
+between 18-24 without a high school diploma is 75.38\% likely to believe
+that military intervention is effective, before accounting for the
+random effect of the state. According to our data from the Chicago
+Council, all else held equal, men are 23.5\% less likely to believe that
+military intervention is an effective method of achieving the U.S.'s
+policy goals. These results are statistically significant.
+
+The effects of education are also evident, based on our model. A
+respondent who had graduated from high school was 21.56\% less likely to
+believe that military intervention is effective in achieving the U.S.'s
+goals, when compared to individuals who did not achieve a high school
+education. However, these results were not statistically significant at
+the 5\% level. Meanwhile, respondents who attended some college were
+38.07\% less likely to believe military intervention is effective when
+compared to those who did not achieve a high school education.
+Respondents who got a bachelor's degree were 46.31\% less likely to
+believe that military intervention was effective compared to those who
+did not get a high school diploma. Finally, respondents who had a
+postgraduate education were 64.67\% less likely to believe that military
+intervention is effective compared to those who did not get a high
+school diploma. All of these results were statistically significant at
+the 5\% level.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.3088}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1324}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1618}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1176}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2794}}@{}}
+\caption{Estimates of Fixed Effects}\tabularnewline
+\toprule
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Std. Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+z value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Pr(\textgreater\textbar z\textbar)
+\end{minipage} \\
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Std. Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+z value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Pr(\textgreater\textbar z\textbar)
+\end{minipage} \\
+\midrule
+\endhead
+Intercept & 1.1191 & 0.1580 & 7.0807 & 0.0000 \\
+Male & -0.2683 & 0.0614 & -4.3684 & 0.0000 \\
+High School Graduate & -0.2429 & 0.1351 & -1.7977 & 0.0722 \\
+Some College & -0.4791 & 0.1338 & -3.5803 & 0.0003 \\
+Bachelor's Degree & -0.6219 & 0.1390 & -4.4746 & 0.0000 \\
+Graduate Degree & -1.0406 & 0.1432 & -7.2676 & 0.0000 \\
+Age 25 to 34 & -0.0221 & 0.1342 & -0.1650 & 0.8689 \\
+Age 35 to 44 & 0.1383 & 0.1405 & 0.9848 & 0.3247 \\
+Age 45 to 64 & 0.2317 & 0.1236 & 1.8750 & 0.0608 \\
+Age 65 or older & 0.0150 & 0.1281 & 0.1173 & 0.9067 \\
+\bottomrule
+\end{longtable}
+
+The final set of fixed effects is related to the age of the respondent.
+People who are in the age range from 25 to 34 are 2.19\% less likely to
+believe that military conflict is an effective strategy to achieve the
+U.S's foreign policy goals. However, these results are not statistically
+significant. Respondents who are aged 35 to 44 were 14.83\% more likely
+to believe that military intervention is effective, but this result was
+not statistically significant. People aged 45 to 64 were 26.07\% more
+likely to believe that military intervention, compared to people who
+were aged 18 to 24. These results were only statistically significant at
+the 10\% level.
+
+Using our estimates, we can estimate what the potential public opinion
+within each state may be. Therefore, this data is displayed on Figure 5.
+Some states and regions tend to have a lower opinion of military
+intervention than other states, as illustrated by the map. However, in
+general, most states tend to have a level estimated 60 to 70\% of voting
+aged adults within that state who believe that intervention is effective
+at achieving the U.S's goals. States such as California, Massachusetts,
+and Minnesota all have roughly 62\% of their citizens who believe that
+military intervention is an effective strategy to achieve the U.S's
+goals. Meanwhile, in Texas, roughly 68\% of citizens believe that
+military intervention is an effective strategy to achieve the U.S's
+foreign policy goals. Other states, such as Arkansas, North Carolina,
+and Indiana, also have comparatively high levels of public belief that
+military intervention is effective.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-9-1.pdf}
+\caption{U.S. Map of Public Opinion on the Effectiveness of Military
+Intervention under a Frequentist Model}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-10-1.pdf}
+\caption{Differences in estimates of Public Opinion within Each State,
+from an MRP and a Simple Disaggregation Model}
+\end{figure}
+
+Another interesting detail will be observing the comparison of using MRP
+and using disaggregation in order to estimate the probability that an
+individual is supportive of military intervention. Disaggregation is a
+blunt method, where we first break a national survey into each
+subsequent, smaller region, and then use the raw percent of responses
+from that subset of the survey to estimate public opinion without any
+model. The difference between the MRP model and a simple disaggregation
+model is illustrated in Figure 6. On this graph, points above the red
+line indicate that the MRP estimate is greater than the estimate
+provided by observing the percent who believed military intervention was
+effective in the poll within each state. Likewise, points below the red
+line indicate that the MRP-based estimate is lower than the estimate
+provided by observing the percent who believed military intervention was
+effective within each state. Within some states, such as Hawaii,
+Vermont, Kansas, and North Dakota, the estimates are substantially
+different between these two methods.
+
+\hypertarget{bayesian-results}{%
+\subsubsection{Bayesian Results}\label{bayesian-results}}
+
+Table 2 illustrates the results of running a Bayesian model, using the
+priors from the methods section. Before accounting for the random effect
+of what state the respondent lives in, an 18 to 24 year old woman who
+does not have a high school diploma has a 75.46\% probability of
+believing that military intervention is an effective strategy to achieve
+foreign goals. Men are 23.44\% less likely to support military
+intervention, all else held equal. Meanwhile, high school graduates are
+21.39\% less likely to believe that military intervention is effective.
+Respondents who attended some college, obtained a bachelor's degree, and
+attended beyond a bachelor's degree were 37.97\%, 46.17\%, and 64.52\%
+less likely to believe that military intervention was effective
+respectively, all else held equal.
+
+The effects of age are also illustrated on Table 2. Respondents who are
+aged 25 to 34 were 2.76\% less likely to believe that intervention was
+effective when compared to those who were aged 18 to 24. Respondents
+aged 35 to 44 were on average 14.02\% more likely to believe that
+intervention was effective all else held equal. Respondents who were
+aged 45 to 64 were 25.23\% more likely to believe that intervention was
+effective, while respondents who were aged 65 or older were .93\% more
+likely to believe that intervention is effective.
+
+The results from the Bayesian analysis tend to be rather similar to the
+results from our frequentist model. This may be because the priors that
+were used were vague. In a logistic regression a standard deviation of
+1, as used in our prior, then the majority of the information on this
+regression will be similar to our data model if we used a simple
+frequentist model.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.2530}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0964}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0843}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1566}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0964}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1566}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0723}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0843}}@{}}
+\caption{Estimates of Fixed Effects}\tabularnewline
+\toprule
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SD
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+10\% Quantile
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+90\% Quantile
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_eff
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Rhat
+\end{minipage} \\
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+SD
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+10\% Quantile
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+90\% Quantile
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_eff
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Rhat
+\end{minipage} \\
+\midrule
+\endhead
+Intercept & 1.1235 & 0.1569 & 0.9208 & 1.1226 & 1.3240 & 9115 &
+1.0002 \\
+Male & -0.2672 & 0.0622 & -0.3472 & -0.2671 & -0.1879 & 20092 &
+0.9997 \\
+High School Graduate & -0.2407 & 0.1349 & -0.4151 & -0.2401 & -0.0660 &
+8429 & 0.9997 \\
+Some College & -0.4776 & 0.1347 & -0.6506 & -0.4777 & -0.3052 & 8376 &
+0.9998 \\
+Bachelor's Degree & -0.6194 & 0.1394 & -0.7981 & -0.6181 & -0.4391 &
+8093 & 0.9997 \\
+Graduate Degree & -1.0363 & 0.1435 & -1.2209 & -1.0366 & -0.8548 & 8024
+& 0.9998 \\
+Age 25 to 34 & -0.0280 & 0.1313 & -0.1948 & -0.0279 & 0.1412 & 8223 &
+1.0006 \\
+Age 35 to 44 & 0.1312 & 0.1371 & -0.0435 & 0.1301 & 0.3069 & 8433 &
+1.0004 \\
+Age 45 to 64 & 0.2250 & 0.1213 & 0.0707 & 0.2249 & 0.3796 & 7666 &
+1.0006 \\
+Age 65 or older & 0.0093 & 0.1262 & -0.1516 & 0.0078 & 0.1709 & 8151 &
+1.0003 \\
+\bottomrule
+\end{longtable}
+
+Using these results from the Bayesian analysis, we can then undergo the
+same MRP process to estimate the public opinion within each state by
+estimating the expected value within each stratum. The results of this
+analysis are shown in Figure 7. The results of these estimates are
+similar to the estimates for each state generated under the frequentist
+model. States such as Texas, North Carolina, Arkansas, and Mississippi
+all have larger percentages of their voting aged populations who believe
+that military intervention is effective. In each of these states, we
+estimate that between 67\% to 68\% of their population believe that war
+is effective. However, states such as Massachusetts, California, and
+Minnesota all have estimates that between 62\% to 63\% of their
+population believe that military intervention is effective.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-12-1.pdf}
+\caption{U.S. Map of Public Opinion on the Effectiveness of Military
+Intervention under a Bayesian Model}
+\end{figure}
+
+To ensure that our model has blended well, we need to observe the R-Hat
+Convergence values. This value, also known as the Gelman-Rubin
+Convergence Diagnostic, evaluates the level of between chain convergence
+and within chain convergence of the estimates for each predictor. If
+this value is above 1.05, then it is expected that the models are not
+converging well, which suggests that there are significant problems. On
+Figure 8, the R-Hat score for each predictor is shown. Here, we can see
+that the R-Hat suggests that every predictor has converged well in this
+Bayesian model.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-13-1.pdf}
+\caption{R-Hat Measures for each Effect to Estimate Between- and
+Within-Chain Covergence}
+\end{figure}
+
+Another important detail to analyze is the credible intervals of the
+Bayesian predictors. The credible intervals are displayed by observing
+Figure 9. This figure displays the credible intervals. By observing
+these credible intervals, we can note whether we expect the effects of
+each predictor to have a statistically significant effect. For instance,
+we can see that gender and education-related variables tend to be
+statistically significant at the 5\% level. The exception of the
+statistical significance of education-related effects is the difference
+between those who did not complete high school, and those who completed
+high school. However, age-based predictors are not statistically
+significant, based on Figure 9.
+
+\begin{figure}
+\centering
+\includegraphics{Report_files/figure-latex/unnamed-chunk-14-1.pdf}
+\caption{The 95\% Credible Intervals of Estimates for the Coefficients
+in the Bayesian Model}
+\end{figure}
+
+\hypertarget{discussion-and-conclusions}{%
+\subsubsection{Discussion and
+Conclusions}\label{discussion-and-conclusions}}
+
+In both our frequentist and Bayesian approaches to estimate state-level
+public opinion, we found that most states have between 60\% and 70\%.
+State level opinion polls on military intervention beliefs are scarce,
+as most polls do not focus on state-level responses. In addition, most
+polls do not have questions that align well with the Chicago Council
+Question ``\emph{How effective do you think each of the following
+approaches are to achieving the foreign policy goals of the United
+States- very effective, somewhat effective, not very effective, or not
+effective at all: Intervening Militarily}''. Because of these problems,
+it may be hard to compare individual estimates of each state in our MRP
+model with other estimates. However, we could observe contemporary polls
+to observe what percent of people are in support of military
+intervention. In 2016 and 2017, during the period of polling, the
+primary concern of military intervention was the focus on military
+intervention in Syria against the Islamic State.
+
+Based on the estimates of our Bayesian and frequentist model, weighted
+by the total voting population of each state, the estimated percent of
+national voting aged adults who believe that military intervention is
+effective is expected to be roughly 65\%. We can then compare these
+results to contemporary, national surveys from a similar time period.
+For instance, according to Pew Research, 63\% of adults supported
+Military Action against Islamic Militants in Iraq and Syria in 2015. In
+2017, there is more evidence that individuals were in support of
+military intervention in Syria. According to the Morning Consult, in
+2017, nearly 57\% of Americans supported airstrikes and cyberattacks
+against Syria, while 58\% supported establishing a no-fly zone. The
+airstrikes in retaliation to a chemical attack by Bashar Assad against
+Syrians in April 2017 were supported by 66\% of voters. 58\% of voters
+supported the airstrikes in 2018, while 19\% of those who were polled
+had no opinion on the airstrikes. Finally, in 2019, surveys suggested
+that 60\% of Voters were in favor of keeping U.S. troops in Syria. Data
+taken on public opinion for military intervention in Syria is rather
+similar to the national estimates estimated by our MRP methods.
+
+Beyond the validity of this study, there are additional weaknesses that
+must be noted, including the difficulties of this method, and the
+shortcomings of this paper. Some of the problems that we encounter
+include the requirement for our data on the survey, and the data on the
+population of each stratum must be constructed similarly. Because of
+this, we are limited in the variables that we might choose for the model
+that we may choose to build. For instance, we were not able to analyze
+the impact of political orientation because these are not variables that
+are collected by the census. In addition, some variables are not
+packaged together. For instance, there was no variable that created
+strata in the ACS from different variables such as racial identity,
+veterans status, education level, and age. Therefore, in building our
+model, we were restricted by the ACS data. One potential solution, and
+opportunity for future research, is to use another form of Census, such
+as the Public Use Microdata, to create strata outside of the prebuilt
+strata included in the ACS. Because of time and computing restraints, I
+was not able to use the Public Use Microdata to create adequate strata,
+however, future researchers may want to adjust this research using this
+resource.
+
+Another set of limitations from this data is the limitations presented
+by the question of interest. The question ``\emph{How effective do you
+think each of the following approaches are to achieving the foreign
+policy goals of the United States- very effective, somewhat effective,
+not very effective, or not effective at all: Intervening Militarily}''
+has three significant problems caused by vagueness. The first source of
+vagueness is the term ``Intervening Militarily''. As noted in both Haas
+(1994) and Gelpi et al (2009), there are many different methods of
+Intervening Militarily. For instance, militaries may have troops
+stationed overseas, such as in military stations. However, military
+intervention may also look like using U.S. troops to train foreign
+soldiers, establishing no-fly zones, using drones for airstrikes, or a
+ground invasion. All of these different military actions are likely to
+inspire different levels of public support.
+
+In addition, another source of vagueness is ``the foreign policy goals
+of the U.S.''. In the Chicago Survey, the surveyors list 16 different
+possible foreign policy goals the U.S. might have, including Combating
+International Terrorism, Protecting U.S. Jobs, Combating World Hunger,
+and Defending our Allies' Security. It is very reasonable that, whatever
+foreign policy goal is specified may change the response of public
+opinion on the effectiveness of military intervention to achieve these
+goals. For instance, respondents may believe that military intervention
+is appropriate to Combat International Terrorism, but not to Defend our
+Allies' Security. Without the specific foreign policy goal specified,
+the question must be interpreted as whether military intervention is in
+general a good method to achieve these goals.
+
+Finally, one last source of vagueness is the fact that this question
+does not specifically indicate the circumstances of military
+intervention. It is entirely conceivable, as noted by Gelpi et
+al.~(2009) and Jentleson (1992) that individuals will give or revoke
+public support based on circumstantial variables. For instance,
+individuals might be supportive of military intervention based on the
+perceived threat of non-intervention is, and the likelihood of military
+success.
+
+Because of the vagueness of the question that we are estimating, the
+interpretations that we are able to make off the results of this paper
+are limited. We cannot conclude information about public support in
+specific the case of specific military intervention methods, specific
+policy goals, or specific circumstances of the conflict. Therefore, the
+results of this paper can best be seen as an abstract concept of general
+support and belief in military intervention as an effective policy
+choice. This could be seen as a reflection of public belief in one of
+St.~Augustine's ``Just War'' axioms, where we are observing the public's
+belief that conflict is likely to achieve a worthy cause.
+
+In this paper, we used data from the Chicago Council Survey of American
+Public Opinion on U.S. Foreign Policy and the American Community Survey
+in order to estimate public support for U.S. military intervention among
+voting aged U.S. residents. The method used is known as a multilevel
+regression with post-stratification, which uses larger national polls to
+estimate the percent of support within each U.S. state. In general, we
+found in most states that 60\% to 70\% of voting aged residents believed
+that military intervention is effective at achieving the U.S's foreign
+policy goals. These results were then further supported by contemporary
+polls that suggest that U.S. support for intervention tended to be
+around 60\% from 2015 to 2019.
+
+\newpage
+
+\hypertarget{references}{%
+\subsubsection{References}\label{references}}
+
+Alexander, R. (2022). Telling Stories with Data.
+\url{https://tellingstorieswithdata.com/}
+
+American National Election Studies. 2021. ANES 2020 Time Series Study
+Preliminary Release: Combined Pre-Election and Post-Election Data
+{[}dataset and documentation{]}. March 24, 2021 version.
+www.electionstudies.org
+
+British Broadcasting Corporation. (2014, November 11). The teenage
+soldiers of World War One. BBC News. Retrieved May 20, 2022, from
+\url{https://www.bbc.com/news/magazine-29934965}
+
+Brown University. (2021, September 1). Costs of the 20-Year War on
+terror: \$8 trillion and 900,000 deaths. Brown University. Retrieved May
+17, 2022, from \url{https://www.brown.edu/news/2021-09-01/costsofwar}
+
+Bohr, J. (2014). Public Views on the Dangers and Importance of Climate
+Change: Predicting Climate Change Beliefs in the United States through
+income moderated by party identification. Climate Change, 126, 217--227.
+
+Gallup, G. (1942). How Important is Public Opinion in Time of War.
+Proceedings of the American Philosophical Society, 85(5), 440--444.
+
+Gelman, A., \& Little, T. (1997). Poststratication Into Many Categories
+Using Hierarchical Logistic Regression. Survey Methodology.
+\url{http://www.stat.columbia.edu/~gelman/research/published/poststrat3.pdf}
+
+Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and
+Rubin, D. B. (2013). Bayesian Data Analysis. Chapman \& Hall/CRC Press,
+London, third edition. (Ch. 6)
+
+Gelman, A., Lax, J., Phillips, J., Gabry, J., \& Trangucci, R. (2018).
+Using Multilevel Regression and Poststratification to Estimate Dynamic
+Public Opinion. Columbia.
+\url{http://www.stat.columbia.edu/~gelman/research/unpublished/MRT(1).pdf}
+
+Gelpi, C., Feaver, P., \& Reifler, J. (2009). Paying the Human Costs of
+War. Princeton University Press.
+
+Haas, R. (1994). Intervention: The Use of American Military Force in the
+Post-Cold War World. Carnegie Endowment for International Peace.
+
+Jentleson, B. W. (1992). The Pretty Prudent Public: Post Post-Vietnam
+American Opinion on the Use of Military Force. International Studies
+Quarterly, 36(1), 49--73. \url{https://doi.org/10.2307/2600916}
+
+Johnson, A., Ott, M., \& Dogucu, M. (2021). Bayes Rules! An Introduction
+to Applied Bayesian Modeling. Chapman and Hall.
+
+Karol, D., \& Miguel, E. (2007). The Electoral Cost of War: Iraq
+Casualties and the 2004 Presidential Election. The Journal of Politics,
+69(3), 633--648.
+
+Kastellec, J., Lax, J., \& Phillips, J. (2019). Estimating State Public
+Opinion With Multi-Level Regression and Poststratification using R.
+Princeton.
+
+Katkov, M., Taylor, J., \& Bowman, T. (2017, April 6). Trump orders
+Syria airstrikes after `Assad choked out the lives' of civilians. NPR.
+Retrieved May 30, 2022, from
+\url{https://www.npr.org/2017/04/06/522948481/u-s-launches-airstrikes-against-syria-after-chemical-attack}
+
+Khazan, O. (2013, September 4). What are the big factors determining
+whether Americans support war? The Atlantic. Retrieved March 29, 2022,
+from
+\url{https://www.theatlantic.com/politics/archive/2013/09/what-are-the-big-factors-determining-whether-americans-support-war/279290/-sets-box-office-record}
+
+Lieberfeld, D. (2008). What Makes An Effective Antiwar Movement?
+Theme-Issue Introduction. International Journal of Peace Studies, 13(1),
+1--14. \url{http://www.jstor.org/stable/41852966}
+
+Pew Research Center. (2015, July 22). A year later, U.S. campaign
+against Isis Garners Support, Raises Concerns. Pew Research Center -
+U.S. Politics \& Policy. Retrieved May 30, 2022, from
+\url{https://www.pewresearch.org/politics/2015/07/22/a-year-later-u-s-campaign-against-isis-garners-support-raises-concerns/}
+
+Sheffield, M. (2019, January 17). Poll: Most Americans want US troops in
+Syria. The Hill. Retrieved May 30, 2022, from
+\url{https://thehill.com/hilltv/what-americas-thinking/425803-poll-most-americans-still-want-a-us-military-presence-in-syria/}
+
+Shepard, S. (2018, April 18). Majority supports Syrian airstrikes.
+Politico. Retrieved May 30, 2022, from
+\url{https://www.politico.com/story/2018/04/18/syria-airstrikes-trump-poll-530293}
+
+Smeltz, Dina, Friedhoff, Karl, Kafura, Craig J., Holyk, Gregory, and
+Busby, Joshua W. 2016 Chicago Council Survey of American Public Opinion
+on U.S. Foreign Policy. Ann Arbor, MI: Inter-university Consortium for
+Political and Social Research {[}distributor{]}, 2018-04-13.
+\url{https://doi.org/10.3886/ICPSR36806.v1}
+
+Smeltz, Dina, Daalder, Ivo, Friedhoff, Karl, and Kafura, Craig. 2017
+Chicago Council Survey of American Public Opinion on U.S. Foreign
+Policy. Inter-university Consortium for Political and Social Research
+{[}distributor{]}, 2021-06-21.
+\url{https://doi.org/10.3886/ICPSR37970.v1}
+
+Smith, C., \& Lindsay, J. M. (2003, June 1). Rally 'Round the flag:
+Opinion in the United States before and after the Iraq War. Brookings.
+Retrieved March 29, 2022, from
+\url{https://www.brookings.edu/articles/rally-round-the-flag-opinion-in-the-united-states-before-and-after-the-iraq-war/}
+
+Wang,W., et al., Forecasting elections with non-representative polls.
+International Journal of Forecasting (2014),
+\url{http://dx.doi.org/1-.1016/j.ijforecast.2014.06.001}
+
+Yokley, E. (2017, April 12). Americans Trust Trump the Most to End
+Syrian Conflict. Morning Consult. Retrieved May 30, 2022, from
+\url{https://morningconsult.com/2017/04/12/americans-trust-trump-end-syrian-conflict/}
+
+\newpage
+
+\hypertarget{appendix}{%
+\subsection{Appendix}\label{appendix}}
+
+{[}1{]} There were other models that did produce AIC. However, these
+would not have allowed us to get a comprehensive set of weights from the
+ACS. For instance, some of these models would have produced estimations
+that we would not have any adequate weights to use in order to
+poststratify, according to the ACS summary statistics. Another case
+could be seen by the Model titled ``M25b''. This model included the
+effect of ethnicity. However, it would have not allowed us to provide
+weights for any individual who was between the ages of 18 and 25. This
+would be a large chunk of the voting population that the model would not
+have adequate weights for, which would be a problem.
+
+For information on the coding of this project, as well as the data files
+that were used in this project, please go to
+
+\end{document}
