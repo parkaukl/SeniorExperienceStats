@@ -204,7 +204,7 @@ Using our estimates, we can estimate what the potential public opinion within ea
 plot_usmap(data = metadataStateGIS2, values="EstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that Military Intervention is Effective",label= scales::comma)+theme(legend.position="right")
 ```
 
-```{r, fig.cap="Differences in Estimates of Public Opinion Within Each State from a MRP and a Simple Disaggregation Model",fig.height=4}
+```{r, fig.cap="Differences in Estimates of Public Opinion Within Each State from a MRP and a Simple Disaggregation Model with Arrows and Labels for States",fig.height=4}
 ggplot(data=df2,aes(x=Number.Sampled,y=(EstimatedProbability-PercentSupportSampled),label=State))+geom_point()+geom_text_repel(size=3)+theme_minimal()+xlab("Number of Respondents from Each State")+ylab("Percentage Points of Difference Between Estimates")+geom_hline(yintercept = 0,color="red")
 ```
 
@@ -212,11 +212,12 @@ Another interesting detail will be observing the comparison of using MRP and usi
 
 ### Bayesian Results
 
-Table 2 illustrates the results of running a Bayesian model, using the priors from the methods section. Before accounting for the random effect of what state the respondent lives in, an 18 to 24 year old woman who does not have a high school diploma has a 75.46% probability of believing that military intervention is an effective strategy to achieve foreign goals. Men are 23.44% less likely to support military intervention, all else held equal. Meanwhile, high school graduates are 21.39% less likely to believe that military intervention is effective. Respondents who attended some college, obtained a bachelor's degree, and attended beyond a bachelor's degree were 37.97%, 46.17%, and 64.52% less likely to believe that military intervention was effective respectively, all else held equal.
+Table 2 illustrates the results of running a Bayesian model, using the priors from the methods section. Before accounting for the random effect of what state the respondent lives in, an 18 to 24 year old woman who does not have a high school diploma has a 75.46% probability of believing that military intervention is an effective strategy to achieve foreign goals. Men are 23.44% less likely to support military intervention, all else held equal. Meanwhile, high school graduates are 21.39% less likely to believe that military intervention is effective compared to those who did not complete a high school education. Respondents who attended some college were 37.97% more likely to believe that military intervention was effective compared to those who did not complete high school. Respondents who obtained a bachelor's degree were 46.17% less likely to believe that military intervention was effective compared to those who did not complete high school, all else held equal. Finally, respondents who attended some graduate school are 64.52% less likely to believe that military intervention was effective compared to those who did not complete high school, all else held equal. 
 
 The effects of age are also illustrated on Table 2. Respondents who are aged 25 to 34 were 2.76% less likely to believe that intervention was effective when compared to those who were aged 18 to 24. Respondents aged 35 to 44 were on average 14.02% more likely to believe that intervention was effective all else held equal. Respondents who were aged 45 to 64 were 25.23% more likely to believe that intervention was effective, while respondents who were aged 65 or older were .93% more likely to believe that intervention is effective. 
 
-The results from the Bayesian analysis tend to be rather similar to the results from our frequentist model. This may be because the priors that were used were centered at zero, and did included a broad range of potential values based on a reasonable sized standard deviation. In a logistic regression a standard deviation of 1, as used in our prior, then the majority of the information on this regression will be similar to our data model if we used a simple frequentist model.
+The results from the Bayesian analysis tend to be rather similar to the results from our frequentist model. This may be because the priors that were used were centered at zero, and did included a broad range of potential values based on a reasonable sized standard deviation. We therefore suspect that most of the posterior sample was determined by the data, and that the priors do not hold a significant influence on the posterior results. 
+
 
 ```{r}
 M25TableBayes<-summary(ProWar_Model_Posterior)[1:10,c(1,3,4,5,6)]
@@ -225,19 +226,19 @@ colnames(M25TableBayes)<-c("Mean","SD","10% Quantile","Median","90% Quantile")
 kable(M25TableBayes,digits = 4,format="pipe",caption = "Estimates of Fixed Effects")
 ```
 
-Using these results from the Bayesian analysis, we can then undergo the same MRP process to estimate the public opinion within each state by estimating the expected value within each stratum. The results of this analysis are shown in Figure 7. The results of these estimates are similar to the estimates for each state generated under the frequentist model. States such as Texas, North Carolina, Arkansas, and Mississippi all have larger percentages of their voting aged populations who believe that military intervention is effective. In each of these states, we estimate that between 67% to 68% of their population believe that war is effective. However, states such as Massachusetts, California, and Minnesota all have estimates that between 62% to 63% of their population believe that military intervention is effective. 
+Using these results from the Bayesian analysis, we can then undergo the same MRP process to estimate the public opinion within each state by estimating the expected value within each stratum. The results of this analysis are shown in Figure 7. The results of these estimates are similar to the estimates for each state generated under the frequentist model. States such as Texas, North Carolina, Arkansas, and Mississippi all have large percentages of their voting aged populations who believe that military intervention is effective. In each of these states, we estimate that between 67% to 68% of their population believe that war is effective. However, states such as Massachusetts, California, and Minnesota all have estimates that between 62% to 63% of their population believe that military intervention is effective. 
 
 ```{r, fig.cap="U.S. Map of Public Opinion on the Effectiveness of Military Intervention under a Bayesian Model"}
 plot_usmap(data = metadataStateGIS3, values="BayesEstimatedProbability",color="white")+scale_fill_continuous(name="% who Believe that Military Intervention is Effective",label= scales::comma)+theme(legend.position="right")
 ```
 
-To ensure that our model has blended well, we need to observe the R-Hat Convergence values. This value, also known as the Gelman-Rubin Convergence Diagnostic, evaluates the level of between chain convergence and within chain convergence of the estimates for each predictor. If this value is above 1.05, then it is expected that the models are not converging well, which suggests that there are significant problems. On Figure 8, the R-Hat score for each predictor is shown. Here, we can see that the R-Hat suggests that every predictor has converged well in this Bayesian model. 
+To assess model convergence, we observe the $\hat{R}$ values. This value, also known as the Gelman-Rubin Convergence Diagnostic, evaluates the level of between chain convergence and within chain convergence of the estimates for each predictor and within each of the four chains ran in our model. If this value is above 1.05, then it suggests that the chains are not converging well. On Figure 8, the $\hat{R}$ score for each predictor is shown. Here, we can see that the $\hat{R}$ suggests that every predictor has converged well in this Bayesian model. 
 
-```{r, fig.cap="R-Hat Measures for each Effect to Estimate Between- and Within-Chain Covergence"}
+```{r, fig.cap="$\\hat{R}$ Scores for each Effect to Estimate Between- and Within-Chain Covergence"}
 mcmc_rhat(rhats)+ylab("Predictors Used in the Logistic Regression")
 ```
 
-Another important detail to analyze is the credible intervals of the Bayesian predictors. The credible intervals are displayed in Figure 9. Based on these intervals, we can be reasonable certain about the direction of certain predictors. For instance, we do not have a definitive direction of the effect for the age-based predictors. However, we can also see that higher levels of educational attainment tend to have a negative effect on belief in military intervention. 
+Another important detail to analyze is the credible intervals of the Bayesian predictors. The credible intervals are displayed in Figure 9. Based on these intervals, we can be reasonable certain about the direction of certain predictors. For instance, we do not have a definitive direction of the effect for the age-based predictors. However, we can also see that higher levels of educational attainment tend to have a negative effect on belief in military intervention. In addition, we are able to see that, in general, it appears that identifying as a man means the respondent is more likely to 
 
 *This is being edited up above*
 
@@ -254,9 +255,9 @@ mcmc_areas(ProWar_Model_Posterior,pars = BayesianCoefficientList[1:10],prob_oute
 
 ### Discussion and Conclusions 
 
-In both our frequentist and Bayesian approaches to estimate state-level public opinion, we found that most states have between 60% and 70%. State level opinion polls on military intervention beliefs are scarce, as most polls do not focus on state-level responses. In addition, most polls do not have questions that align well with the Chicago Council Question "*How effective do you think each of the following approaches are to achieving the foreign policy goals of the United States- very effective, somewhat effective, not very effective, or not effective at all: Intervening Militarily*". Because of these problems, it may be hard to compare individual estimates of each state in our MRP model with other estimates. However, we could observe contemporary polls to observe what percent of people are in support of military intervention. In 2016 and 2017, during the period of polling, the primary concern of military intervention was the focus on military intervention in Syria against the Islamic State. 
+In both our frequentist and Bayesian approaches to estimate state-level public opinion, we found that 60% to 70% of voting aged adults believe that military intervention is effective in each state. State level opinion polls on military intervention beliefs are scarce, as most polls do not focus on state-level responses. In addition, most polls do not have questions that align well with the Chicago Council Question "*How effective do you think each of the following approaches are to achieving the foreign policy goals of the United States- very effective, somewhat effective, not very effective, or not effective at all: Intervening Militarily*". Because of these problems, it may be hard to compare individual estimates of each state in our MRP model with other estimates. However, we could observe contemporary polls to observe what percent of people are in support of military intervention. In 2016 and 2017, during the period of polling, the primary concern of military intervention was the focus on military intervention in Syria against the Islamic State. 
 
-Based on the estimates of our Bayesian and frequentist model, weighted by the total voting population of each state, the estimated percent of national voting aged adults who believe that military intervention is effective is expected to be roughly 65%. We can then compare these results to contemporary, national surveys from a similar time period. For instance, according to Pew Research, 63% of adults supported military action against Islamic militants in Iraq and Syria in 2015. In 2017, there is more evidence that individuals were in support of military intervention in Syria. According to the Morning Consult, in 2017, nearly 57% of Americans supported airstrikes and cyberattacks against Syria, while 58% supported establishing a no-fly zone. The airstrikes in retaliation to a chemical attack by Bashar Assad against Syrians in April 2017 were supported by 66% of voters. 58% of voters supported the airstrikes in 2018, while 19% of those who were polled had no opinion on the airstrikes. Finally, in 2019, surveys suggested that 60% of Voters were in favor of keeping U.S. troops in Syria. Data taken on public opinion for military intervention in Syria is rather similar to the national estimates estimated by our MRP methods. 
+Based on the estimates of our Bayesian and frequentist models, weighted by the total voting population of each state, the estimated percent of national voting aged adults who believe that military intervention is effective is expected to be roughly 65%. We can then compare these results to contemporary, national surveys from a similar time period. For instance, according to Pew Research, 63% of adults supported military action against Islamic militants in Iraq and Syria in 2015. In 2017, there is more evidence that individuals were in support of military intervention in Syria. According to the Morning Consult, in 2017, nearly 57% of Americans supported airstrikes and cyberattacks against Syria, while 58% supported establishing a no-fly zone. The airstrikes in retaliation to a chemical attack by Bashar Assad against Syrians in April 2017 were supported by 66% of voters. 58% of voters supported the airstrikes in 2018, while 19% of those who were polled had no opinion on the airstrikes. Finally, in 2019, surveys suggested that 60% of voters were in favor of keeping U.S. troops in Syria. Data taken on public opinion for military intervention in Syria is rather similar to the national estimates estimated by our MRP methods. 
 
 ```{r}
 X1<-metadataStateGIS3$EstimatedProbability
@@ -270,15 +271,15 @@ USAB<-(sum(X2%*%X3))/X4
 
 ```
 
-Beyond the validity of this study, there are additional weaknesses that must be noted, including the difficulties of this method, and the shortcomings of this paper. Some of the problems that we encounter include the requirement for our data on the survey, and the data on the population of each stratum must be constructed similarly. Because of this, we are limited in the variables that we might choose for the model that we may choose to build. For instance, we were not able to analyze the impact of political orientation because these are not variables that are collected by the census. In addition, some variables are not packaged together. For instance, there was no variable that created strata in the ACS from different variables such as racial identity, veterans status, education level, and age. Therefore, in building our model, we were restricted by the ACS data. One potential solution, and opportunity for future research, is to use another form of Census, such as the Public Use Microdata, to create strata outside of the prebuilt strata included in the ACS. Because of time and computing restraints, we were not able to use the Public Use Microdata to create adequate strata, however, future researchers may want to adjust this research using this resource. 
+Beyond the validity of this study, there are additional weaknesses that must be noted, including the difficulties of this method, and the shortcomings of this paper. Some of the problems that we encounter include the requirement that our data on the survey and the data on the population of each stratum must be constructed similarly. Because of this, we are limited in the variables that we might choose for the model that we may choose to build. For instance, we were not able to analyze the impact of political orientation because these are not variables that are collected by the census. In addition, some variables are not packaged together. For instance, there was no variable that created strata in the ACS from different variables such as racial identity, veterans status, education level, and age. Therefore, in building our model, we were restricted by the ACS data. One potential solution, and opportunity for future research, is to use another form of Census, such as the Public Use Microdata, to create strata outside of the prebuilt strata included in the ACS. However, using the Public Use Microdata to create these strata would have required sufficient computing resources. Future researchers may improve our research by using the Public Use Microdata as opposed to the American Community Survey. 
 
-Another set of limitations from this data is the limitations presented by the question of interest. The question "*How effective do you think each of the following approaches are to achieving the foreign policy goals of the United States- very effective, somewhat effective, not very effective, or not effective at all: Intervening Militarily*" has three significant problems caused by vagueness. The first source of vagueness is the term "Intervening Militarily". As noted in both Haas (1994) and Gelpi et al (2009), there are many different methods of Intervening Militarily. For instance, militaries may have troops stationed overseas, such as in military stations. However, military intervention may also look like using U.S. troops to train foreign soldiers, establishing no-fly zones, using drones for airstrikes, or a ground invasion. All of these different military actions are likely to inspire different levels of public support. 
+Another set of limitations from this data is caused by the question of interest. The question "*How effective do you think each of the following approaches are to achieving the foreign policy goals of the United States- very effective, somewhat effective, not very effective, or not effective at all: Intervening Militarily*" has three significant problems caused by vagueness. The first source of vagueness is the term "Intervening Militarily". As noted in both Haas (1994) and Gelpi et al (2009), there are many different methods of Intervening Militarily. For instance, militaries may have troops stationed overseas, such as in military stations. However, military intervention may also look like using U.S. troops to train foreign soldiers, establishing no-fly zones, using drones for airstrikes, or a ground invasion. All of these different military actions are likely to inspire different levels of public support. 
 
-In addition, another source of vagueness is "the foreign policy goals of the U.S.". In the Chicago Survey, the surveyors list 16 different possible foreign policy goals the U.S. might have, including Combating International Terrorism, Protecting U.S. Jobs, Combating World Hunger, and Defending our Allies' Security. It is very reasonable that, whatever foreign policy goal is specified may change the response of public opinion on the effectiveness of military intervention to achieve these goals. For instance, respondents may believe that military intervention is appropriate to Combat International Terrorism, but not to Defend our Allies' Security. Without the specific foreign policy goal specified, the question must be interpreted as whether military intervention is in general a good method to achieve these goals. 
+In addition, another source of vagueness is "the foreign policy goals of the U.S." In the Chicago Survey, the surveyors list 16 different possible foreign policy goals the U.S. might have, including Combating International Terrorism, Protecting U.S. Jobs, Combating World Hunger, and Defending our Allies' Security. It is very reasonable that, whatever foreign policy goal is specified may change the response of public opinion on the effectiveness of military intervention to achieve these goals. For instance, respondents may believe that military intervention is appropriate to Combat International Terrorism, but not to Defend our Allies' Security. Without the specific foreign policy goal specified, the question must be interpreted as whether military intervention is in general a good method to achieve these goals. 
 
-Finally, one last source of vagueness is the fact that this question does not specifically indicate the circumstances of military intervention. It is entirely conceivable, as noted by Gelpi et al. (2009) and Jentleson (1992) that individuals will give or revoke public support based on circumstantial variables. For instance, individuals might be supportive of military intervention based on the perceived threat of non-intervention is, and the likelihood of military success.
+Finally, one last source of vagueness is the fact that this question does not specifically indicate the circumstances of military intervention. It is entirely conceivable, as noted by Gelpi et al. (2009) and Jentleson (1992) that individuals will give or revoke public support based on circumstantial variables. For instance, individuals might be supportive of military intervention based on the perceived threat of non-intervention, and the likelihood of military success.
 
-Because of the vagueness of the question that we are estimating, the interpretations that we are able to make off the results of this paper are limited. We cannot conclude information about public support in specific the case of specific military intervention methods, specific policy goals, or specific circumstances of the conflict. Therefore, the results of this paper can best be seen as an abstract concept of general support and belief in military intervention as an effective policy choice. This could be seen as a reflection of public belief in one of St. Augustine's "Just War" axioms, where we are observing the public's belief that conflict is likely to achieve a worthy cause.  
+Because of the vagueness of the question that we are estimating, the interpretations that we are able to make off the results of this paper are limited. We cannot use interpret these results as a reflection of public support about specific military intervention methods, specific policy goals, or specific circumstances of conflicts. Therefore, the results of this paper can best be seen as an abstract concept of general support and belief in military intervention as an effective policy choice. This could be seen as a reflection of public belief in one of St. Augustine's "Just War" axioms, where we are observing the public's belief that conflict is likely to achieve a worthy cause.  
 
 In this paper, we used data from the Chicago Council Survey of American Public Opinion on U.S. Foreign Policy and the American Community Survey in order to estimate public support for U.S. military intervention among voting aged U.S. residents. The method used is known as a multilevel regression with post-stratification, which uses larger national polls to estimate the percent of support within each U.S. state. In general, we found in most states that 60% to 70% of voting aged residents believed that military intervention is effective at achieving the U.S's foreign policy goals. These results were then further supported by contemporary polls that suggest that U.S. support for intervention tended to be around 60% from 2015 to 2019. 
 
@@ -350,3 +351,88 @@ Yokley, E. (2017, April 12). Americans Trust Trump the Most to End Syrian Confli
 ## Appendix
 
 For information on the coding of this project, as well as the data files that were used in this project, please go to https://github.com/parkaukl/SeniorExperienceStats. 
+
+In addition, this appendix will include various plots related to the trace plots for our fixed effects. These trace plots show that models appear to have a good level of convergence within each of the chains. There is nothing alarming about the trace plots for any of the fixed effects. In addition, all of our density plots show strong evidence of a normal distribution, and do not show any significant problems. 
+
+```{r,fig.cap="Trace Plot for the Intercept Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[1])+xlab("Index")+ylab("Intercept")
+```
+
+```{r,fig.cap="Trace Plot for the Male Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[2])+xlab("Index")+ylab("Male")
+```
+
+```{r,fig.cap="Trace Plot for the High School Graduate Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[3])+xlab("Index")+ylab("High School Graduate")
+```
+
+```{r,fig.cap="Trace Plot for the Some College Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[4])+xlab("Index")+ylab("Some College")
+```
+
+```{r,fig.cap="Trace Plot for the Bachelor's Degree Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[5])+xlab("Index")+ylab("Bachelor's Degree")
+```
+
+```{r,fig.cap="Trace Plot for the Graduate Degree Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[6])+xlab("Index")+ylab("Graduate School")
+```
+
+```{r,fig.cap="Trace Plot for the 25 to 34 Years Old Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[7])+xlab("Index")+ylab("25 to 34 Years Old")
+```
+
+```{r,fig.cap="Trace Plot for the 35 to 44 Years Old Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[8])+xlab("Index")+ylab("35 to 44 Years Old")
+```
+
+```{r,fig.cap="Trace Plot for the 45 to 64 Years Old Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[9])+xlab("Index")+ylab("45 to 64 Years Old")
+```
+
+```{r,fig.cap="Trace Plot for the 65 Years Old or Older Coefficient"}
+mcmc_trace(ProWar_Model_Posterior,pars = BayesianCoefficientList[10])+xlab("Index")+ylab("65 or Older")
+```
+
+```{r,fig.cap="Density Plot for the Intercept Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[1])+xlab("Intercept")
+```
+
+```{r,fig.cap="Density Plot for the Male Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[2])+xlab("Male")
+```
+
+```{r,fig.cap="Density Plot for the High School Graduate Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[3])+xlab("High School Graduate")
+```
+
+```{r,fig.cap="Density Plot for the Some College Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[4])+xlab("Some College")
+```
+
+```{r,fig.cap="Density Plot for the Bachelor's Degree Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[5])+xlab("Bachelor's Degree")
+```
+
+```{r,fig.cap="Density Plot for the Graduate Degree Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[6])+xlab("Graduate School")
+```
+
+```{r,fig.cap="Density Plot for the 25 to 34 Years Old Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[7])+xlab("25 to 34 Years Old")
+```
+
+```{r,fig.cap="Density Plot for the 35 to 44 Years Old Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[8])+xlab("35 to 44 Years Old")
+```
+
+```{r,fig.cap="Density Plot for the 45 to 64 Years Old Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[9])+xlab("45 to 64 Years Old")
+```
+
+```{r,fig.cap="Density Plot for the 65 Years Old or Older Coefficient"}
+mcmc_dens(ProWar_Model_Posterior,pars = BayesianCoefficientList[10])+xlab("65 or Older")
+```
+
+
+
