@@ -1,6 +1,6 @@
 ---
 title: Estimating Support for Military Intervention by State Using Multilevel Regression with Post-Stratification
-author:"Parker Kaukl"
+author:
 output:
   pdf_document: default
   html_document:
